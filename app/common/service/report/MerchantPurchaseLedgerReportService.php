@@ -123,6 +123,7 @@ class MerchantPurchaseLedgerReportService
             'cards' => $cards,
             'buyer_rank' => $buyerRows,
             'source_rank' => $sourceRows,
+            'merchant_trade_compare' => self::buildMerchantTradeCompare($params),
             'reconciliation' => self::reconciliation($params),
             'query_label' => self::buildQueryLabel($params),
         ];
@@ -403,6 +404,103 @@ class MerchantPurchaseLedgerReportService
         });
 
         return array_slice($merchantRows, 0, 50);
+    }
+
+    private static function buildMerchantTradeCompare(array $params = []): array
+    {
+        $buyRows = (clone self::baseQuery($params))
+            ->where('buyer_merchant_id', '>', 0)
+            ->field('buyer_merchant_id as merchant_id,buyer_merchant_title as merchant_title,SUM(total) as buy_amount,COUNT(DISTINCT member_order_id) as buy_order_count,SUM(quantity) as buy_quantity')
+            ->group('buyer_merchant_id,buyer_merchant_title')
+            ->select()
+            ->toArray();
+
+        $sellRows = (clone self::baseQuery($params))
+            ->where('source_merchant_id', '>', 0)
+            ->field('source_merchant_id as merchant_id,source_merchant_title as merchant_title,SUM(total) as sell_amount,COUNT(DISTINCT member_order_id) as sell_order_count,SUM(quantity) as sell_quantity')
+            ->group('source_merchant_id,source_merchant_title')
+            ->select()
+            ->toArray();
+
+        $merchantMap = [];
+        foreach ($buyRows as $row) {
+            $merchantId = intval($row['merchant_id'] ?? 0);
+            if ($merchantId <= 0) {
+                continue;
+            }
+            $merchantMap[$merchantId] = array_merge(self::emptyTradeCompareRow($merchantId, (string) ($row['merchant_title'] ?? '')), [
+                'buy_amount' => self::toFloat($row['buy_amount'] ?? 0),
+                'buy_order_count' => intval($row['buy_order_count'] ?? 0),
+                'buy_quantity' => intval($row['buy_quantity'] ?? 0),
+            ]);
+        }
+
+        foreach ($sellRows as $row) {
+            $merchantId = intval($row['merchant_id'] ?? 0);
+            if ($merchantId <= 0) {
+                continue;
+            }
+            if (!isset($merchantMap[$merchantId])) {
+                $merchantMap[$merchantId] = self::emptyTradeCompareRow($merchantId, (string) ($row['merchant_title'] ?? ''));
+            }
+            $merchantMap[$merchantId]['sell_amount'] = self::toFloat($row['sell_amount'] ?? 0);
+            $merchantMap[$merchantId]['sell_order_count'] = intval($row['sell_order_count'] ?? 0);
+            $merchantMap[$merchantId]['sell_quantity'] = intval($row['sell_quantity'] ?? 0);
+        }
+
+        $rows = array_values($merchantMap);
+        foreach ($rows as &$row) {
+            $row['net_amount'] = self::toFloat($row['buy_amount'] - $row['sell_amount']);
+            $row['trade_ratio'] = $row['sell_amount'] > 0 ? round($row['buy_amount'] / $row['sell_amount'] * 100, 1) : null;
+            $row['trade_judgement'] = self::buildTradeJudgement($row['buy_amount'], $row['sell_amount']);
+        }
+        unset($row);
+
+        usort($rows, function ($left, $right) {
+            $leftScore = max(abs(floatval($left['net_amount'] ?? 0)), floatval($left['buy_amount'] ?? 0), floatval($left['sell_amount'] ?? 0));
+            $rightScore = max(abs(floatval($right['net_amount'] ?? 0)), floatval($right['buy_amount'] ?? 0), floatval($right['sell_amount'] ?? 0));
+            if ($leftScore === $rightScore) {
+                return intval($right['merchant_id'] ?? 0) <=> intval($left['merchant_id'] ?? 0);
+            }
+            return $rightScore <=> $leftScore;
+        });
+
+        return array_slice($rows, 0, 50);
+    }
+
+    private static function emptyTradeCompareRow(int $merchantId = 0, string $merchantTitle = ''): array
+    {
+        return [
+            'merchant_id' => $merchantId,
+            'merchant_title' => $merchantTitle,
+            'buy_amount' => 0,
+            'buy_order_count' => 0,
+            'buy_quantity' => 0,
+            'sell_amount' => 0,
+            'sell_order_count' => 0,
+            'sell_quantity' => 0,
+            'net_amount' => 0,
+            'trade_ratio' => null,
+            'trade_judgement' => '',
+        ];
+    }
+
+    private static function buildTradeJudgement(float $buyAmount = 0, float $sellAmount = 0): string
+    {
+        if ($buyAmount <= 0 && $sellAmount <= 0) {
+            return '暂无买卖';
+        }
+        if ($sellAmount <= 0) {
+            return '只有买入';
+        }
+        if ($buyAmount <= 0) {
+            return '只有卖出';
+        }
+        $ratio = $buyAmount / $sellAmount;
+        if ($ratio >= 0.8 && $ratio <= 1.2) {
+            return '买卖基本持平';
+        }
+        return $ratio > 1.2 ? '买入明显更多' : '卖出明显更多';
     }
 
     private static function resolveDateRange(string $quickDate = '', string $startDate = '', string $endDate = ''): array

@@ -190,6 +190,54 @@
     <section class="panel">
       <div class="panel__heading">
         <div>
+          <div class="panel__title">商家买卖对比</div>
+          <p class="panel__hint">
+            按商家汇总：我买别人、别人买我、差额和买卖比，用来判断买卖是否基本持平。
+          </p>
+        </div>
+      </div>
+      <el-table
+        :data="summaryData.merchant_trade_compare"
+        border
+        empty-text="当前筛选范围内没有买卖对比数据"
+        row-class-name="merchant-row"
+        @row-click="selectCompareMerchant"
+      >
+        <el-table-column prop="merchant_title" label="商家" min-width="160" />
+        <el-table-column label="我买别人" width="130">
+          <template #default="{ row }">¥{{ money(row.buy_amount) }}</template>
+        </el-table-column>
+        <el-table-column label="别人买我" width="130">
+          <template #default="{ row }">¥{{ money(row.sell_amount) }}</template>
+        </el-table-column>
+        <el-table-column label="差额" width="130">
+          <template #default="{ row }">
+            <span :class="Number(row.net_amount) >= 0 ? 'amount-buy' : 'amount-sell'">
+              ¥{{ money(row.net_amount) }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column label="买卖比" width="110">
+          <template #default="{ row }">{{ ratioText(row.trade_ratio) }}</template>
+        </el-table-column>
+        <el-table-column prop="buy_order_count" label="买入订单" width="100" />
+        <el-table-column prop="sell_order_count" label="卖出订单" width="100" />
+        <el-table-column label="判断" width="130">
+          <template #default="{ row }">
+            <el-tag :type="tradeTag(row.trade_judgement)">{{ row.trade_judgement }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="130">
+          <template #default>
+            <el-button link type="primary">看采购明细</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </section>
+
+    <section class="panel">
+      <div class="panel__heading">
+        <div>
           <div class="panel__title">商家异常汇总</div>
           <p class="panel__hint">
             {{ selectedReconcileLabel }}：先按商家汇总总差额，点击商家后再看该商家的订单明细。
@@ -423,7 +471,8 @@ const summaryData = reactive({
     exception_list: []
   },
   buyer_rank: [],
-  source_rank: []
+  source_rank: [],
+  merchant_trade_compare: []
 })
 
 function buildParams() {
@@ -489,6 +538,16 @@ function payStatusTag(status) {
   return 'warning'
 }
 
+function ratioText(value) {
+  return value === null || value === undefined ? '--' : `${Number(value).toFixed(1)}%`
+}
+
+function tradeTag(title) {
+  if (title === '买卖基本持平') return 'success'
+  if (title === '暂无买卖') return 'info'
+  return 'warning'
+}
+
 function handleDateChange(value) {
   query.quick_date = ''
   query.start_date = value?.[0] || ''
@@ -503,6 +562,11 @@ function selectReconcileType(status) {
 
 function selectBuyerMerchant(row) {
   query.buyer_merchant_id = row.buyer_merchant_id || undefined
+  reload()
+}
+
+function selectCompareMerchant(row) {
+  query.buyer_merchant_id = row.merchant_id || undefined
   reload()
 }
 
@@ -759,6 +823,16 @@ onMounted(async () => {
   color: #6c766f;
   font-size: 13px;
   white-space: nowrap;
+}
+
+.amount-buy {
+  color: #a5412e;
+  font-weight: 700;
+}
+
+.amount-sell {
+  color: #1f6f50;
+  font-weight: 700;
 }
 
 .split .panel {

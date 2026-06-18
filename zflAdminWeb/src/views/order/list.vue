@@ -105,6 +105,7 @@
                 <template #prepend>
                   <el-select v-model="query.search_field" placeholder="字段" style="width: 92px">
                     <el-option :value="idkey" label="ID" />
+                    <el-option value="order_no" label="订单号" />
                     <el-option value="unique" label="标识" />
                     <el-option value="name" label="名称" />
                     <el-option value="desc" label="描述" />
@@ -125,7 +126,9 @@
           <span v-for="item in activeFilterTags" :key="item" class="active-filter-strip__item">{{
             item
           }}</span>
-          <span v-if="!activeFilterTags.length" class="active-filter-strip__item">未设置筛选条件</span>
+          <span v-if="!activeFilterTags.length" class="active-filter-strip__item"
+            >未设置筛选条件</span
+          >
         </div>
         <div v-if="recentActionSummary" class="filter-summary-bar__side">
           <span class="recent-action-strip__text">{{ recentActionSummary }}</span>
@@ -287,7 +290,9 @@
             去商家页继续处理
           </el-button>
           <el-button @click="goToAnalyticsReview">回平台分析复盘</el-button>
-          <el-button :disabled="!focusedMerchantId" @click="goToInternalTakeoverReview">去内部接盘对账</el-button>
+          <el-button :disabled="!focusedMerchantId" @click="goToInternalTakeoverReview"
+            >去内部接盘对账</el-button
+          >
         </div>
       </div>
       <div class="operation_btn mb5">
@@ -467,7 +472,9 @@
             <div class="service-runtime-card__meta">
               <span class="service-runtime-card__tag">支付方式：{{ servicePayTypeText }}</span>
               <span class="service-runtime-card__tag">实付金额：￥{{ servicePaidAmountText }}</span>
-              <span class="service-runtime-card__tag">本次最多可退：￥{{ serviceRefundCapText }}</span>
+              <span class="service-runtime-card__tag"
+                >本次最多可退：￥{{ serviceRefundCapText }}</span
+              >
             </div>
             <div class="service-runtime-card__risk">{{ serviceRefundModeHint }}</div>
           </div>
@@ -978,7 +985,7 @@ export default {
       query: {
         page: 1,
         limit: getPageLimit(),
-        search_field: 'name',
+        search_field: 'order_no',
         search_exp: 'like',
         date_field: 'create_time',
         is_disable: undefined,

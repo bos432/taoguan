@@ -1,6 +1,7 @@
 <?php
 namespace app\common\service\report;
 
+use app\common\model\member\MemberOrderModel;
 use think\facade\Db;
 
 class MerchantPurchaseLedgerReportService
@@ -144,6 +145,8 @@ class MerchantPurchaseLedgerReportService
             'amount_mismatch_count' => 0,
             'amount_mismatch_amount' => 0,
             'exception_amount' => 0,
+            'voucher_exception_count' => 0,
+            'wechat_exception_count' => 0,
         ];
 
         foreach ($rows as $row) {
@@ -154,6 +157,11 @@ class MerchantPurchaseLedgerReportService
             } else {
                 $cards['exception_count']++;
                 $cards['exception_amount'] = self::toFloat($cards['exception_amount'] + $diffAmount);
+                if (intval($row['pay_type'] ?? 0) === MemberOrderModel::getPayType('voucher', 1)) {
+                    $cards['voucher_exception_count']++;
+                } elseif (intval($row['pay_type'] ?? 0) === MemberOrderModel::getPayType('weChat', 1)) {
+                    $cards['wechat_exception_count']++;
+                }
                 if ($status === 'missing_bill') {
                     $cards['missing_bill_count']++;
                     $cards['missing_bill_amount'] = self::toFloat($cards['missing_bill_amount'] + $diffAmount);
@@ -229,13 +237,16 @@ class MerchantPurchaseLedgerReportService
         $params['limit'] = 100000;
         $list = self::list($params)['list'] ?? [];
         $rows = [
-            ['订单号', '支付时间', '核算结果', '核算说明', '核算差额', '买方商家ID', '买方商家', '来源类型', '来源商家ID', '来源名称', '商品ID', '商品名称', '商品编码', '规格', '单位', '数量', '单价', '明细金额', '订单实付', '账单金额'],
+            ['订单号', '支付时间', '支付方式', '支付状态', '订单状态', '核算结果', '核算说明', '核算差额', '买方商家ID', '买方商家', '来源类型', '来源商家ID', '来源名称', '商品ID', '商品名称', '商品编码', '规格', '单位', '数量', '单价', '明细金额', '订单实付', '账单金额'],
         ];
 
         foreach ($list as $item) {
             $rows[] = [
                 $item['order_no'] ?? '',
                 $item['pay_time'] ?? '',
+                $item['pay_type_title'] ?? '',
+                $item['pay_status_title'] ?? '',
+                $item['order_status_title'] ?? '',
                 $item['reconcile_status_title'] ?? '',
                 $item['reconcile_message'] ?? '',
                 self::toFloat($item['reconcile_diff_amount'] ?? 0),
@@ -283,6 +294,9 @@ class MerchantPurchaseLedgerReportService
         if ($normalized['source_merchant_id'] >= 0) {
             $query->where('source_merchant_id', $normalized['source_merchant_id']);
         }
+        if ($normalized['order_no'] !== '') {
+            $query->whereLike('order_no', '%' . $normalized['order_no'] . '%');
+        }
         if ($normalized['keyword'] !== '') {
             $keyword = '%' . $normalized['keyword'] . '%';
             $query->where(function ($q) use ($keyword) {
@@ -314,6 +328,7 @@ class MerchantPurchaseLedgerReportService
             'buyer_merchant_id' => intval($params['buyer_merchant_id'] ?? 0),
             'source_type' => trim((string) ($params['source_type'] ?? '')),
             'source_merchant_id' => isset($params['source_merchant_id']) && intval($params['source_merchant_id']) >= 0 ? intval($params['source_merchant_id']) : -1,
+            'order_no' => trim((string) ($params['order_no'] ?? '')),
             'keyword' => trim((string) ($params['keyword'] ?? '')),
         ];
     }
@@ -441,6 +456,13 @@ class MerchantPurchaseLedgerReportService
             $row['order_current_pay_price'] = self::toFloat($reconcile['order_pay_price'] ?? $row['order_pay_price'] ?? 0);
             $row['bill_amount'] = self::toFloat($reconcile['bill_amount'] ?? 0);
             $row['bill_count'] = intval($reconcile['bill_count'] ?? 0);
+            $row['pay_type'] = intval($reconcile['pay_type'] ?? $row['pay_type'] ?? 0);
+            $row['pay_type_title'] = $reconcile['pay_type_title'] ?? self::buildPayTypeTitle($row['pay_type']);
+            $row['pay_status'] = intval($reconcile['pay_status'] ?? -1);
+            $row['pay_status_title'] = $reconcile['pay_status_title'] ?? self::buildPayStatusTitle($row['pay_status']);
+            $row['order_status'] = intval($reconcile['order_status'] ?? -1);
+            $row['order_status_title'] = $reconcile['order_status_title'] ?? self::buildOrderStatusTitle($row['order_status']);
+            $row['pay_auth_msg'] = $reconcile['pay_auth_msg'] ?? '';
             $row['reconcile_status'] = $reconcile['reconcile_status'] ?? 'review';
             $row['reconcile_status_title'] = $reconcile['reconcile_status_title'] ?? '待复核';
             $row['reconcile_message'] = $reconcile['reconcile_message'] ?? '未生成核算结论';
@@ -486,7 +508,7 @@ class MerchantPurchaseLedgerReportService
         if (!empty($orderIds)) {
             $rows = Db::name('member_order')
                 ->whereIn('id', $orderIds)
-                ->field('id,pay_price,total_price,pay_status,status')
+                ->field('id,pay_price,total_price,pay_status,pay_type,status,pay_auth_msg')
                 ->select()
                 ->toArray();
             foreach ($rows as $row) {
@@ -557,6 +579,13 @@ class MerchantPurchaseLedgerReportService
             $row['bill_amount'] = $billAmount;
             $row['bill_count'] = $billCount;
             $row['detail_count'] = intval($row['detail_count'] ?? 0);
+            $row['pay_type'] = intval($order['pay_type'] ?? 0);
+            $row['pay_type_title'] = self::buildPayTypeTitle($row['pay_type']);
+            $row['pay_status'] = intval($order['pay_status'] ?? -1);
+            $row['pay_status_title'] = self::buildPayStatusTitle($row['pay_status']);
+            $row['order_status'] = intval($order['status'] ?? -1);
+            $row['order_status_title'] = self::buildOrderStatusTitle($row['order_status']);
+            $row['pay_auth_msg'] = (string) ($order['pay_auth_msg'] ?? '');
             $row['reconcile_status'] = $status;
             $row['reconcile_status_title'] = $title;
             $row['reconcile_message'] = $message;
@@ -564,6 +593,30 @@ class MerchantPurchaseLedgerReportService
         }
 
         return $orderRows;
+    }
+
+    private static function buildPayTypeTitle(int $payType = 0): string
+    {
+        return MemberOrderModel::getPayType($payType, 2) ?: '未知支付';
+    }
+
+    private static function buildPayStatusTitle(int $payStatus = -1): string
+    {
+        if ($payStatus === 1) {
+            return '已支付';
+        }
+        if ($payStatus === 2) {
+            return '已驳回';
+        }
+        if ($payStatus === 0) {
+            return '待审核/未支付';
+        }
+        return '未知';
+    }
+
+    private static function buildOrderStatusTitle(int $status = -1): string
+    {
+        return MemberOrderModel::getStatus($status, 2) ?: '未知';
     }
 
     private static function buildSourceTypeTitle(string $sourceTypes = ''): string

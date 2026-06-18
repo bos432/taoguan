@@ -79,10 +79,17 @@
         />
       </el-select>
       <el-input
+        v-model="query.order_no"
+        clearable
+        class="filter-order"
+        placeholder="订单编号"
+        @keyup.enter="reload"
+      />
+      <el-input
         v-model="query.keyword"
         clearable
         class="filter-keyword"
-        placeholder="订单号/商品/商家"
+        placeholder="商品/商家"
         @keyup.enter="reload"
       />
       <el-button @click="reload">查询</el-button>
@@ -189,6 +196,10 @@
           </p>
         </div>
         <div class="panel__actions">
+          <span class="pay-mix">
+            凭证异常 {{ summaryData.reconciliation.cards.voucher_exception_count || 0 }} 单 /
+            微信异常 {{ summaryData.reconciliation.cards.wechat_exception_count || 0 }} 单
+          </span>
           <el-button
             v-if="query.reconciliation_status"
             size="small"
@@ -263,6 +274,13 @@
           min-width="220"
           show-overflow-tooltip
         />
+        <el-table-column prop="pay_type_title" label="支付方式" width="100" />
+        <el-table-column label="支付状态" width="120">
+          <template #default="{ row }">
+            <el-tag :type="payStatusTag(row.pay_status)">{{ row.pay_status_title }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="order_status_title" label="订单状态" width="100" />
         <el-table-column label="采购流水" width="120">
           <template #default="{ row }">¥{{ money(row.ledger_amount) }}</template>
         </el-table-column>
@@ -274,6 +292,11 @@
         </el-table-column>
         <el-table-column label="差额" width="120">
           <template #default="{ row }">¥{{ money(row.reconcile_diff_amount) }}</template>
+        </el-table-column>
+        <el-table-column label="操作" width="110" fixed="right">
+          <template #default="{ row }">
+            <el-button link type="primary" @click="goToOrder(row)">核对订单</el-button>
+          </template>
         </el-table-column>
       </el-table>
     </section>
@@ -298,6 +321,12 @@
         />
         <el-table-column prop="buyer_merchant_title" label="买方商家" min-width="130" />
         <el-table-column prop="source_type_title" label="来源类型" width="110" />
+        <el-table-column prop="pay_type_title" label="支付方式" width="100" />
+        <el-table-column label="支付状态" width="120">
+          <template #default="{ row }">
+            <el-tag :type="payStatusTag(row.pay_status)">{{ row.pay_status_title }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column prop="source_merchant_title" label="来源名称" min-width="130" />
         <el-table-column prop="goods_title" label="商品" min-width="220" show-overflow-tooltip />
         <el-table-column prop="quantity" label="数量" width="80" />
@@ -334,8 +363,10 @@
 
 <script setup>
 import { computed, onMounted, reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { downloadLedger, filters, list, summary } from '@/api/report/merchant-purchase-ledger'
 
+const router = useRouter()
 const loading = ref(false)
 const dateRange = ref([])
 const page = ref(1)
@@ -350,6 +381,7 @@ const query = reactive({
   buyer_merchant_id: undefined,
   source_type: '',
   source_merchant_id: undefined,
+  order_no: '',
   reconciliation_status: '',
   keyword: ''
 })
@@ -383,7 +415,9 @@ const summaryData = reactive({
       bill_mismatch_amount: 0,
       amount_mismatch_count: 0,
       amount_mismatch_amount: 0,
-      exception_amount: 0
+      exception_amount: 0,
+      voucher_exception_count: 0,
+      wechat_exception_count: 0
     },
     merchant_list: [],
     exception_list: []
@@ -449,6 +483,12 @@ function statusTag(status) {
   return 'danger'
 }
 
+function payStatusTag(status) {
+  if (Number(status) === 1) return 'success'
+  if (Number(status) === 2) return 'danger'
+  return 'warning'
+}
+
 function handleDateChange(value) {
   query.quick_date = ''
   query.start_date = value?.[0] || ''
@@ -464,6 +504,18 @@ function selectReconcileType(status) {
 function selectBuyerMerchant(row) {
   query.buyer_merchant_id = row.buyer_merchant_id || undefined
   reload()
+}
+
+function goToOrder(row) {
+  router.push({
+    path: '/order/order',
+    query: {
+      from: 'merchant-purchase-ledger',
+      search_field: 'order_no',
+      search_exp: 'like',
+      search_value: row.order_no || ''
+    }
+  })
 }
 
 async function loadFilters() {
@@ -571,6 +623,10 @@ onMounted(async () => {
 
 .filter-date {
   width: 260px;
+}
+
+.filter-order {
+  width: 190px;
 }
 
 .filter-keyword {
@@ -699,6 +755,12 @@ onMounted(async () => {
   align-items: center;
 }
 
+.pay-mix {
+  color: #6c766f;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
 .split .panel {
   margin-top: 0;
 }
@@ -749,6 +811,7 @@ onMounted(async () => {
   }
 
   .filter-item,
+  .filter-order,
   .filter-date,
   .filter-keyword {
     width: 100%;

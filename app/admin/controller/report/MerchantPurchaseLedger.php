@@ -46,6 +46,7 @@ class MerchantPurchaseLedger extends BaseController
             'buyer_merchant_id/d' => 0,
             'source_type/s' => '',
             'source_merchant_id/d' => -1,
+            'order_no/s' => '',
             'keyword/s' => '',
             'reconciliation_status/s' => '',
         ]);

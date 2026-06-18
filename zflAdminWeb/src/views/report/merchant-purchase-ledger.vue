@@ -192,7 +192,7 @@
         <div>
           <div class="panel__title">商家买卖对比</div>
           <p class="panel__hint">
-            按商家汇总：我买别人、别人买我、差额和买卖比，用来判断买卖是否基本持平。
+            按商家/平台汇总：我买别人、别人买我、差额和买卖比；点击金额或差额可直接查看对应明细。
           </p>
         </div>
       </div>
@@ -200,21 +200,53 @@
         :data="summaryData.merchant_trade_compare"
         border
         empty-text="当前筛选范围内没有买卖对比数据"
-        row-class-name="merchant-row"
-        @row-click="selectCompareMerchant"
       >
-        <el-table-column prop="merchant_title" label="商家" min-width="160" />
+        <el-table-column label="对象" min-width="160">
+          <template #default="{ row }">
+            <span>{{ row.merchant_title }}</span>
+            <el-tag
+              v-if="Number(row.merchant_id) === 0"
+              class="object-tag"
+              size="small"
+              type="info"
+            >
+              平台
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="我买别人" width="130">
-          <template #default="{ row }">¥{{ money(row.buy_amount) }}</template>
+          <template #default="{ row }">
+            <el-button
+              link
+              type="primary"
+              :disabled="Number(row.buy_order_count) <= 0"
+              @click="selectCompareMerchant(row, 'buy')"
+            >
+              ¥{{ money(row.buy_amount) }}
+            </el-button>
+          </template>
         </el-table-column>
         <el-table-column label="别人买我" width="130">
-          <template #default="{ row }">¥{{ money(row.sell_amount) }}</template>
+          <template #default="{ row }">
+            <el-button
+              link
+              type="primary"
+              :disabled="Number(row.sell_order_count) <= 0"
+              @click="selectCompareMerchant(row, 'sell')"
+            >
+              ¥{{ money(row.sell_amount) }}
+            </el-button>
+          </template>
         </el-table-column>
         <el-table-column label="差额" width="130">
           <template #default="{ row }">
-            <span :class="Number(row.net_amount) >= 0 ? 'amount-buy' : 'amount-sell'">
+            <button
+              class="diff-link"
+              :class="Number(row.net_amount) >= 0 ? 'amount-buy' : 'amount-sell'"
+              @click="selectCompareMerchant(row, 'diff')"
+            >
               ¥{{ money(row.net_amount) }}
-            </span>
+            </button>
           </template>
         </el-table-column>
         <el-table-column label="买卖比" width="110">
@@ -228,14 +260,20 @@
           </template>
         </el-table-column>
         <el-table-column label="操作" width="130">
-          <template #default>
-            <el-button link type="primary">看采购明细</el-button>
+          <template #default="{ row }">
+            <el-button
+              link
+              type="primary"
+              @click="selectCompareMerchant(row, Number(row.merchant_id) === 0 ? 'sell' : 'buy')"
+            >
+              {{ Number(row.merchant_id) === 0 ? '看售出明细' : '看采购明细' }}
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
     </section>
 
-    <section class="panel">
+    <section ref="detailPanelRef" class="panel">
       <div class="panel__heading">
         <div>
           <div class="panel__title">商家异常汇总</div>
@@ -431,6 +469,7 @@ const page = ref(1)
 const limit = ref(20)
 const total = ref(0)
 const rows = ref([])
+const detailPanelRef = ref(null)
 
 const query = reactive({
   quick_date: 'all',
@@ -575,9 +614,34 @@ function selectBuyerMerchant(row) {
   reload()
 }
 
-function selectCompareMerchant(row) {
-  query.buyer_merchant_id = row.merchant_id || undefined
+function scrollToDetails() {
+  setTimeout(() => {
+    detailPanelRef.value?.scrollIntoView?.({ behavior: 'smooth', block: 'start' })
+  }, 80)
+}
+
+function clearCompareFilters() {
+  query.buyer_merchant_id = undefined
+  query.source_merchant_id = undefined
+  query.source_type = ''
+}
+
+function selectCompareMerchant(row, type = 'buy') {
+  const merchantId = Number(row.merchant_id || 0)
+  const nextType = type === 'diff' ? (Number(row.net_amount || 0) >= 0 ? 'buy' : 'sell') : type
+
+  clearCompareFilters()
+  if (nextType === 'sell') {
+    query.source_merchant_id = merchantId
+    if (merchantId === 0) {
+      query.source_type = 'platform'
+    }
+  } else {
+    query.buyer_merchant_id = merchantId || undefined
+  }
+  page.value = 1
   reload()
+  scrollToDetails()
 }
 
 function goToOrder(row) {

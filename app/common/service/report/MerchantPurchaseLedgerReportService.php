@@ -417,16 +417,15 @@ class MerchantPurchaseLedgerReportService
             ->toArray();
 
         $sellRows = (clone self::baseQuery($params))
-            ->where('source_merchant_id', '>', 0)
-            ->field('source_merchant_id as merchant_id,source_merchant_title as merchant_title,SUM(total) as sell_amount,COUNT(DISTINCT member_order_id) as sell_order_count,SUM(quantity) as sell_quantity')
-            ->group('source_merchant_id,source_merchant_title')
+            ->field("source_merchant_id as merchant_id,(CASE WHEN source_merchant_id > 0 THEN source_merchant_title ELSE '平台自营' END) as merchant_title,SUM(total) as sell_amount,COUNT(DISTINCT member_order_id) as sell_order_count,SUM(quantity) as sell_quantity")
+            ->group("source_merchant_id,(CASE WHEN source_merchant_id > 0 THEN source_merchant_title ELSE '平台自营' END)")
             ->select()
             ->toArray();
 
         $merchantMap = [];
         foreach ($buyRows as $row) {
             $merchantId = intval($row['merchant_id'] ?? 0);
-            if ($merchantId <= 0) {
+            if ($merchantId < 0) {
                 continue;
             }
             $merchantMap[$merchantId] = array_merge(self::emptyTradeCompareRow($merchantId, (string) ($row['merchant_title'] ?? '')), [
@@ -438,7 +437,7 @@ class MerchantPurchaseLedgerReportService
 
         foreach ($sellRows as $row) {
             $merchantId = intval($row['merchant_id'] ?? 0);
-            if ($merchantId <= 0) {
+            if ($merchantId < 0) {
                 continue;
             }
             if (!isset($merchantMap[$merchantId])) {

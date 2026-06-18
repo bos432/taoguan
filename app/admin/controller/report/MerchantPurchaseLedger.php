@@ -26,6 +26,16 @@ class MerchantPurchaseLedger extends BaseController
         return success(MerchantPurchaseLedgerReportService::list($params));
     }
 
+    public function tradeDiffOrders()
+    {
+        $params = array_merge($this->reportParams(), $this->params([
+            'merchant_id/d' => 0,
+            'direction/s' => '',
+            'target_amount/f' => 0,
+        ]));
+        return success(MerchantPurchaseLedgerReportService::tradeDiffOrders($params));
+    }
+
     public function export()
     {
         $payload = MerchantPurchaseLedgerReportService::export($this->reportParams());

@@ -29,6 +29,14 @@ export function list(params) {
   })
 }
 
+export function tradeDiffOrders(params) {
+  return request({
+    url: url + 'tradeDiffOrders',
+    method: 'get',
+    params
+  })
+}
+
 function buildRequestConfig(params = {}) {
   const appStore = useAppStoreHook()
   const userStore = useUserStoreHook()

@@ -243,7 +243,8 @@
             <button
               class="diff-link"
               :class="Number(row.net_amount) >= 0 ? 'amount-buy' : 'amount-sell'"
-              @click="selectCompareMerchant(row, 'diff')"
+              :disabled="Math.abs(Number(row.net_amount || 0)) <= 0"
+              @click="openDiffOrders(row)"
             >
               ¥{{ money(row.net_amount) }}
             </button>
@@ -284,6 +285,15 @@
         <el-table-column label="操作" width="130">
           <template #default="{ row }">
             <el-button
+              v-if="Math.abs(Number(row.net_amount || 0)) > 0"
+              link
+              type="primary"
+              @click="openDiffOrders(row)"
+            >
+              查看差额订单
+            </el-button>
+            <el-button
+              v-else
               link
               type="primary"
               @click="selectCompareMerchant(row, Number(row.merchant_id) === 0 ? 'sell' : 'buy')"
@@ -294,6 +304,66 @@
         </el-table-column>
       </el-table>
     </section>
+
+    <el-dialog
+      v-model="diffDialog.visible"
+      :title="diffDialog.title"
+      width="980px"
+      destroy-on-close
+    >
+      <div v-loading="diffDialog.loading" class="diff-dialog">
+        <div class="diff-dialog__summary">
+          <div>
+            <span>差额</span>
+            <strong>¥{{ money(diffDialog.target_amount) }}</strong>
+          </div>
+          <p>{{ diffDialog.message }}</p>
+        </div>
+        <el-table
+          :data="diffDisplayOrders"
+          border
+          empty-text="没有找到疑似差额订单"
+        >
+          <el-table-column prop="pay_time" label="支付时间" width="165" />
+          <el-table-column label="订单号" width="170">
+            <template #default="{ row }">
+              <el-button link type="primary" @click="goToOrder(row)">
+                {{ row.order_no || '--' }}
+              </el-button>
+            </template>
+          </el-table-column>
+          <el-table-column label="匹配金额" width="120">
+            <template #default="{ row }">¥{{ money(row.amount) }}</template>
+          </el-table-column>
+          <el-table-column
+            v-if="diffDialog.match_type === 'near'"
+            label="距差额"
+            width="110"
+          >
+            <template #default="{ row }">¥{{ money(row.diff_to_target) }}</template>
+          </el-table-column>
+          <el-table-column prop="buyer_merchant_title" label="买方商家" min-width="140" />
+          <el-table-column prop="source_type_title" label="来源类型" width="120" />
+          <el-table-column prop="source_merchant_title" label="来源名称" min-width="140" />
+          <el-table-column prop="pay_type_title" label="支付方式" width="100" />
+          <el-table-column label="支付状态" width="110">
+            <template #default="{ row }">
+              <el-tag :type="payStatusTag(row.pay_status)">{{ row.pay_status_title }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column prop="order_status_title" label="订单状态" width="100" />
+          <el-table-column label="操作" width="110" fixed="right">
+            <template #default="{ row }">
+              <el-button link type="primary" @click="goToOrder(row)">核对订单</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <template #footer>
+        <el-button @click="diffDialog.visible = false">关闭</el-button>
+        <el-button type="primary" @click="applyDiffToLedger">在明细流水中查看</el-button>
+      </template>
+    </el-dialog>
 
     <section ref="detailPanelRef" class="panel">
       <div class="panel__heading">
@@ -500,7 +570,13 @@
 <script setup>
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { downloadLedger, filters, list, summary } from '@/api/report/merchant-purchase-ledger'
+import {
+  downloadLedger,
+  filters,
+  list,
+  summary,
+  tradeDiffOrders
+} from '@/api/report/merchant-purchase-ledger'
 
 const router = useRouter()
 const loading = ref(false)
@@ -512,6 +588,17 @@ const rows = ref([])
 const detailPanelRef = ref(null)
 const ledgerPanelRef = ref(null)
 const activeCompareDrill = ref(null)
+const diffDialog = reactive({
+  visible: false,
+  loading: false,
+  title: '查看差额订单',
+  message: '',
+  match_type: 'none',
+  target_amount: 0,
+  orders: [],
+  candidate_orders: [],
+  row: null
+})
 
 const query = reactive({
   quick_date: 'all',
@@ -613,6 +700,10 @@ const selectedReconcileLabel = computed(() => {
   return selected ? selected.title : '全部异常'
 })
 
+const diffDisplayOrders = computed(() => {
+  return diffDialog.orders.length ? diffDialog.orders : diffDialog.candidate_orders
+})
+
 function money(value) {
   return Number(value || 0).toFixed(2)
 }
@@ -703,6 +794,45 @@ function selectCompareMerchant(row, type = 'buy') {
   page.value = 1
   reload()
   scrollToLedgerDetails()
+}
+
+async function openDiffOrders(row) {
+  const netAmount = Number(row.net_amount || 0)
+  if (Math.abs(netAmount) <= 0) return
+
+  const direction = netAmount >= 0 ? 'buy' : 'sell'
+  diffDialog.visible = true
+  diffDialog.loading = true
+  diffDialog.row = row
+  diffDialog.title = `${row.merchant_title || '商家'} · 查看差额订单`
+  diffDialog.target_amount = Math.abs(netAmount)
+  diffDialog.match_type = 'none'
+  diffDialog.message = '正在按差额金额匹配订单...'
+  diffDialog.orders = []
+  diffDialog.candidate_orders = []
+
+  try {
+    const res = await tradeDiffOrders({
+      ...buildParams(),
+      merchant_id: Number(row.merchant_id || 0),
+      direction,
+      target_amount: Math.abs(netAmount)
+    })
+    const data = res.data || {}
+    diffDialog.message = data.message || '系统已按差额金额完成匹配'
+    diffDialog.match_type = data.match_type || 'none'
+    diffDialog.target_amount = data.target_amount || Math.abs(netAmount)
+    diffDialog.orders = data.orders || []
+    diffDialog.candidate_orders = data.candidate_orders || []
+  } finally {
+    diffDialog.loading = false
+  }
+}
+
+function applyDiffToLedger() {
+  if (!diffDialog.row) return
+  diffDialog.visible = false
+  selectCompareMerchant(diffDialog.row, 'diff')
 }
 
 function clearCompareDrill() {
@@ -976,6 +1106,43 @@ onMounted(async () => {
 .amount-sell {
   color: #1f6f50;
   font-weight: 700;
+}
+
+.diff-link:disabled {
+  color: #9aa69f;
+  cursor: not-allowed;
+}
+
+.diff-dialog__summary {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 14px;
+  padding: 14px 16px;
+  border: 1px solid rgba(165, 65, 46, 0.16);
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(255, 247, 232, 0.96), rgba(255, 255, 255, 0.92));
+}
+
+.diff-dialog__summary span,
+.diff-dialog__summary strong {
+  display: block;
+}
+
+.diff-dialog__summary span {
+  color: #6c766f;
+  font-size: 12px;
+}
+
+.diff-dialog__summary strong {
+  margin-top: 2px;
+  color: #a5412e;
+  font-size: 22px;
+}
+
+.diff-dialog__summary p {
+  margin: 0;
+  color: #20372e;
 }
 
 .split .panel {

@@ -32,6 +32,7 @@ class UserService
         'admin/report.MerchantPurchaseLedger/filters',
         'admin/report.MerchantPurchaseLedger/summary',
         'admin/report.MerchantPurchaseLedger/list',
+        'admin/report.MerchantPurchaseLedger/tradeDiffOrders',
         'admin/report.MerchantPurchaseLedger/export',
     ];
 
@@ -308,6 +309,7 @@ class UserService
                         'admin/report.MerchantPurchaseLedger/filters',
                         'admin/report.MerchantPurchaseLedger/summary',
                         'admin/report.MerchantPurchaseLedger/list',
+                        'admin/report.MerchantPurchaseLedger/tradeDiffOrders',
                         'admin/report.MerchantPurchaseLedger/export',
                     ],
                     'meta' => [

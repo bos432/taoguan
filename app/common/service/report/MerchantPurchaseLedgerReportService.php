@@ -276,6 +276,71 @@ class MerchantPurchaseLedgerReportService
         ];
     }
 
+    public static function tradeDiffOrders(array $params = []): array
+    {
+        $merchantId = intval($params['merchant_id'] ?? 0);
+        $direction = trim((string) ($params['direction'] ?? ''));
+        $targetAmount = abs(self::toFloat($params['target_amount'] ?? 0));
+        if ($merchantId < 0 || !in_array($direction, ['buy', 'sell'], true) || $targetAmount <= 0) {
+            return self::emptyDiffOrdersResult($merchantId, $direction, $targetAmount, '差额参数不完整，暂时无法定位订单');
+        }
+
+        $queryParams = $params;
+        unset($queryParams['merchant_id'], $queryParams['direction'], $queryParams['target_amount']);
+        $queryParams['buyer_merchant_id'] = $direction === 'buy' ? $merchantId : 0;
+        $queryParams['source_merchant_id'] = $direction === 'sell' ? $merchantId : -1;
+        if ($direction === 'sell' && $merchantId === 0) {
+            $queryParams['source_type'] = 'platform';
+        }
+
+        $orders = self::buildTradeDiffOrderRows($queryParams);
+        if (empty($orders)) {
+            return self::emptyDiffOrdersResult($merchantId, $direction, $targetAmount, '当前筛选范围内没有找到可匹配的订单');
+        }
+
+        $exactSingle = [];
+        foreach ($orders as $order) {
+            if (abs(floatval($order['amount'] ?? 0) - $targetAmount) <= 0.01) {
+                $exactSingle[] = $order;
+            }
+        }
+
+        if (!empty($exactSingle)) {
+            return [
+                'merchant_id' => $merchantId,
+                'direction' => $direction,
+                'target_amount' => $targetAmount,
+                'match_type' => 'single',
+                'message' => '系统找到单笔金额刚好等于差额的订单，优先核对这些订单。',
+                'orders' => array_slice($exactSingle, 0, 20),
+                'candidate_orders' => [],
+            ];
+        }
+
+        $combination = self::findAmountCombination($orders, $targetAmount, 4);
+        if (!empty($combination)) {
+            return [
+                'merchant_id' => $merchantId,
+                'direction' => $direction,
+                'target_amount' => $targetAmount,
+                'match_type' => 'combination',
+                'message' => '系统找到几笔订单合计刚好等于差额，建议按这组订单逐笔核对。',
+                'orders' => $combination,
+                'candidate_orders' => [],
+            ];
+        }
+
+        return [
+            'merchant_id' => $merchantId,
+            'direction' => $direction,
+            'target_amount' => $targetAmount,
+            'match_type' => 'near',
+            'message' => '没有找到完全相等的订单，下面先列出最接近差额的订单，方便缩小范围。',
+            'orders' => [],
+            'candidate_orders' => array_slice(self::buildNearAmountCandidates($orders, $targetAmount), 0, 20),
+        ];
+    }
+
     private static function baseQuery(array $params = [])
     {
         $normalized = self::normalizeParams($params);
@@ -466,6 +531,150 @@ class MerchantPurchaseLedgerReportService
         });
 
         return array_slice($rows, 0, 50);
+    }
+
+    private static function buildTradeDiffOrderRows(array $params = []): array
+    {
+        $rows = (clone self::baseQuery($params))
+            ->field("member_order_id,order_no,buyer_merchant_id,buyer_merchant_title,GROUP_CONCAT(DISTINCT source_type) as source_types,GROUP_CONCAT(DISTINCT source_merchant_title) as source_titles,SUM(total) as amount,MAX(order_pay_price) as order_pay_price,MAX(pay_type) as pay_type,MAX(pay_time) as pay_time,COUNT(id) as detail_count")
+            ->group('member_order_id,order_no,buyer_merchant_id,buyer_merchant_title')
+            ->order('pay_time', 'desc')
+            ->select()
+            ->toArray();
+
+        foreach ($rows as &$row) {
+            $row['member_order_id'] = intval($row['member_order_id'] ?? 0);
+            $row['buyer_merchant_id'] = intval($row['buyer_merchant_id'] ?? 0);
+            $row['amount'] = self::toFloat($row['amount'] ?? 0);
+            $row['order_pay_price'] = self::toFloat($row['order_pay_price'] ?? 0);
+            $row['detail_count'] = intval($row['detail_count'] ?? 0);
+            $row['source_type_title'] = self::buildSourceTypeTitle($row['source_types'] ?? '');
+            $row['source_merchant_title'] = self::buildSourceTitle($row['source_titles'] ?? '');
+            $row['pay_type_title'] = self::buildPayTypeTitle(intval($row['pay_type'] ?? 0));
+        }
+        unset($row);
+
+        self::attachTradeDiffOrderState($rows);
+        return $rows;
+    }
+
+    private static function attachTradeDiffOrderState(array &$rows = []): void
+    {
+        $orderIds = array_values(array_unique(array_filter(array_map(function ($row) {
+            return intval($row['member_order_id'] ?? 0);
+        }, $rows))));
+        if (empty($orderIds)) {
+            return;
+        }
+
+        $orderMap = [];
+        $orderRows = Db::name('member_order')
+            ->whereIn('id', $orderIds)
+            ->field('id,pay_price,total_price,pay_status,pay_type,status,pay_auth_msg')
+            ->select()
+            ->toArray();
+        foreach ($orderRows as $row) {
+            $orderMap[intval($row['id'] ?? 0)] = $row;
+        }
+
+        foreach ($rows as &$row) {
+            $order = $orderMap[intval($row['member_order_id'] ?? 0)] ?? [];
+            $payStatus = intval($order['pay_status'] ?? -1);
+            $orderStatus = intval($order['status'] ?? -1);
+            $payType = intval($order['pay_type'] ?? $row['pay_type'] ?? 0);
+            $row['order_pay_price'] = self::toFloat($order['pay_price'] ?? $row['order_pay_price'] ?? 0);
+            $row['pay_type'] = $payType;
+            $row['pay_type_title'] = self::buildPayTypeTitle($payType);
+            $row['pay_status'] = $payStatus;
+            $row['pay_status_title'] = self::buildPayStatusTitle($payStatus);
+            $row['order_status'] = $orderStatus;
+            $row['order_status_title'] = self::buildOrderStatusTitle($orderStatus);
+            $row['pay_auth_msg'] = (string) ($order['pay_auth_msg'] ?? '');
+        }
+        unset($row);
+    }
+
+    private static function findAmountCombination(array $orders = [], float $targetAmount = 0, int $maxDepth = 4): array
+    {
+        $targetCents = self::moneyToCents($targetAmount);
+        $candidates = array_values(array_filter($orders, function ($order) use ($targetCents) {
+            $amountCents = self::moneyToCents($order['amount'] ?? 0);
+            return $amountCents > 0 && $amountCents < $targetCents;
+        }));
+
+        usort($candidates, function ($left, $right) use ($targetAmount) {
+            $leftDiff = abs(floatval($left['amount'] ?? 0) - $targetAmount);
+            $rightDiff = abs(floatval($right['amount'] ?? 0) - $targetAmount);
+            if ($leftDiff === $rightDiff) {
+                return strcmp((string) ($right['pay_time'] ?? ''), (string) ($left['pay_time'] ?? ''));
+            }
+            return $leftDiff <=> $rightDiff;
+        });
+        $candidates = array_slice($candidates, 0, 80);
+
+        for ($depth = 2; $depth <= $maxDepth; $depth++) {
+            $match = self::searchAmountCombination($candidates, $targetCents, $depth);
+            if (!empty($match)) {
+                return $match;
+            }
+        }
+
+        return [];
+    }
+
+    private static function searchAmountCombination(array $orders, int $targetCents, int $depth, int $start = 0, array $picked = [], int $pickedCents = 0): array
+    {
+        if (count($picked) === $depth) {
+            return $pickedCents === $targetCents ? $picked : [];
+        }
+
+        $remainingSlots = $depth - count($picked);
+        $count = count($orders);
+        for ($index = $start; $index <= $count - $remainingSlots; $index++) {
+            $amountCents = self::moneyToCents($orders[$index]['amount'] ?? 0);
+            $nextCents = $pickedCents + $amountCents;
+            if ($nextCents > $targetCents) {
+                continue;
+            }
+            $nextPicked = $picked;
+            $nextPicked[] = $orders[$index];
+            $match = self::searchAmountCombination($orders, $targetCents, $depth, $index + 1, $nextPicked, $nextCents);
+            if (!empty($match)) {
+                return $match;
+            }
+        }
+
+        return [];
+    }
+
+    private static function buildNearAmountCandidates(array $orders = [], float $targetAmount = 0): array
+    {
+        foreach ($orders as &$order) {
+            $order['diff_to_target'] = self::toFloat(abs(floatval($order['amount'] ?? 0) - $targetAmount));
+        }
+        unset($order);
+
+        usort($orders, function ($left, $right) {
+            if ($left['diff_to_target'] === $right['diff_to_target']) {
+                return strcmp((string) ($right['pay_time'] ?? ''), (string) ($left['pay_time'] ?? ''));
+            }
+            return $left['diff_to_target'] <=> $right['diff_to_target'];
+        });
+
+        return $orders;
+    }
+
+    private static function emptyDiffOrdersResult(int $merchantId = 0, string $direction = '', float $targetAmount = 0, string $message = ''): array
+    {
+        return [
+            'merchant_id' => $merchantId,
+            'direction' => $direction,
+            'target_amount' => $targetAmount,
+            'match_type' => 'none',
+            'message' => $message,
+            'orders' => [],
+            'candidate_orders' => [],
+        ];
     }
 
     private static function emptyTradeCompareRow(int $merchantId = 0, string $merchantTitle = ''): array
@@ -834,5 +1043,10 @@ class MerchantPurchaseLedgerReportService
     private static function toFloat($value): float
     {
         return round(floatval($value), 2);
+    }
+
+    private static function moneyToCents($value): int
+    {
+        return intval(round(floatval($value) * 100));
     }
 }

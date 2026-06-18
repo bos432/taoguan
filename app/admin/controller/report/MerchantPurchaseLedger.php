@@ -47,6 +47,7 @@ class MerchantPurchaseLedger extends BaseController
             'source_type/s' => '',
             'source_merchant_id/d' => -1,
             'keyword/s' => '',
+            'reconciliation_status/s' => '',
         ]);
     }
 }

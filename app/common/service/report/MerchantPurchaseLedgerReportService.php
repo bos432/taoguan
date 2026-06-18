@@ -130,6 +130,7 @@ class MerchantPurchaseLedgerReportService
     public static function reconciliation(array $params = []): array
     {
         $rows = self::appendReconciliationState(self::buildOrderReconciliationRows($params));
+        $exceptionRows = self::filterRowsByReconciliationStatus($rows, self::normalizeReconciliationStatus($params['reconciliation_status'] ?? ''));
         $cards = [
             'order_count' => count($rows),
             'normal_count' => 0,
@@ -171,9 +172,8 @@ class MerchantPurchaseLedgerReportService
 
         return [
             'cards' => $cards,
-            'exception_list' => array_values(array_slice(array_filter($rows, function ($row) {
-                return ($row['reconcile_status'] ?? '') !== 'normal';
-            }), 0, 20)),
+            'exception_list' => array_values(array_slice($exceptionRows, 0, 50)),
+            'selected_status' => self::normalizeReconciliationStatus($params['reconciliation_status'] ?? ''),
         ];
     }
 
@@ -182,6 +182,15 @@ class MerchantPurchaseLedgerReportService
         $page = max(1, intval($params['page'] ?? 1));
         $limit = max(1, intval($params['limit'] ?? 20));
         $query = self::baseQuery($params);
+        $reconciliationStatus = self::normalizeReconciliationStatus($params['reconciliation_status'] ?? '');
+        if ($reconciliationStatus !== '') {
+            $orderIds = self::buildFilteredReconciliationOrderIds($params, $reconciliationStatus);
+            if (empty($orderIds)) {
+                $query->where('member_order_id', 0);
+            } else {
+                $query->whereIn('member_order_id', $orderIds);
+            }
+        }
         $count = intval((clone $query)->count('id'));
         $pages = intval(ceil($count / $limit));
         $list = $query
@@ -306,6 +315,33 @@ class MerchantPurchaseLedgerReportService
             'source_merchant_id' => isset($params['source_merchant_id']) && intval($params['source_merchant_id']) >= 0 ? intval($params['source_merchant_id']) : -1,
             'keyword' => trim((string) ($params['keyword'] ?? '')),
         ];
+    }
+
+    private static function normalizeReconciliationStatus(string $status = ''): string
+    {
+        $status = trim($status);
+        $allowed = ['missing_bill', 'ledger_mismatch', 'bill_mismatch', 'amount_mismatch'];
+        return in_array($status, $allowed, true) ? $status : '';
+    }
+
+    private static function buildFilteredReconciliationOrderIds(array $params = [], string $status = ''): array
+    {
+        $rows = self::appendReconciliationState(self::buildOrderReconciliationRows($params));
+        $rows = self::filterRowsByReconciliationStatus($rows, $status);
+        return array_values(array_unique(array_filter(array_map(function ($row) {
+            return intval($row['member_order_id'] ?? 0);
+        }, $rows))));
+    }
+
+    private static function filterRowsByReconciliationStatus(array $rows = [], string $status = ''): array
+    {
+        return array_values(array_filter($rows, function ($row) use ($status) {
+            $rowStatus = $row['reconcile_status'] ?? '';
+            if ($status !== '') {
+                return $rowStatus === $status;
+            }
+            return $rowStatus !== 'normal';
+        }));
     }
 
     private static function resolveDateRange(string $quickDate = '', string $startDate = '', string $endDate = ''): array

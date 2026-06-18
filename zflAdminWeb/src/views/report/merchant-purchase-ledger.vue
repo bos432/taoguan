@@ -135,13 +135,19 @@
     </section>
 
     <section class="reconcile-types">
-      <article v-for="item in reconcileTypeCards" :key="item.key" class="type-card">
+      <article
+        v-for="item in reconcileTypeCards"
+        :key="item.key"
+        class="type-card"
+        :class="{ 'type-card--active': query.reconciliation_status === item.key }"
+        @click="selectReconcileType(item.key)"
+      >
         <div>
           <span>{{ item.title }}</span>
           <strong>{{ item.count }}</strong>
         </div>
         <small>{{ item.desc }}</small>
-        <em>差额 ¥{{ money(item.amount) }}</em>
+        <em>差额 ¥{{ money(item.amount) }}，点击查看明细</em>
       </article>
     </section>
 
@@ -179,15 +185,24 @@
         <div>
           <div class="panel__title">核算异常订单</div>
           <p class="panel__hint">
-            系统自动检查：采购流水金额、订单实付金额、购买商品账单金额是否一致。
+            {{ selectedReconcileLabel }}：系统自动检查采购流水、订单实付、购买商品账单是否一致。
           </p>
         </div>
-        <el-tag
-          :type="summaryData.reconciliation.cards.exception_count > 0 ? 'danger' : 'success'"
-          effect="dark"
-        >
-          {{ summaryData.reconciliation.cards.exception_count > 0 ? '有异常' : '全部正常' }}
-        </el-tag>
+        <div class="panel__actions">
+          <el-button
+            v-if="query.reconciliation_status"
+            size="small"
+            @click="selectReconcileType('')"
+          >
+            查看全部异常
+          </el-button>
+          <el-tag
+            :type="summaryData.reconciliation.cards.exception_count > 0 ? 'danger' : 'success'"
+            effect="dark"
+          >
+            {{ summaryData.reconciliation.cards.exception_count > 0 ? '有异常' : '全部正常' }}
+          </el-tag>
+        </div>
       </div>
       <el-table
         :data="summaryData.reconciliation.exception_list"
@@ -296,6 +311,7 @@ const query = reactive({
   buyer_merchant_id: undefined,
   source_type: '',
   source_merchant_id: undefined,
+  reconciliation_status: '',
   keyword: ''
 })
 
@@ -378,6 +394,11 @@ const reconcileTypeCards = computed(() => {
   ]
 })
 
+const selectedReconcileLabel = computed(() => {
+  const selected = reconcileTypeCards.value.find((item) => item.key === query.reconciliation_status)
+  return selected ? selected.title : '全部异常'
+})
+
 function money(value) {
   return Number(value || 0).toFixed(2)
 }
@@ -392,6 +413,11 @@ function handleDateChange(value) {
   query.quick_date = ''
   query.start_date = value?.[0] || ''
   query.end_date = value?.[1] || ''
+  reload()
+}
+
+function selectReconcileType(status) {
+  query.reconciliation_status = status
   reload()
 }
 
@@ -529,6 +555,15 @@ onMounted(async () => {
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.78);
   box-shadow: 0 12px 32px rgba(36, 52, 42, 0.06);
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.type-card:hover,
+.type-card--active {
+  border-color: rgba(165, 65, 46, 0.45);
+  box-shadow: 0 16px 36px rgba(165, 65, 46, 0.12);
+  transform: translateY(-2px);
 }
 
 .type-card div {
@@ -611,6 +646,12 @@ onMounted(async () => {
   gap: 16px;
   align-items: flex-start;
   margin-bottom: 14px;
+}
+
+.panel__actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 .split .panel {

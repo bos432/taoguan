@@ -238,7 +238,7 @@ class MerchantPurchaseLedgerReportService
         $params['limit'] = 100000;
         $list = self::list($params)['list'] ?? [];
         $rows = [
-            ['订单号', '支付时间', '支付方式', '支付状态', '订单状态', '核算结果', '核算说明', '核算差额', '买方商家ID', '买方商家', '来源类型', '来源商家ID', '来源名称', '商品ID', '商品名称', '商品编码', '规格', '单位', '数量', '单价', '明细金额', '订单实付', '账单金额'],
+            ['订单号', '支付时间', '支付方式', '支付状态', '订单状态', '核算结果', '核算说明', '核算差额', '买方商家ID', '买方商家', '来源类型', '来源商家ID', '来源名称', '商品ID', '商品名称', '商品编码', '规格', '单位', '数量', '单价', '明细金额', '核算实付', '核算口径', '账单金额'],
         ];
 
         foreach ($list as $item) {
@@ -264,7 +264,8 @@ class MerchantPurchaseLedgerReportService
                 intval($item['quantity'] ?? 0),
                 self::toFloat($item['price'] ?? 0),
                 self::toFloat($item['total'] ?? 0),
-                self::toFloat($item['order_pay_price'] ?? 0),
+                self::toFloat($item['order_current_pay_price'] ?? $item['order_pay_price'] ?? 0),
+                $item['order_pay_price_source_title'] ?? '',
                 self::toFloat($item['bill_amount'] ?? 0),
             ];
         }
@@ -552,6 +553,8 @@ class MerchantPurchaseLedgerReportService
             $reconcile = $map[intval($row['member_order_id'] ?? 0)] ?? [];
             $row['ledger_amount'] = self::toFloat($reconcile['ledger_amount'] ?? $row['total'] ?? 0);
             $row['order_current_pay_price'] = self::toFloat($reconcile['order_pay_price'] ?? $row['order_pay_price'] ?? 0);
+            $row['order_pay_price_source'] = $reconcile['order_pay_price_source'] ?? 'order';
+            $row['order_pay_price_source_title'] = $reconcile['order_pay_price_source_title'] ?? '订单实付';
             $row['bill_amount'] = self::toFloat($reconcile['bill_amount'] ?? 0);
             $row['bill_count'] = intval($reconcile['bill_count'] ?? 0);
             $row['pay_type'] = intval($reconcile['pay_type'] ?? $row['pay_type'] ?? 0);
@@ -635,7 +638,8 @@ class MerchantPurchaseLedgerReportService
             $order = $orderMap[$orderId] ?? [];
             $bill = $billMap[$orderId] ?? [];
             $ledgerAmount = self::toFloat($row['ledger_amount'] ?? 0);
-            $orderPayPrice = self::toFloat($order['pay_price'] ?? $row['snapshot_pay_price'] ?? 0);
+            $orderPayInfo = self::resolveOrderPayPrice($order, $row);
+            $orderPayPrice = self::toFloat($orderPayInfo['amount'] ?? 0);
             $billAmount = self::toFloat($bill['bill_amount'] ?? 0);
             $billCount = intval($bill['bill_count'] ?? 0);
             $ledgerDiff = self::toFloat($ledgerAmount - $orderPayPrice);
@@ -643,18 +647,18 @@ class MerchantPurchaseLedgerReportService
 
             $status = 'normal';
             $title = '核算正常';
-            $message = '采购流水、订单实付、账单金额一致';
+            $message = '采购流水、核算实付、账单金额一致';
             $diffAmount = 0;
 
             if (abs($ledgerDiff) > 0.01 && abs($billDiff) > 0.01) {
                 $status = 'amount_mismatch';
                 $title = '金额不一致';
-                $message = '采购流水和账单都与订单实付不一致';
+                $message = '采购流水和账单都与核算实付不一致';
                 $diffAmount = abs($ledgerDiff) >= abs($billDiff) ? $ledgerDiff : $billDiff;
             } elseif (abs($ledgerDiff) > 0.01) {
                 $status = 'ledger_mismatch';
                 $title = '流水不一致';
-                $message = '采购流水金额与订单实付不一致';
+                $message = '采购流水金额与核算实付不一致';
                 $diffAmount = $ledgerDiff;
             } elseif ($billCount <= 0) {
                 $status = 'missing_bill';
@@ -664,7 +668,7 @@ class MerchantPurchaseLedgerReportService
             } elseif (abs($billDiff) > 0.01) {
                 $status = 'bill_mismatch';
                 $title = '账单不一致';
-                $message = '会员账单金额与订单实付不一致';
+                $message = '会员账单金额与核算实付不一致';
                 $diffAmount = $billDiff;
             }
 
@@ -674,6 +678,8 @@ class MerchantPurchaseLedgerReportService
             $row['source_merchant_title'] = self::buildSourceTitle($row['source_titles'] ?? '');
             $row['ledger_amount'] = $ledgerAmount;
             $row['order_pay_price'] = $orderPayPrice;
+            $row['order_pay_price_source'] = $orderPayInfo['source'] ?? 'order';
+            $row['order_pay_price_source_title'] = $orderPayInfo['source_title'] ?? '订单实付';
             $row['bill_amount'] = $billAmount;
             $row['bill_count'] = $billCount;
             $row['detail_count'] = intval($row['detail_count'] ?? 0);
@@ -691,6 +697,36 @@ class MerchantPurchaseLedgerReportService
         }
 
         return $orderRows;
+    }
+
+    private static function resolveOrderPayPrice(array $order = [], array $ledgerRow = []): array
+    {
+        $payPrice = self::toFloat($order['pay_price'] ?? 0);
+        $snapshotPayPrice = self::toFloat($ledgerRow['snapshot_pay_price'] ?? 0);
+        $payType = intval($order['pay_type'] ?? 0);
+        $payStatus = intval($order['pay_status'] ?? 0);
+
+        if ($payPrice > 0) {
+            return [
+                'amount' => $payPrice,
+                'source' => 'order',
+                'source_title' => '订单实付',
+            ];
+        }
+
+        if ($payStatus === 1 && $payType === MemberOrderModel::getPayType('voucher', 1) && $snapshotPayPrice > 0) {
+            return [
+                'amount' => $snapshotPayPrice,
+                'source' => 'voucher_snapshot',
+                'source_title' => '凭证审核金额',
+            ];
+        }
+
+        return [
+            'amount' => $payPrice,
+            'source' => 'order',
+            'source_title' => '订单实付',
+        ];
     }
 
     private static function buildPayTypeTitle(int $payType = 0): string

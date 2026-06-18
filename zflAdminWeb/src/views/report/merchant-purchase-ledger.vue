@@ -276,7 +276,7 @@
         <el-table-column label="采购流水合计" width="130">
           <template #default="{ row }">¥{{ money(row.ledger_amount) }}</template>
         </el-table-column>
-        <el-table-column label="订单实付合计" width="130">
+        <el-table-column label="核算实付合计" width="130">
           <template #default="{ row }">¥{{ money(row.order_pay_price) }}</template>
         </el-table-column>
         <el-table-column label="账单金额合计" width="130">
@@ -298,7 +298,7 @@
         <div>
           <div class="panel__title">核算异常订单</div>
           <p class="panel__hint">
-            {{ selectedReconcileLabel }}：系统自动检查采购流水、订单实付、购买商品账单是否一致。
+            {{ selectedReconcileLabel }}：系统自动检查采购流水、核算实付、购买商品账单是否一致。
           </p>
         </div>
       </div>
@@ -332,8 +332,13 @@
         <el-table-column label="采购流水" width="120">
           <template #default="{ row }">¥{{ money(row.ledger_amount) }}</template>
         </el-table-column>
-        <el-table-column label="订单实付" width="120">
-          <template #default="{ row }">¥{{ money(row.order_pay_price) }}</template>
+        <el-table-column label="核算实付" width="140">
+          <template #default="{ row }">
+            <div>¥{{ money(row.order_pay_price) }}</div>
+            <small v-if="row.order_pay_price_source_title" class="cell-note">
+              {{ row.order_pay_price_source_title }}
+            </small>
+          </template>
         </el-table-column>
         <el-table-column label="账单金额" width="120">
           <template #default="{ row }">¥{{ money(row.bill_amount) }}</template>
@@ -384,8 +389,13 @@
         <el-table-column label="明细金额" width="120">
           <template #default="{ row }">¥{{ money(row.total) }}</template>
         </el-table-column>
-        <el-table-column label="订单实付" width="120">
-          <template #default="{ row }">¥{{ money(row.order_current_pay_price) }}</template>
+        <el-table-column label="核算实付" width="140">
+          <template #default="{ row }">
+            <div>¥{{ money(row.order_current_pay_price) }}</div>
+            <small v-if="row.order_pay_price_source_title" class="cell-note">
+              {{ row.order_pay_price_source_title }}
+            </small>
+          </template>
         </el-table-column>
         <el-table-column label="账单金额" width="120">
           <template #default="{ row }">¥{{ money(row.bill_amount) }}</template>
@@ -496,21 +506,21 @@ const reconcileTypeCards = computed(() => {
     {
       key: 'ledger_mismatch',
       title: '流水不一致',
-      desc: '采购流水金额和订单实付对不上',
+      desc: '采购流水金额和核算实付对不上',
       count: cards.ledger_mismatch_count,
       amount: cards.ledger_mismatch_amount
     },
     {
       key: 'bill_mismatch',
       title: '账单不一致',
-      desc: '购买商品账单和订单实付对不上',
+      desc: '购买商品账单和核算实付对不上',
       count: cards.bill_mismatch_count,
       amount: cards.bill_mismatch_amount
     },
     {
       key: 'amount_mismatch',
       title: '金额都不一致',
-      desc: '采购流水和账单都与订单实付不一致',
+      desc: '采购流水和账单都与核算实付不一致',
       count: cards.amount_mismatch_count,
       amount: cards.amount_mismatch_amount
     }
@@ -848,6 +858,13 @@ onMounted(async () => {
 .panel__hint {
   margin: -6px 0 0;
   color: #6c766f;
+}
+
+.cell-note {
+  display: block;
+  margin-top: 2px;
+  color: #84928a;
+  font-size: 12px;
 }
 
 :deep(.merchant-row) {

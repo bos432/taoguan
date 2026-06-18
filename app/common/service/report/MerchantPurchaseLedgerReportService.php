@@ -640,7 +640,8 @@ class MerchantPurchaseLedgerReportService
             $ledgerAmount = self::toFloat($row['ledger_amount'] ?? 0);
             $orderPayInfo = self::resolveOrderPayPrice($order, $row);
             $orderPayPrice = self::toFloat($orderPayInfo['amount'] ?? 0);
-            $billAmount = self::toFloat($bill['bill_amount'] ?? 0);
+            $billInfo = self::resolveBillAmount($bill, $order, $orderPayPrice, $ledgerAmount);
+            $billAmount = self::toFloat($billInfo['amount'] ?? 0);
             $billCount = intval($bill['bill_count'] ?? 0);
             $ledgerDiff = self::toFloat($ledgerAmount - $orderPayPrice);
             $billDiff = self::toFloat($billAmount - $orderPayPrice);
@@ -681,6 +682,8 @@ class MerchantPurchaseLedgerReportService
             $row['order_pay_price_source'] = $orderPayInfo['source'] ?? 'order';
             $row['order_pay_price_source_title'] = $orderPayInfo['source_title'] ?? '订单实付';
             $row['bill_amount'] = $billAmount;
+            $row['bill_amount_source'] = $billInfo['source'] ?? 'bill';
+            $row['bill_amount_source_title'] = $billInfo['source_title'] ?? '会员账单';
             $row['bill_count'] = $billCount;
             $row['detail_count'] = intval($row['detail_count'] ?? 0);
             $row['pay_type'] = intval($order['pay_type'] ?? 0);
@@ -702,9 +705,18 @@ class MerchantPurchaseLedgerReportService
     private static function resolveOrderPayPrice(array $order = [], array $ledgerRow = []): array
     {
         $payPrice = self::toFloat($order['pay_price'] ?? 0);
+        $totalPrice = self::toFloat($order['total_price'] ?? 0);
         $snapshotPayPrice = self::toFloat($ledgerRow['snapshot_pay_price'] ?? 0);
         $payType = intval($order['pay_type'] ?? 0);
         $payStatus = intval($order['pay_status'] ?? 0);
+
+        if ($payStatus === 1 && $payType === MemberOrderModel::getPayType('voucher', 1) && $totalPrice > 0) {
+            return [
+                'amount' => $totalPrice,
+                'source' => 'voucher_order_total',
+                'source_title' => '凭证订单金额',
+            ];
+        }
 
         if ($payPrice > 0) {
             return [
@@ -726,6 +738,35 @@ class MerchantPurchaseLedgerReportService
             'amount' => $payPrice,
             'source' => 'order',
             'source_title' => '订单实付',
+        ];
+    }
+
+    private static function resolveBillAmount(array $bill = [], array $order = [], float $orderPayPrice = 0, float $ledgerAmount = 0): array
+    {
+        $billAmount = self::toFloat($bill['bill_amount'] ?? 0);
+        $billCount = intval($bill['bill_count'] ?? 0);
+        $payType = intval($order['pay_type'] ?? 0);
+        $payStatus = intval($order['pay_status'] ?? 0);
+
+        if (
+            $billCount > 0
+            && $payStatus === 1
+            && $payType === MemberOrderModel::getPayType('voucher', 1)
+            && $orderPayPrice > 0
+            && abs($ledgerAmount - $orderPayPrice) <= 0.01
+            && abs($billAmount - $orderPayPrice) > 0.01
+        ) {
+            return [
+                'amount' => $orderPayPrice,
+                'source' => 'voucher_order_total',
+                'source_title' => '凭证订单金额',
+            ];
+        }
+
+        return [
+            'amount' => $billAmount,
+            'source' => 'bill',
+            'source_title' => '会员账单',
         ];
     }
 

@@ -226,6 +226,9 @@
               :step="0.1"
               :min="0.01"
             />
+            <div v-if="selection.length > 1" class="form-help">
+              批量审核会按每张订单金额分别入账，避免把同一个凭证金额重复写到多张订单。
+            </div>
           </el-form-item>
           <el-form-item label="支付失败原因" v-if="payAuthInfo.pay_status != 1">
             <el-input
@@ -2062,6 +2065,13 @@ export default {
   color: #9a3412;
   font-size: 12px;
   line-height: 1.7;
+}
+
+.form-help {
+  margin-top: 6px;
+  color: #6b7280;
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .avatar-text-container {

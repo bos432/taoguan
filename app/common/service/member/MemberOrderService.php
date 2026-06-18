@@ -1834,6 +1834,9 @@ class MemberOrderService
                     case 1://支付成功
                         //商品转移操作
                         $payTime = datetime();
+                        $orderPayPrice = count($orderList) > 1
+                            ? floatval($val['total_price'] ?? 0)
+                            : floatval($param['pay_price'] ?? $val['total_price'] ?? 0);
                         $merchant_id = MerchantModel::where('member_id',$val['member_id'])
                             ->where('is_disable',0)
                             ->where('is_delete',0)
@@ -1841,7 +1844,7 @@ class MemberOrderService
                             ->value('id');
                         if($merchant_id){
                             $ledgerOrder = $val->toArray();
-                            $ledgerOrder['pay_price'] = $param['pay_price'];
+                            $ledgerOrder['pay_price'] = $orderPayPrice;
                             MerchantPurchaseLedgerService::recordOrder($ledgerOrder, intval($merchant_id), $payTime);
                             $goods = MemberOrderDetailedModel::leftjoin('ya_goods', 'ya_goods.id=ya_member_order_detailed.goods_id')
                                 ->where('ya_member_order_detailed.member_order_id',$val['id'])
@@ -1881,7 +1884,7 @@ class MemberOrderService
                         $edit_res = $model->where('id',$val['id'])->update([
                             'pay_time'=>$payTime,
                             'pay_status'=>1,
-                            'pay_price'=>$param['pay_price'],
+                            'pay_price'=>$orderPayPrice,
                             'status'=>MemberOrderModel::getStatus('success',1), // 核销后变为完成
                         ]);
                         //支付账单
@@ -1889,7 +1892,7 @@ class MemberOrderService
                             'member_id'=>$val['member_id'],
                             'title'=>'购买商品',
                             'in_out'=>2,
-                            'money'=>$param['pay_price'],
+                            'money'=>$orderPayPrice,
                             'bill_type_id'=>4,//凭证支付
                             'order_id'=>$val['id'],
                         );

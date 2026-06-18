@@ -252,8 +252,30 @@
         <el-table-column label="买卖比" width="110">
           <template #default="{ row }">{{ ratioText(row.trade_ratio) }}</template>
         </el-table-column>
-        <el-table-column prop="buy_order_count" label="买入订单" width="100" />
-        <el-table-column prop="sell_order_count" label="卖出订单" width="100" />
+        <el-table-column label="买入订单" width="100">
+          <template #default="{ row }">
+            <el-button
+              link
+              type="primary"
+              :disabled="Number(row.buy_order_count) <= 0"
+              @click="selectCompareMerchant(row, 'buy')"
+            >
+              {{ row.buy_order_count }}
+            </el-button>
+          </template>
+        </el-table-column>
+        <el-table-column label="卖出订单" width="100">
+          <template #default="{ row }">
+            <el-button
+              link
+              type="primary"
+              :disabled="Number(row.sell_order_count) <= 0"
+              @click="selectCompareMerchant(row, 'sell')"
+            >
+              {{ row.sell_order_count }}
+            </el-button>
+          </template>
+        </el-table-column>
         <el-table-column label="判断" width="130">
           <template #default="{ row }">
             <el-tag :type="tradeTag(row.trade_judgement)">{{ row.trade_judgement }}</el-tag>
@@ -392,11 +414,24 @@
       </el-table>
     </section>
 
-    <section class="panel">
+    <section ref="ledgerPanelRef" class="panel">
       <div class="panel__title">采购明细流水</div>
+      <div v-if="activeCompareDrill" class="compare-drill-tip">
+        <div>
+          <strong>{{ activeCompareDrill.title }}</strong>
+          <span>{{ activeCompareDrill.desc }}</span>
+        </div>
+        <el-button size="small" @click="clearCompareDrill">清除差额定位</el-button>
+      </div>
       <el-table :data="rows" border>
         <el-table-column prop="pay_time" label="支付时间" width="170" />
-        <el-table-column prop="order_no" label="订单号" width="170" />
+        <el-table-column label="订单号" width="170">
+          <template #default="{ row }">
+            <el-button link type="primary" @click="goToOrder(row)">
+              {{ row.order_no || '--' }}
+            </el-button>
+          </template>
+        </el-table-column>
         <el-table-column label="核算" width="110">
           <template #default="{ row }">
             <el-tag :type="statusTag(row.reconcile_status)">{{
@@ -441,6 +476,11 @@
         <el-table-column label="差额" width="120">
           <template #default="{ row }">¥{{ money(row.reconcile_diff_amount) }}</template>
         </el-table-column>
+        <el-table-column label="操作" width="110" fixed="right">
+          <template #default="{ row }">
+            <el-button link type="primary" @click="goToOrder(row)">核对订单</el-button>
+          </template>
+        </el-table-column>
       </el-table>
       <div class="pager">
         <el-pagination
@@ -470,6 +510,8 @@ const limit = ref(20)
 const total = ref(0)
 const rows = ref([])
 const detailPanelRef = ref(null)
+const ledgerPanelRef = ref(null)
+const activeCompareDrill = ref(null)
 
 const query = reactive({
   quick_date: 'all',
@@ -611,6 +653,7 @@ function selectReconcileType(status) {
 
 function selectBuyerMerchant(row) {
   query.buyer_merchant_id = row.buyer_merchant_id || undefined
+  activeCompareDrill.value = null
   reload()
 }
 
@@ -620,10 +663,27 @@ function scrollToDetails() {
   }, 80)
 }
 
+function scrollToLedgerDetails() {
+  setTimeout(() => {
+    ledgerPanelRef.value?.scrollIntoView?.({ behavior: 'smooth', block: 'start' })
+  }, 80)
+}
+
 function clearCompareFilters() {
   query.buyer_merchant_id = undefined
   query.source_merchant_id = undefined
   query.source_type = ''
+}
+
+function buildCompareDrillTip(row, type) {
+  const merchantTitle = row.merchant_title || `商家 #${row.merchant_id || '--'}`
+  const isSell = type === 'sell'
+  return {
+    title: `正在定位：${merchantTitle} · ${isSell ? '别人买我' : '我买别人'}`,
+    desc: isSell
+      ? '下方采购明细流水已筛出“该对象作为供货来源”的订单。'
+      : '下方采购明细流水已筛出“该对象作为买方商家”的订单。'
+  }
 }
 
 function selectCompareMerchant(row, type = 'buy') {
@@ -639,9 +699,18 @@ function selectCompareMerchant(row, type = 'buy') {
   } else {
     query.buyer_merchant_id = merchantId || undefined
   }
+  activeCompareDrill.value = buildCompareDrillTip(row, nextType)
   page.value = 1
   reload()
-  scrollToDetails()
+  scrollToLedgerDetails()
+}
+
+function clearCompareDrill() {
+  clearCompareFilters()
+  activeCompareDrill.value = null
+  page.value = 1
+  reload()
+  scrollToLedgerDetails()
 }
 
 function goToOrder(row) {
@@ -931,6 +1000,33 @@ onMounted(async () => {
   font-size: 12px;
 }
 
+.compare-drill-tip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin: -4px 0 14px;
+  padding: 12px 14px;
+  border: 1px solid rgba(31, 111, 80, 0.18);
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(238, 248, 242, 0.95), rgba(255, 255, 255, 0.92));
+}
+
+.compare-drill-tip strong,
+.compare-drill-tip span {
+  display: block;
+}
+
+.compare-drill-tip strong {
+  color: #1f372d;
+}
+
+.compare-drill-tip span {
+  margin-top: 4px;
+  color: #6c766f;
+  font-size: 13px;
+}
+
 :deep(.merchant-row) {
   cursor: pointer;
 }
@@ -955,7 +1051,8 @@ onMounted(async () => {
   }
 
   .hero,
-  .filters {
+  .filters,
+  .compare-drill-tip {
     display: block;
   }
 

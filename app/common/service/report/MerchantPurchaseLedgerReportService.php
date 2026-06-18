@@ -172,6 +172,7 @@ class MerchantPurchaseLedgerReportService
 
         return [
             'cards' => $cards,
+            'merchant_list' => self::buildMerchantReconciliationRows($exceptionRows),
             'exception_list' => array_values(array_slice($exceptionRows, 0, 50)),
             'selected_status' => self::normalizeReconciliationStatus($params['reconciliation_status'] ?? ''),
         ];
@@ -342,6 +343,51 @@ class MerchantPurchaseLedgerReportService
             }
             return $rowStatus !== 'normal';
         }));
+    }
+
+    private static function buildMerchantReconciliationRows(array $rows = []): array
+    {
+        $merchantMap = [];
+        foreach ($rows as $row) {
+            $merchantId = intval($row['buyer_merchant_id'] ?? 0);
+            if (!isset($merchantMap[$merchantId])) {
+                $merchantMap[$merchantId] = [
+                    'buyer_merchant_id' => $merchantId,
+                    'buyer_merchant_title' => (string) ($row['buyer_merchant_title'] ?? ''),
+                    'exception_order_count' => 0,
+                    'detail_count' => 0,
+                    'ledger_amount' => 0,
+                    'order_pay_price' => 0,
+                    'bill_amount' => 0,
+                    'diff_amount' => 0,
+                ];
+            }
+
+            $merchantMap[$merchantId]['exception_order_count']++;
+            $merchantMap[$merchantId]['detail_count'] += intval($row['detail_count'] ?? 0);
+            $merchantMap[$merchantId]['ledger_amount'] += floatval($row['ledger_amount'] ?? 0);
+            $merchantMap[$merchantId]['order_pay_price'] += floatval($row['order_pay_price'] ?? 0);
+            $merchantMap[$merchantId]['bill_amount'] += floatval($row['bill_amount'] ?? 0);
+            $merchantMap[$merchantId]['diff_amount'] += abs(floatval($row['reconcile_diff_amount'] ?? 0));
+        }
+
+        $merchantRows = array_values($merchantMap);
+        foreach ($merchantRows as &$row) {
+            $row['ledger_amount'] = self::toFloat($row['ledger_amount']);
+            $row['order_pay_price'] = self::toFloat($row['order_pay_price']);
+            $row['bill_amount'] = self::toFloat($row['bill_amount']);
+            $row['diff_amount'] = self::toFloat($row['diff_amount']);
+        }
+        unset($row);
+
+        usort($merchantRows, function ($left, $right) {
+            if ($left['diff_amount'] === $right['diff_amount']) {
+                return $right['exception_order_count'] <=> $left['exception_order_count'];
+            }
+            return $right['diff_amount'] <=> $left['diff_amount'];
+        });
+
+        return array_slice($merchantRows, 0, 50);
     }
 
     private static function resolveDateRange(string $quickDate = '', string $startDate = '', string $endDate = ''): array

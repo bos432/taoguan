@@ -183,9 +183,9 @@
     <section class="panel">
       <div class="panel__heading">
         <div>
-          <div class="panel__title">核算异常订单</div>
+          <div class="panel__title">商家异常汇总</div>
           <p class="panel__hint">
-            {{ selectedReconcileLabel }}：系统自动检查采购流水、订单实付、购买商品账单是否一致。
+            {{ selectedReconcileLabel }}：先按商家汇总总差额，点击商家后再看该商家的订单明细。
           </p>
         </div>
         <div class="panel__actions">
@@ -202,6 +202,45 @@
           >
             {{ summaryData.reconciliation.cards.exception_count > 0 ? '有异常' : '全部正常' }}
           </el-tag>
+        </div>
+      </div>
+      <el-table
+        :data="summaryData.reconciliation.merchant_list"
+        border
+        empty-text="当前筛选范围内没有商家异常"
+        row-class-name="merchant-row"
+        @row-click="selectBuyerMerchant"
+      >
+        <el-table-column prop="buyer_merchant_title" label="买方商家" min-width="160" />
+        <el-table-column prop="exception_order_count" label="异常订单" width="100" />
+        <el-table-column prop="detail_count" label="明细数" width="90" />
+        <el-table-column label="采购流水合计" width="130">
+          <template #default="{ row }">¥{{ money(row.ledger_amount) }}</template>
+        </el-table-column>
+        <el-table-column label="订单实付合计" width="130">
+          <template #default="{ row }">¥{{ money(row.order_pay_price) }}</template>
+        </el-table-column>
+        <el-table-column label="账单金额合计" width="130">
+          <template #default="{ row }">¥{{ money(row.bill_amount) }}</template>
+        </el-table-column>
+        <el-table-column label="总差额" width="130">
+          <template #default="{ row }">¥{{ money(row.diff_amount) }}</template>
+        </el-table-column>
+        <el-table-column label="操作" width="110">
+          <template #default>
+            <el-button link type="primary">查看订单</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </section>
+
+    <section class="panel">
+      <div class="panel__heading">
+        <div>
+          <div class="panel__title">核算异常订单</div>
+          <p class="panel__hint">
+            {{ selectedReconcileLabel }}：系统自动检查采购流水、订单实付、购买商品账单是否一致。
+          </p>
         </div>
       </div>
       <el-table
@@ -346,6 +385,7 @@ const summaryData = reactive({
       amount_mismatch_amount: 0,
       exception_amount: 0
     },
+    merchant_list: [],
     exception_list: []
   },
   buyer_rank: [],
@@ -418,6 +458,11 @@ function handleDateChange(value) {
 
 function selectReconcileType(status) {
   query.reconciliation_status = status
+  reload()
+}
+
+function selectBuyerMerchant(row) {
+  query.buyer_merchant_id = row.buyer_merchant_id || undefined
   reload()
 }
 
@@ -667,6 +712,10 @@ onMounted(async () => {
 .panel__hint {
   margin: -6px 0 0;
   color: #6c766f;
+}
+
+:deep(.merchant-row) {
+  cursor: pointer;
 }
 
 .pager {

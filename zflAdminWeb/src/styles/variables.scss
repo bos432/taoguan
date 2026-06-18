@@ -1,0 +1,22 @@
+// 全局 SCSS 变量
+
+:root {
+  --menuBg: #304156;
+  --menuText: #bfcbd9;
+  --menuHover: #263445;
+  --menuActiveText: #409eff;
+  --subMenuBg: #1f2d3d;
+  --subMenuHover: #001528;
+  --subMenuActiveText: #f4f4f5;
+}
+
+$menuBg: var(--menuBg);
+$menuText: var(--menuText);
+$menuHover: var(--menuHover);
+$menuActiveText: var(--menuActiveText);
+
+$subMenuBg: var(--subMenuBg);
+$subMenuHover: var(--subMenuHover);
+$subMenuActiveText: var(--subMenuActiveText);
+
+$sideBarWidth: 210px;

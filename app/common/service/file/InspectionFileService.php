@@ -1,0 +1,446 @@
+<?php
+
+
+namespace app\common\service\file;
+
+use think\facade\Filesystem;
+use app\common\cache\file\InspectionFileCache;
+use app\common\model\file\InspectionFileModel;
+use app\common\service\file\SettingService;
+use hg\apidoc\annotation as Apidoc;
+
+/**
+ * 文件管理
+ */
+class InspectionFileService
+{
+    /**
+     * 添加修改字段
+     * @var array
+     */
+    public static $edit_field = [
+        'file_id/d'   => '',
+        'unique/s'    => '',
+        'file_name/s' => '',
+        'group_id/d'  => 0,
+        'tag_ids/a'   => [],
+        'file_type/s' => 'image',
+        'domain/s'    => '',
+        'remark/s'    => '',
+        'sort/d'      => 250,
+    ];
+
+    /**
+     * 文件列表
+     *
+     * @param array  $where 条件
+     * @param int    $page  页数
+     * @param int    $limit 数量
+     * @param array  $order 排序
+     * @param string $field 字段
+     * 
+     * @return array 
+     */
+    public static function list($where = [], $page = 1, $limit = 10, $order = [], $field = '')
+    {
+        $model = new InspectionFileModel();
+        $pk = $model->getPk();
+        $group = 'm.' . $pk;
+
+        if (empty($field)) {
+            $field = $group . ',unique,group_id,storage,domain,file_type,file_hash,file_name,file_path,file_ext,file_size,sort,is_disable,create_time,update_time,delete_time';
+        }
+        if (empty($order)) {
+            $order = ['update_time' => 'desc', $group => 'desc'];
+        }
+
+        $model = $model->alias('m');
+        foreach ($where as $wk => $wv) {
+            if ($wv[0] == 'tag_ids' && is_array($wv[2])) {
+                $model = $model->join('file_tags t', 'm.file_id=t.file_id')->where('t.tag_id', $wv[1], $wv[2]);
+                unset($where[$wk]);
+            }
+        }
+        $where = array_values($where);
+        $where[] = ['ins_id','=',ins_id(true)];
+        $with     = ['tags'];
+        $append   = ['tag_names', 'file_url'];
+        $hidden   = ['tags'];
+        $field_no = [];
+        if (strpos($field, 'group_id') !== false) {
+            $with[]   = $hidden[] = 'group';
+            $append[] = 'group_name';
+        }
+        if (strpos($field, 'file_type') !== false) {
+            $append[] = $field_no[] = 'file_type_name';
+        }
+        if (strpos($field, 'file_size') !== false) {
+            $append[] = 'file_size';
+        }
+        $fields = explode(',', $field);
+        foreach ($fields as $k => $v) {
+            if (in_array($v, $field_no)) {
+                unset($fields[$k]);
+            }
+        }
+        $field = implode(',', $fields);
+
+        $count = $model->where($where)->group($group)->count();
+        $pages = 0;
+        if ($page > 0) {
+            $model = $model->page($page);
+        }
+        if ($limit > 0) {
+            $model = $model->limit($limit);
+            $pages = ceil($count / $limit);
+        }
+        $list = $model->field($field)->where($where)
+            ->with($with)->append($append)->hidden($hidden)
+            ->order($order)->group($group)->select()->toArray();
+
+        $ids       = array_column($list, $pk);
+        $storages  = SettingService::storages();
+        $filetypes = SettingService::fileTypes();
+        $setting   = SettingService::info('file_types,storages,limit_max,accept_ext');
+
+        return compact('count', 'pages', 'page', 'limit', 'list', 'ids', 'setting');
+    }
+
+    /**
+     * 文件信息
+     *
+     * @param string $id   文件id、标识
+     * @param bool   $exce 不存在是否抛出异常
+     * 
+     * @return array|Exception
+     */
+    public static function info($id, $exce = true)
+    {
+        $info = InspectionFileCache::get($id);
+        if (empty($info)) {
+            $model = new InspectionFileModel();
+            $pk = $model->getPk();
+
+            if (is_numeric($id)) {
+                $where[] = [$pk, '=', $id];
+            } else {
+                $where[] = ['unique', '=', $id];
+                $where[] = where_delete();
+            }
+            if(ins_id()){
+                $where[] = ['ins_id', '=', ins_id()];
+            }
+            $info = $model->where($where)->find();
+            if (empty($info)) {
+                if ($exce) {
+                    exception('文件不存在：' . $id);
+                }
+                return [];
+            }
+            $info = $info
+                ->append(['group_name', 'tag_names', 'tag_ids', 'file_type_name', 'file_url', 'file_size'])
+                ->hidden(['group', 'tags'])
+                ->toArray();
+
+            InspectionFileCache::set($id, $info);
+        }
+
+        return $info;
+    }
+
+    /**
+     * 文件添加
+     *
+     * @param array $param 文件信息
+     * 
+     * @return array|Exception
+     */
+    public static function add($param)
+    {
+        if (isset($param['tag_ids']) && is_string($param['tag_ids'])) {
+            if ($param['tag_ids']) {
+                $param['tag_ids'] = explode(',', $param['tag_ids']);
+            } else {
+                $param['tag_ids'] = [];
+            }
+        }
+        $param['ins_id'] = ins_id();
+        $model = new InspectionFileModel();
+        $pk = $model->getPk();
+
+        $datetime = datetime();
+        $type = $param['type'] ?? 'upl';
+        if ($type == 'url') {
+            $url    = $param['file_url'];
+            $file   = parse_url($url);
+            $scheme = $file['scheme'] ?? '';
+            $port   = $file['port'] ?? '';
+            $host   = $file['host'] ?? '';
+            $path   = $file['path'] ?? '';
+            $query  = $file['query'] ?? '';
+
+            $param['domain']    = $scheme . '://' . $host . ($port ? ':' . $port : '');
+            $param['file_path'] = $path . ($query ? '?' . $query : '');
+            $param['file_ext']  = substr(strrchr($path, '.'), 1);
+            if (empty($param['file_name'])) {
+                $param['file_name'] = substr(strrchr($path, '/'), 0, - (strlen($param['file_ext']) + 1));
+            }
+            $param['file_name'] = trim($param['file_name'], '/');
+
+            $file_exist = $model->field($pk)->where('ins_id',$param['ins_id'])->where('domain', $param['domain'])->where('file_path', $param['file_path'])->find();
+        } else {
+            $file = $param['file'];
+            unset($param['file']);
+
+            $file_ext  = strtolower($file->getOriginalExtension());
+            $file_type = SettingService::fileType($file_ext);
+            $file_size = $file->getSize();
+            $file_md5  = $file->hash('md5');
+            $file_hash = $file->hash('sha1');
+            $storage_subdir = 'inspection' . $param['ins_id'] . '/file/' . date('Ymd');
+            $storage_dir = root_path() . 'public/storage/' . $storage_subdir;
+            if (!is_dir($storage_dir)) {
+                mkdir($storage_dir, 0777, true);
+            }
+            $saved_name = $file_hash . ($file_ext ? '.' . $file_ext : '');
+            $saved_file = $file->move($storage_dir, $saved_name, true);
+            if (!$saved_file) {
+                exception('文件上传失败');
+            }
+
+            $param['file_md5']   = $file_md5;
+            $param['file_hash']  = $file_hash;
+            $param['file_path']  = 'storage/' . $storage_subdir . '/' . $saved_name;
+            $param['file_ext']   = $file_ext;
+            $param['file_size']  = $file_size;
+            $param['file_type']  = $file_type;
+            if (empty($param['file_name'])) {
+                $param['file_name'] = mb_substr($file->getOriginalName(), 0, - (mb_strlen($param['file_ext']) + 1));
+            }
+
+            $file_exist = $model->field($pk)->where('ins_id',$param['ins_id'])->where('file_hash', $file_hash)->find();
+            if ($file_exist) {
+                $file_exist = $file_exist->toArray();
+                $param[$pk] = $file_exist[$pk];
+            } else {
+                $param[$pk] = '';
+            }
+
+            // 对象存储
+            $param = StorageService::upload($param, $pk);
+        }
+
+        if ($file_exist) {
+            $param['is_disable'] = 0;
+            $param['is_delete']  = 0;
+            $id = $file_exist[$pk];
+            self::edit($id, $param);
+        } else {
+            unset($param[$pk]);
+            if (empty($param['unique'] ?? '')) {
+                $param['unique'] = uniqids();
+            }
+            $param['create_uid']  = user_id();
+            $param['create_time'] = $datetime;
+            $param['update_time'] = $datetime;
+            $model->save($param);
+            // 添加标签
+            if (isset($param['tag_ids']) && $param['tag_ids']) {
+                $model->tags()->saveAll($param['tag_ids']);
+            }
+            $id = $model->$pk;
+            if (empty($id)) {
+                exception();
+            }
+        }
+
+        $info = self::info($id);
+
+        return $info;
+    }
+
+    /**
+     * 文件修改
+     *
+     * @param int|array $ids   文件id
+     * @param array     $param 文件信息
+     * 
+     * @return array|Exception
+     */
+    public static function edit($ids, $param = [])
+    {
+        $model = new InspectionFileModel();
+        $pk = $model->getPk();
+
+        unset($param[$pk], $param['ids']);
+
+        $param['update_uid']  = ins_user_id();
+        $param['update_time'] = datetime();
+
+        $unique = $model->where($pk, 'in', $ids)->column('unique');
+        $ins_id = ins_id();
+        // 启动事务
+        $model->startTrans();
+        try {
+            if (is_numeric($ids)) {
+                $ids = [$ids];
+            }
+            // 修改
+            $model->where($pk, 'in', $ids)->where('ins_id',$ins_id)->update($param);
+            if (var_isset($param, ['tag_ids'])) {
+                foreach ($ids as $id) {
+                    $info = $model->where('ins_id',$ins_id)->find($id);
+                    // 修改标签
+                    if (isset($param['tag_ids'])) {
+                        $info = $info->append(['tag_ids']);
+                        relation_update($info, $info['tag_ids'], $param['tag_ids'], 'tags');
+                    }
+                }
+            }
+            // 提交事务
+            $model->commit();
+        } catch (\Exception $e) {
+            $errmsg = $e->getMessage();
+            // 回滚事务
+            $model->rollback();
+        }
+
+        if (isset($errmsg)) {
+            exception($errmsg);
+        }
+
+        $param['ids'] = $ids;
+
+        InspectionFileCache::del($ids);
+        InspectionFileCache::del($unique);
+
+        return $param;
+    }
+
+    /**
+     * 文件删除
+     *
+     * @param array $ids  文件id
+     * @param bool  $real 是否真实删除
+     * 
+     * @return array|Exception
+     */
+    public static function dele($ids, $real = false)
+    {
+        $model = new InspectionFileModel();
+        $pk = $model->getPk();
+
+        $unique = $model->where($pk, 'in', $ids)->column('unique');
+
+        // 启动事务
+        $model->startTrans();
+        try {
+            if (is_numeric($ids)) {
+                $ids = [$ids];
+            }
+            $ins_id = ins_id();
+            if ($real) {
+                $file = $model->field($pk . ',file_path')->where('ins_id',$ins_id)->where($pk, 'in', $ids)->select();
+                foreach ($file as $v) {
+                    $info = $model->find($v[$pk]);
+                    // 删除标签
+                    $info->tags()->detach();
+                    // 删除文件
+                    try {
+                        unlink($v['file_path']);
+                    } catch (\Exception $e) {
+                    }
+                }
+                $model->where('ins_id',$ins_id)->where($pk, 'in', $ids)->delete();
+            } else {
+                $update = delete_update();
+                $model->where('ins_id',$ins_id)->where($pk, 'in', $ids)->update($update);
+            }
+            // 提交事务
+            $model->commit();
+        } catch (\Exception $e) {
+            $errmsg = $e->getMessage();
+            // 回滚事务
+            $model->rollback();
+        }
+
+        if (isset($errmsg)) {
+            exception($errmsg);
+        }
+
+        $update['ids'] = $ids;
+
+        InspectionFileCache::del($ids);
+        InspectionFileCache::del($unique);
+
+        return $update;
+    }
+
+    /**
+     * 文件上/下一个
+     *
+     * @param int    $id    文件id
+     * @param string $type  prev上一个，next下一个
+     * @param array  $where 文件条件
+     * 
+     * @return array 文件
+     */
+    public static function prevNext($id, $type = 'prev', $where = [])
+    {
+        if ($type == 'next') {
+            $where[] = ['m.file_id', '>', $id];
+            $order = ['m.file_id' => 'asc'];
+        } else {
+            $where[] = ['m.file_id', '<', $id];
+            $order = ['m.file_id' => 'desc'];
+        }
+        $where[] = where_disable();
+        $where[] = where_delete();
+
+        $field = 'm.file_id,unique,group_id,storage,domain,file_type,file_hash,file_name,file_path,file_ext';
+
+        $info = self::list($where, 0, 1, $order, $field)['list'];
+        if (empty($info[0] ?? [])) {
+            return [];
+        }
+
+        return $info[0];
+    }
+
+    /**
+     * 文件统计
+     * 
+     * @Apidoc\Returned("count", type="int", desc="文件总数")
+     * @Apidoc\Returned("data", type="array", desc="图表series.data")
+     * 
+     * @return array
+     */
+    public static function statistic()
+    {
+        $key  = 'statistic' . lang_get();
+        $data = InspectionFileCache::get($key);
+        if (empty($data)) {
+            $model = new InspectionFileModel();
+            $ins_id = ins_id();
+            $file_types = SettingService::fileTypes();
+            $file_field = 'file_type,count(file_type) as count';
+            $file_count = $model->where('ins_id',$ins_id)->field($file_field)->where([where_delete()])->group('file_type')->select()->toArray();
+            foreach ($file_types as $k => $v) {
+                $temp = [];
+                $temp['name']  = lang('file.' . $k);
+                $temp['value'] = 0;
+                foreach ($file_count as $vfc) {
+                    if ($k == $vfc['file_type']) {
+                        $temp['value'] = $vfc['count'];
+                    }
+                }
+                $data['data'][] = $temp;
+            }
+            $data['count'] = $model->where('ins_id',$ins_id)->where([where_delete()])->count();
+
+            InspectionFileCache::set($key, $data);
+        }
+
+        return $data;
+    }
+}

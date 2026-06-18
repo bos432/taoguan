@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "溯源信息",
+  "usingComponents": {
+    "bar-title": "/components/zaiui-common/basics/bar-title"
+  }
+}

@@ -1,0 +1,81 @@
+<?php
+
+
+namespace app\common\cache\inspection;
+
+use think\facade\Cache;
+
+/**
+ * 菜单管理缓存
+ */
+class InspectionMenuCache
+{
+    // 缓存标签
+    public static $tag = 'inspection_menu';
+    // 缓存前缀
+    protected static $prefix = 'inspection_menu:';
+
+    /**
+     * 缓存键名
+     *
+     * @param mixed $id 菜单id、key
+     * 
+     * @return string
+     */
+    public static function key($id)
+    {
+        return self::$prefix . $id;
+    }
+
+    /**
+     * 缓存设置
+     *
+     * @param mixed $id   菜单id、key
+     * @param array $info 菜单信息
+     * @param int   $ttl  有效时间（秒，0永久）
+     * 
+     * @return bool
+     */
+    public static function set($id, $info, $ttl = 43200)
+    {
+        return Cache::tag(self::$tag)->set(self::key($id), $info, $ttl);
+    }
+
+    /**
+     * 缓存获取
+     *
+     * @param mixed $id 菜单id、key
+     * 
+     * @return array 菜单信息
+     */
+    public static function get($id)
+    {
+        return Cache::get(self::key($id));
+    }
+
+    /**
+     * 缓存删除
+     *
+     * @param mixed $id 菜单id、key
+     * 
+     * @return bool
+     */
+    public static function del($id)
+    {
+        $ids = var_to_array($id);
+        foreach ($ids as $v) {
+            Cache::delete(self::key($v));
+        }
+        return true;
+    }
+
+    /**
+     * 缓存清除
+     * 
+     * @return bool
+     */
+    public static function clear()
+    {
+        return Cache::tag(self::$tag)->clear();
+    }
+}

@@ -1,0 +1,545 @@
+$tg-theme-sync-palettes: (
+  origin: (
+    page-bg: radial-gradient(circle at top right, rgba(243, 143, 90, 0.18), transparent 30%), linear-gradient(180deg, #f7fbff 0%, #f1f5fa 52%, #edf2f6 100%),
+    header-bg: linear-gradient(135deg, #184f78 0%, #2a6f93 48%, #eb8b59 100%),
+    surface-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 100%),
+    surface-border: rgba(22, 76, 120, 0.08),
+    surface-shadow: 0 18rpx 42rpx rgba(21, 33, 52, 0.08),
+    hero-shadow: 0 20rpx 46rpx rgba(24, 79, 120, 0.18),
+    hero-text: #ffffff,
+    hero-muted: rgba(255, 255, 255, 0.86),
+    hero-chip-bg: rgba(255, 255, 255, 0.16),
+    hero-chip-border: rgba(255, 255, 255, 0.24),
+    hero-chip-text: rgba(255, 255, 255, 0.92),
+    title: #172333,
+    text: #526273,
+    muted: #718090,
+    accent: #1f5d85,
+    accent-strong: #eb8b59,
+    soft-bg: linear-gradient(180deg, #f7fafc 0%, #eef3f7 100%),
+    soft-border: rgba(22, 76, 120, 0.08),
+    active-bg: #ffffff,
+    active-text: #1f5d85,
+    active-shadow: 0 12rpx 26rpx rgba(24, 79, 120, 0.12),
+    price: #e9653a,
+    badge-bg: rgba(24, 79, 120, 0.12)
+  ),
+  red_energy: (
+    page-bg: radial-gradient(circle at top right, rgba(239, 127, 99, 0.2), transparent 28%), linear-gradient(180deg, #fff8f5 0%, #fff0ec 46%, #fff5f2 100%),
+    header-bg: linear-gradient(135deg, #a30c15 0%, #cf3d38 52%, #ee815f 100%),
+    surface-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.99) 0%, rgba(255, 245, 242, 0.98) 100%),
+    surface-border: rgba(191, 63, 52, 0.12),
+    surface-shadow: 0 18rpx 42rpx rgba(163, 12, 21, 0.1),
+    hero-shadow: 0 22rpx 46rpx rgba(163, 12, 21, 0.2),
+    hero-text: #ffffff,
+    hero-muted: rgba(255, 255, 255, 0.88),
+    hero-chip-bg: rgba(255, 255, 255, 0.18),
+    hero-chip-border: rgba(255, 255, 255, 0.28),
+    hero-chip-text: rgba(255, 255, 255, 0.94),
+    title: #6f1f22,
+    text: #80514f,
+    muted: #9a6d6a,
+    accent: #b62d2d,
+    accent-strong: #ef7b5d,
+    soft-bg: linear-gradient(180deg, #fff7f3 0%, #ffece6 100%),
+    soft-border: rgba(191, 63, 52, 0.12),
+    active-bg: #ffffff,
+    active-text: #b62d2d,
+    active-shadow: 0 12rpx 26rpx rgba(182, 45, 45, 0.12),
+    price: #d8564b,
+    badge-bg: rgba(163, 12, 21, 0.12)
+  ),
+  yellow_energy: (
+    page-bg: radial-gradient(circle at top right, rgba(244, 197, 63, 0.22), transparent 30%), linear-gradient(180deg, #fffdf6 0%, #fff8e9 48%, #fffbf4 100%),
+    header-bg: linear-gradient(135deg, #f4c53f 0%, #f0b258 52%, #eb8c57 100%),
+    surface-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.99) 0%, rgba(255, 249, 238, 0.98) 100%),
+    surface-border: rgba(212, 166, 76, 0.16),
+    surface-shadow: 0 18rpx 40rpx rgba(183, 129, 34, 0.1),
+    hero-shadow: 0 20rpx 44rpx rgba(195, 144, 46, 0.16),
+    hero-text: #5e3b12,
+    hero-muted: rgba(94, 59, 18, 0.82),
+    hero-chip-bg: rgba(255, 255, 255, 0.34),
+    hero-chip-border: rgba(255, 247, 219, 0.78),
+    hero-chip-text: rgba(104, 66, 20, 0.92),
+    title: #6b4618,
+    text: #7b6249,
+    muted: #93795d,
+    accent: #b45e19,
+    accent-strong: #df8652,
+    soft-bg: linear-gradient(180deg, #fffaf0 0%, #fff2dc 100%),
+    soft-border: rgba(212, 166, 76, 0.16),
+    active-bg: #ffffff,
+    active-text: #a84c19,
+    active-shadow: 0 12rpx 24rpx rgba(191, 132, 44, 0.12),
+    price: #d7772e,
+    badge-bg: rgba(181, 91, 18, 0.12)
+  ),
+  jade_modern: (
+    page-bg: radial-gradient(circle at top right, rgba(45, 118, 102, 0.16), transparent 30%), linear-gradient(180deg, #f6f4ec 0%, #f0efe6 48%, #f8f6ef 100%),
+    header-bg: linear-gradient(135deg, #164c43 0%, #2b6f63 52%, #d5a55b 100%),
+    surface-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(245, 243, 236, 0.98) 100%),
+    surface-border: rgba(51, 95, 84, 0.14),
+    surface-shadow: 0 18rpx 40rpx rgba(28, 73, 64, 0.1),
+    hero-shadow: 0 22rpx 46rpx rgba(22, 76, 67, 0.18),
+    hero-text: #ffffff,
+    hero-muted: rgba(255, 255, 255, 0.86),
+    hero-chip-bg: rgba(255, 255, 255, 0.16),
+    hero-chip-border: rgba(255, 255, 255, 0.22),
+    hero-chip-text: rgba(255, 255, 255, 0.92),
+    title: #21463f,
+    text: #607068,
+    muted: #7b867f,
+    accent: #1d6e63,
+    accent-strong: #d4a55d,
+    soft-bg: linear-gradient(180deg, #f4f2ea 0%, #ece8dc 100%),
+    soft-border: rgba(51, 95, 84, 0.14),
+    active-bg: #ffffff,
+    active-text: #1d6e63,
+    active-shadow: 0 12rpx 24rpx rgba(29, 110, 99, 0.12),
+    price: #c7812e,
+    badge-bg: rgba(22, 76, 67, 0.12)
+  ),
+  ocean_sky: (
+    page-bg: radial-gradient(circle at top right, rgba(17, 136, 201, 0.14), transparent 30%), linear-gradient(180deg, #f4f9ff 0%, #eef6ff 50%, #f8fbff 100%),
+    header-bg: linear-gradient(135deg, #0f4c81 0%, #1188c9 54%, #5bc0eb 100%),
+    surface-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(241, 248, 255, 0.98) 100%),
+    surface-border: rgba(15, 76, 129, 0.1),
+    surface-shadow: 0 18rpx 40rpx rgba(17, 79, 137, 0.1),
+    hero-shadow: 0 20rpx 44rpx rgba(17, 79, 137, 0.18),
+    hero-text: #ffffff,
+    hero-muted: rgba(255, 255, 255, 0.86),
+    hero-chip-bg: rgba(255, 255, 255, 0.16),
+    hero-chip-border: rgba(255, 255, 255, 0.24),
+    hero-chip-text: rgba(255, 255, 255, 0.92),
+    title: #173a59,
+    text: #597089,
+    muted: #72859d,
+    accent: #1188c9,
+    accent-strong: #4aaed8,
+    soft-bg: linear-gradient(180deg, #f5faff 0%, #e9f3fb 100%),
+    soft-border: rgba(15, 76, 129, 0.1),
+    active-bg: #ffffff,
+    active-text: #1188c9,
+    active-shadow: 0 12rpx 24rpx rgba(17, 136, 201, 0.12),
+    price: #1188c9,
+    badge-bg: rgba(17, 136, 201, 0.12)
+  ),
+  ink_gold: (
+    page-bg: radial-gradient(circle at top right, rgba(184, 137, 45, 0.12), transparent 30%), linear-gradient(180deg, #f8f5ef 0%, #f3eee5 50%, #fbf8f2 100%),
+    header-bg: linear-gradient(135deg, #1b1c22 0%, #3a3127 52%, #b8892d 100%),
+    surface-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(247, 242, 233, 0.98) 100%),
+    surface-border: rgba(106, 88, 55, 0.12),
+    surface-shadow: 0 18rpx 40rpx rgba(50, 40, 29, 0.12),
+    hero-shadow: 0 22rpx 46rpx rgba(27, 28, 34, 0.2),
+    hero-text: #ffffff,
+    hero-muted: rgba(255, 255, 255, 0.84),
+    hero-chip-bg: rgba(255, 255, 255, 0.14),
+    hero-chip-border: rgba(255, 255, 255, 0.22),
+    hero-chip-text: rgba(255, 255, 255, 0.92),
+    title: #30271f,
+    text: #6d6255,
+    muted: #877968,
+    accent: #9b7426,
+    accent-strong: #c7983c,
+    soft-bg: linear-gradient(180deg, #f8f3ea 0%, #eee7db 100%),
+    soft-border: rgba(106, 88, 55, 0.12),
+    active-bg: #ffffff,
+    active-text: #9b7426,
+    active-shadow: 0 12rpx 24rpx rgba(155, 116, 38, 0.12),
+    price: #b8892d,
+    badge-bg: rgba(184, 137, 45, 0.12)
+  ),
+  rose_dawn: (
+    page-bg: radial-gradient(circle at top right, rgba(213, 108, 143, 0.16), transparent 30%), linear-gradient(180deg, #fff6f8 0%, #fff0f4 48%, #fff9fb 100%),
+    header-bg: linear-gradient(135deg, #a94f6f 0%, #d56c8f 52%, #f09aa8 100%),
+    surface-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.99) 0%, rgba(255, 246, 249, 0.98) 100%),
+    surface-border: rgba(169, 79, 111, 0.12),
+    surface-shadow: 0 18rpx 40rpx rgba(169, 79, 111, 0.1),
+    hero-shadow: 0 22rpx 46rpx rgba(169, 79, 111, 0.18),
+    hero-text: #ffffff,
+    hero-muted: rgba(255, 255, 255, 0.86),
+    hero-chip-bg: rgba(255, 255, 255, 0.16),
+    hero-chip-border: rgba(255, 255, 255, 0.22),
+    hero-chip-text: rgba(255, 255, 255, 0.92),
+    title: #6e2e45,
+    text: #866373,
+    muted: #a07c8c,
+    accent: #c05e82,
+    accent-strong: #ec8ea4,
+    soft-bg: linear-gradient(180deg, #fff5f8 0%, #ffeef3 100%),
+    soft-border: rgba(169, 79, 111, 0.12),
+    active-bg: #ffffff,
+    active-text: #c05e82,
+    active-shadow: 0 12rpx 24rpx rgba(192, 94, 130, 0.12),
+    price: #d56c8f,
+    badge-bg: rgba(213, 108, 143, 0.12)
+  )
+);
+
+@each $name, $palette in $tg-theme-sync-palettes {
+  .ui-theme-#{$name} {
+    --tg-page-bg: #{map-get($palette, page-bg)};
+    --tg-header-bg: #{map-get($palette, header-bg)};
+    --tg-surface-bg: #{map-get($palette, surface-bg)};
+    --tg-surface-border: #{map-get($palette, surface-border)};
+    --tg-surface-shadow: #{map-get($palette, surface-shadow)};
+    --tg-hero-shadow: #{map-get($palette, hero-shadow)};
+    --tg-hero-text: #{map-get($palette, hero-text)};
+    --tg-hero-muted: #{map-get($palette, hero-muted)};
+    --tg-hero-chip-bg: #{map-get($palette, hero-chip-bg)};
+    --tg-hero-chip-border: #{map-get($palette, hero-chip-border)};
+    --tg-hero-chip-text: #{map-get($palette, hero-chip-text)};
+    --tg-title: #{map-get($palette, title)};
+    --tg-text: #{map-get($palette, text)};
+    --tg-muted: #{map-get($palette, muted)};
+    --tg-accent: #{map-get($palette, accent)};
+    --tg-accent-strong: #{map-get($palette, accent-strong)};
+    --tg-soft-bg: #{map-get($palette, soft-bg)};
+    --tg-soft-border: #{map-get($palette, soft-border)};
+    --tg-active-bg: #{map-get($palette, active-bg)};
+    --tg-active-text: #{map-get($palette, active-text)};
+    --tg-active-shadow: #{map-get($palette, active-shadow)};
+    --tg-price: #{map-get($palette, price)};
+    --tg-badge-bg: #{map-get($palette, badge-bg)};
+
+    &.home-page,
+    &.mall-page,
+    &.detail-page,
+    &.goods-page,
+    &.cart-page,
+    &.search-page,
+    &.service-page,
+    &.apply-page,
+    &.analytics-page,
+    &.renew-page,
+    &.audit-page,
+    &.notice-detail-page,
+    &.order-page,
+    &.accord-center-page,
+    &.settings-page,
+    &.zaiui-my-box {
+      background: var(--tg-page-bg);
+    }
+
+    &.home-page .home-header,
+    &.home-page .review-hero,
+    &.mall-page .hero-card,
+    &.detail-page .hero-card,
+    &.goods-page .hero-card,
+    &.cart-page .hero-card,
+    &.search-page .hero-card,
+    &.service-page .hero-card,
+    &.apply-page .hero-card,
+    &.analytics-page .hero-card,
+    &.renew-page .hero-card,
+    &.audit-page .hero-card,
+    &.notice-detail-page .hero-card,
+    &.order-page .hero-card,
+    &.accord-center-page .hero-card,
+    &.settings-page .hero-card,
+    &.zaiui-my-box .zaiui-head-box {
+      background: var(--tg-header-bg);
+      box-shadow: var(--tg-hero-shadow);
+    }
+
+    &.home-page .review-page {
+      background: var(--tg-page-bg);
+    }
+
+    &.home-page .review-card,
+    &.mall-page .section-card,
+    &.detail-page .gallery-card,
+    &.detail-page .section-card,
+    &.goods-page .section-card,
+    &.cart-page .shop-card,
+    &.search-page .section-card,
+    &.service-page .section-card,
+    &.apply-page .section-card,
+    &.analytics-page .section-card,
+    &.analytics-page .custom-range-panel,
+    &.renew-page .status-card,
+    &.renew-page .action-card,
+    &.renew-page .record-card,
+    &.audit-page .audit-card,
+    &.notice-detail-page .content-card,
+    &.order-page .order-card,
+    &.accord-center-page .list-card,
+    &.settings-page .section-card,
+    &.zaiui-my-box .pending-reminder-card {
+      background: var(--tg-surface-bg);
+      border: 1rpx solid var(--tg-surface-border);
+      box-shadow: var(--tg-surface-shadow);
+    }
+
+    &.home-page .banner-wrap,
+    &.home-page .content-section,
+    &.mall-page .recent-release-card {
+      background: var(--tg-surface-bg);
+      border: 1rpx solid var(--tg-surface-border);
+      box-shadow: var(--tg-surface-shadow);
+    }
+
+    &.zaiui-my-box .user-shell-card,
+    &.zaiui-my-box .zaiui-user-info-num-box,
+    &.zaiui-my-box .zaiui-user-info-tip-box {
+      background: var(--tg-hero-chip-bg);
+      border: 1rpx solid var(--tg-hero-chip-border);
+      box-shadow: 0 18rpx 36rpx rgba(17, 34, 51, 0.12);
+    }
+
+    &.zaiui-my-box .zaiui-user-info-tip-box,
+    &.zaiui-my-box .review-user-view,
+    &.zaiui-my-box .zaiui-user-info-num-box .text-xl,
+    &.zaiui-my-box .zaiui-user-info-num-box .cu-list.grid > .cu-item text,
+    &.zaiui-my-box .cu-list.menu-avatar > .cu-item .content > view:first-child,
+    &.zaiui-my-box .cu-list.menu-avatar > .cu-item .content .text-white-bg {
+      color: var(--tg-hero-text);
+    }
+
+    &.home-page .header-copy,
+    &.home-page .header-title,
+    &.home-page .header-subtitle,
+    &.home-page .search-placeholder,
+    &.home-page .brand-copy,
+    &.home-page .brand-title,
+    &.home-page .brand-subtitle,
+    &.home-page .hero-card .hero-title,
+    &.home-page .hero-card .hero-heading,
+    &.home-page .hero-card .hero-desc,
+    &.mall-page .hero-card,
+    &.mall-page .hero-title,
+    &.mall-page .hero-subtitle,
+    &.mall-page .hero-date,
+    &.mall-page .hero-search-text,
+    &.mall-page .metric-label,
+    &.mall-page .metric-value,
+    &.detail-page .hero-card,
+    &.detail-page .hero-card .hero-title,
+    &.detail-page .hero-card .hero-subtitle,
+    &.detail-page .hero-card .price-value,
+    &.detail-page .hero-card .price-meta,
+    &.detail-page .hero-card .hero-side-label,
+    &.detail-page .hero-card .hero-side-value,
+    &.detail-page .hero-card .hero-side-tip,
+    &.service-page .hero-card,
+    &.apply-page .hero-card,
+    &.analytics-page .hero-card,
+    &.analytics-page .hero-title,
+    &.analytics-page .hero-subtitle,
+    &.analytics-page .hero-date,
+    &.analytics-page .metric-label,
+    &.analytics-page .metric-value,
+    &.renew-page .hero-card,
+    &.audit-page .hero-card,
+    &.order-page .hero-card,
+    &.order-page .hero-title,
+    &.order-page .hero-subtitle,
+    &.order-page .hero-date,
+    &.cart-page .hero-title,
+    &.cart-page .hero-subtitle,
+    &.cart-page .hero-badge,
+    &.cart-page .metric-label,
+    &.cart-page .metric-value,
+    &.search-page .hero-card,
+    &.notice-detail-page .hero-card .desc,
+    &.accord-center-page .hero-card,
+    &.settings-page .hero-card,
+    &.settings-page .hero-title,
+    &.settings-page .hero-subtitle,
+    &.zaiui-my-box .zaiui-head-box {
+      color: var(--tg-hero-text);
+    }
+
+    &.home-page .search-box,
+    &.mall-page .hero-search,
+    &.mall-page .hero-date,
+    &.mall-page .hero-metric,
+    &.cart-page .hero-badge,
+    &.cart-page .hero-metric,
+    &.analytics-page .hero-date,
+    &.analytics-page .hero-metric,
+    &.detail-page .action-bar .shortcut-btn,
+    &.home-page .brand-badge,
+    &.home-page .status-badge,
+    &.home-page .action-btn.ghost,
+    &.settings-page .hero-badge,
+    &.service-page .hero-badge,
+    &.apply-page .hero-badge,
+    &.renew-page .hero-badge,
+    &.audit-page .hero-badge,
+    &.search-page .hero-badge,
+    &.zaiui-my-box .review-service-btn {
+      background: var(--tg-hero-chip-bg);
+      border-color: var(--tg-hero-chip-border);
+      color: var(--tg-hero-chip-text);
+    }
+
+    &.home-page .tab-pill,
+    &.order-page .tab-chip,
+    &.audit-page .tab-chip,
+    &.analytics-page .range-tab,
+    &.mall-page .filter-chip,
+    &.goods-page .filter-chip,
+    &.search-page .quick-tag {
+      background: var(--tg-soft-bg);
+      border: 1rpx solid var(--tg-soft-border);
+      color: var(--tg-text);
+    }
+
+    &.home-page .tab-pill.active,
+    &.order-page .tab-chip.active,
+    &.audit-page .tab-chip.active,
+    &.analytics-page .range-tab.active,
+    &.mall-page .filter-chip.active,
+    &.goods-page .filter-chip.active {
+      background: var(--tg-active-bg);
+      color: var(--tg-active-text);
+      box-shadow: var(--tg-active-shadow);
+      border-color: transparent;
+    }
+
+    &.mall-page .filter-btn.primary,
+    &.goods-page .filter-btn.primary,
+    &.search-page .action-btn.primary,
+    &.service-page .action-btn.primary,
+    &.apply-page .action-btn.primary,
+    &.analytics-page .custom-range-submit,
+    &.renew-page .action-btn.primary,
+    &.audit-page .action-btn.primary,
+    &.audit-page .action-btn.success,
+    &.audit-page .action-btn.danger,
+    &.order-page .action-btn.primary,
+    &.order-page .action-btn.success,
+    &.order-page .action-btn.danger,
+    &.notice-detail-page .popup-btn.primary,
+    &.home-page .popup-btn.primary,
+    &.detail-page .footer-btn.primary,
+    &.detail-page .action-btn.primary,
+    &.zaiui-my-box .merchant-super-tool-card__icon {
+      background: linear-gradient(90deg, var(--tg-accent) 0%, var(--tg-accent-strong) 100%);
+      color: #ffffff;
+    }
+
+    &.mall-page .filter-btn:not(.primary),
+    &.goods-page .filter-btn:not(.primary),
+    &.search-page .action-btn:not(.primary),
+    &.renew-page .action-btn.ghost,
+    &.order-page .action-btn.light,
+    &.audit-page .action-btn.light,
+    &.analytics-page .custom-range-ghost,
+    &.detail-page .footer-btn.secondary,
+    &.detail-page .footer-btn.ghost {
+      background: var(--tg-soft-bg);
+      border: 1rpx solid var(--tg-soft-border);
+      color: var(--tg-accent);
+    }
+
+    &.mall-page .keyword-input,
+    &.mall-page .filter-input,
+    &.goods-page .keyword-input,
+    &.goods-page .filter-input,
+    &.search-page .search-input-row,
+    &.apply-page .form-item,
+    &.apply-page .upload-placeholder,
+    &.apply-page .upload-item,
+    &.service-page .single-line-card,
+    &.analytics-page .custom-date-field,
+    &.settings-page .setting-item,
+    &.order-page .dialog-textarea,
+    &.accord-center-page .accord-item {
+      background: var(--tg-soft-bg);
+      border-color: var(--tg-soft-border);
+    }
+
+    &.mall-page .section-title,
+    &.home-page .section-title,
+    &.detail-page .section-title,
+    &.goods-page .section-title,
+    &.search-page .section-title,
+    &.service-page .section-title,
+    &.apply-page .section-title,
+    &.analytics-page .section-title,
+    &.renew-page .card-title,
+    &.audit-page .merchant-title,
+    &.notice-detail-page .title,
+    &.order-page .merchant-title,
+    &.settings-page .setting-label,
+    &.settings-page .hero-title,
+    &.accord-center-page .accord-title,
+    &.zaiui-my-box .pending-title {
+      color: var(--tg-title);
+    }
+
+    &.mall-page .section-tip,
+    &.home-page .section-tip,
+    &.home-page .section-link,
+    &.detail-page .section-tip,
+    &.goods-page .section-tip,
+    &.search-page .section-tip,
+    &.service-page .section-tip,
+    &.apply-page .section-tip,
+    &.analytics-page .section-tip,
+    &.renew-page .hero-desc,
+    &.renew-page .step-desc,
+    &.renew-page .record-row,
+    &.audit-page .merchant-subtitle,
+    &.notice-detail-page .meta-text,
+    &.notice-detail-page .html-content,
+    &.order-page .merchant-order-no,
+    &.order-page .summary-time,
+    &.order-page .status-text,
+    &.settings-page .setting-desc,
+    &.accord-center-page .accord-desc,
+    &.accord-center-page .accord-time,
+    &.zaiui-my-box .pending-desc,
+    &.zaiui-my-box .pending-action {
+      color: var(--tg-muted);
+    }
+
+    &.mall-page .goods-price,
+    &.goods-page .goods-price,
+    &.detail-page .price-value,
+    &.order-page .goods-price,
+    &.order-page .summary-total,
+    &.analytics-page .comparison-value,
+    &.analytics-page .summary-value,
+    &.renew-page .record-row text:last-child {
+      color: var(--tg-price);
+    }
+
+    &.home-page .merchant-arrow,
+    &.mall-page .recent-release-card__action,
+    &.notice-detail-page .section-link,
+    &.renew-page .card-link,
+    &.analytics-page .warning-action,
+    &.accord-center-page .accord-arrow,
+    &.accord-center-page .accord-action-btn,
+    &.settings-page .text-action,
+    &.zaiui-my-box .pending-badge {
+      color: var(--tg-accent);
+    }
+
+    &.mall-page .recent-release-card__badge,
+    &.zaiui-my-box .pending-badge,
+    &.zaiui-my-box .merchant-tools-summary__badge,
+    &.zaiui-my-box .merchant-super-tools__badge,
+    &.zaiui-my-box .merchant-super-tool-card__badge,
+    &.zaiui-my-box .tool-badge {
+      background: var(--tg-badge-bg);
+    }
+
+    &.detail-page .zaiui-footer-fixed,
+    &.detail-page .zaiui-footer-fixed .cu-bar {
+      background: rgba(255, 255, 255, 0.96);
+    }
+
+    &.detail-page .zaiui-footer-fixed .cu-btn.bg-red {
+      background: linear-gradient(90deg, var(--tg-accent) 0%, var(--tg-accent-strong) 100%);
+      color: #ffffff;
+    }
+
+    &.zaiui-my-box .zaiui-head-glow--two {
+      background: radial-gradient(circle, var(--tg-badge-bg) 0%, rgba(255, 255, 255, 0.04) 72%, rgba(255, 255, 255, 0) 100%);
+    }
+  }
+}

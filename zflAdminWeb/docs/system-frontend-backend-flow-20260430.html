@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>系统前后端操作流程图</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --line: #d7deea;
+      --primary: #0f766e;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 32px;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: linear-gradient(180deg, #eef4ff 0%, #f8fbff 100%);
+      color: var(--text);
+    }
+
+    .wrap {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .hero {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 28px 32px;
+      box-shadow: 0 16px 48px rgba(15, 23, 42, 0.08);
+      margin-bottom: 24px;
+    }
+
+    h1, h2 {
+      margin: 0 0 12px;
+    }
+
+    p {
+      margin: 8px 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+    }
+
+    .hint {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .mermaid {
+      overflow-x: auto;
+    }
+
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+
+      .hero,
+      .section {
+        box-shadow: none;
+        border-radius: 0;
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <h1>系统前后端操作流程图</h1>
+      <p>适用范围：后台运营端、商家端、C 端 H5/小程序/APP、ThinkPHP 后端。</p>
+      <p class="hint">可以直接浏览器打印为 PDF，也可以另存为网页后继续编辑。</p>
+    </div>
+
+    <div class="section">
+      <h2>1. 系统总览</h2>
+      <div class="mermaid">
+flowchart LR
+    Admin["后台运营端<br/>zflAdminWeb<br/>/admin-next/"]
+    Merchant["商家端<br/>zflMerchantWeb"]
+    UniH5["C端 H5<br/>zflUniApp"]
+    UniMP["微信小程序<br/>zflUniApp"]
+    UniAPP["APP 打包端<br/>zflUniApp"]
+    Gateway["Web 服务 / PHP 入口<br/>public/index.php"]
+    Router["路由层<br/>route + controller"]
+    Service["业务服务层<br/>service / logic"]
+    Model["模型层<br/>model"]
+    DB["MySQL 数据库"]
+    File["文件存储<br/>商品图 / 支付凭证 / 收款码"]
+    Cache["运行缓存 / 会话 / 日志"]
+    Admin --> Gateway
+    Merchant --> Gateway
+    UniH5 --> Gateway
+    UniMP --> Gateway
+    UniAPP --> Gateway
+    Gateway --> Router
+    Router --> Service
+    Service --> Model
+    Model --> DB
+    Service --> File
+    Service --> Cache
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>2. 后台运营流程</h2>
+      <div class="mermaid">
+flowchart TD
+    A["管理员打开后台"] --> B["登录页"]
+    B --> C{"账号密码正确?"}
+    C -- "否" --> D["提示登录失败"]
+    C -- "是" --> E["进入首页 / 工作台"]
+    E --> F["商品管理"]
+    E --> G["订单管理"]
+    E --> H["会员管理"]
+    E --> I["商家管理"]
+    E --> J["系统管理"]
+    E --> K["运营报表"]
+    F --> Z["调用后台接口并写入数据库"]
+    G --> Z
+    H --> Z
+    I --> Z
+    J --> Z
+    K --> Z
+    Z --> R["结果回显"]
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>3. C 端用户流程</h2>
+      <div class="mermaid">
+flowchart TD
+    A["用户进入 H5 / 小程序 / APP"] --> B["首页 / 登录入口"]
+    B --> C["协议默认未勾选"]
+    C --> D{"是否勾选协议?"}
+    D -- "否" --> E["拦截登录并提示先同意协议"]
+    D -- "是" --> F["执行登录"]
+    F --> G["浏览商品并下单"]
+    G --> H["付款页展示商家收款码"]
+    H --> I["上传付款凭证"]
+    I --> J["后台审核"]
+    J --> K["订单结果回显"]
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>4. 内部接盘对账流程</h2>
+      <div class="mermaid">
+flowchart TD
+    A["商品未在规定时间内完成下一轮销售"] --> B["平台内部商家号接手"]
+    B --> C["生成接盘订单视图"]
+    C --> D["后台对账页聚合数据"]
+    D --> E["识别待审核 / 待转商品 / 已完成 / 真正异常"]
+    E --> F["运营查看健康面板和异常列表"]
+    F --> G["一键转当前待转商品"]
+    G --> H["刷新统计结果"]
+      </div>
+    </div>
+  </div>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "default",
+      securityLevel: "loose"
+    });
+  </script>
+</body>
+</html>

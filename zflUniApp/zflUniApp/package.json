@@ -1,0 +1,25 @@
+{
+  "private": true,
+  "scripts": {
+    "env:local:init": "node ./scripts/create-env-profile-local.mjs",
+    "env:local:check": "node ./scripts/validate-env-profile-local.mjs",
+    "build:h5:local": "node ./scripts/build-h5-local.mjs",
+    "env:set": "node ./scripts/set-env-profile-local.mjs",
+    "env:status": "node ./scripts/env-status-report.mjs",
+    "env:isolation": "node ./scripts/env-isolation-audit.mjs",
+    "runtime:agreement-audit": "node ./scripts/agreement-flow-audit.mjs",
+    "runtime:readiness": "node ./scripts/runtime-readiness-report.mjs",
+    "release:preflight:test": "node ./scripts/release-preflight.mjs test",
+    "release:preflight:gray": "node ./scripts/release-preflight.mjs gray",
+    "release:preflight:prod": "node ./scripts/release-preflight.mjs prod",
+    "validate:env:dev": "node ./scripts/validate-env-config.mjs dev",
+    "validate:env:local": "node ./scripts/validate-env-config.mjs local",
+    "validate:env:lan": "node ./scripts/validate-env-config.mjs lan",
+    "validate:env:test": "node ./scripts/validate-env-config.mjs test",
+    "validate:env:gray": "node ./scripts/validate-env-config.mjs gray",
+    "validate:env:prod": "node ./scripts/validate-env-config.mjs prod",
+    "release:check:test": "node ./scripts/validate-env-config.mjs test --strict",
+    "release:check:gray": "node ./scripts/validate-env-config.mjs gray --strict",
+    "release:check:prod": "node ./scripts/validate-env-config.mjs prod --strict"
+  }
+}

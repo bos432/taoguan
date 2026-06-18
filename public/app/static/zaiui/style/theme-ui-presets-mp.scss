@@ -1,0 +1,4534 @@
+﻿.ui-theme-red_energy,
+.ui-theme-red_energy {
+  background:
+    radial-gradient(circle at top right, rgba(255, 212, 180, 0.14), transparent 24%),
+    linear-gradient(180deg, #9e0714 0%, #c50e1d 52%, #ea3d36 100%) !important;
+}
+
+.ui-theme-red_energy .home-header,
+.ui-theme-red_energy .zaiui-head-box,
+.ui-theme-red_energy .hero-card,
+.ui-theme-red_energy .pending-reminder-card,
+.ui-theme-red_energy .merchant-tools-summary,
+.ui-theme-red_energy .zaiui-user-info-tip-box {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.18), transparent 22%),
+    linear-gradient(135deg, #960812 0%, #c71524 52%, #f07f37 100%) !important;
+  color: #fff8f6 !important;
+}
+
+.ui-theme-red_energy .content-section,
+.ui-theme-red_energy .section-card,
+.ui-theme-red_energy .gallery-card,
+.ui-theme-red_energy .action-bar,
+.ui-theme-red_energy .zaiui-user-info-order-box,
+.ui-theme-red_energy .zaiui-user-info-tools-box {
+  background: linear-gradient(180deg, rgba(255, 250, 246, 0.98) 0%, rgba(255, 243, 236, 0.96) 100%) !important;
+  border: 1rpx solid rgba(197, 40, 34, 0.16) !important;
+  box-shadow: 0 18rpx 42rpx rgba(84, 0, 0, 0.16) !important;
+}
+
+.ui-theme-red_energy .banner-wrap,
+.ui-theme-red_energy .banner-swiper,
+.ui-theme-red_energy .banner-image,
+.ui-theme-red_energy .gallery-swiper,
+.ui-theme-red_energy .gallery-image {
+  border-radius: 30rpx !important;
+  overflow: hidden !important;
+  box-shadow: 0 16rpx 36rpx rgba(84, 0, 0, 0.2) !important;
+}
+
+.ui-theme-red_energy .section-title,
+.ui-theme-red_energy .goods-title,
+.ui-theme-red_energy .merchant-title,
+.ui-theme-red_energy .entity-title,
+.ui-theme-red_energy .hero-title,
+.ui-theme-red_energy .merchant-tools-summary__title,
+.ui-theme-red_energy .text-black,
+.ui-theme-red_energy .text-lg,
+.ui-theme-red_energy .text-xl,
+.ui-theme-red_energy .text-xxl {
+  color: #7c150d !important;
+}
+
+.ui-theme-red_energy .hero-card .hero-title,
+.ui-theme-red_energy .hero-card .hero-subtitle,
+.ui-theme-red_energy .hero-card .price-value,
+.ui-theme-red_energy .hero-card .price-meta,
+.ui-theme-red_energy .hero-card .hero-side-label,
+.ui-theme-red_energy .hero-card .hero-side-value,
+.ui-theme-red_energy .hero-card .hero-side-tip,
+.ui-theme-red_energy .hero-card .metric-label,
+.ui-theme-red_energy .hero-card .metric-value,
+.ui-theme-red_energy .zaiui-head-box text,
+.ui-theme-red_energy .zaiui-head-box view,
+.ui-theme-red_energy .merchant-tools-summary__desc,
+.ui-theme-red_energy .merchant-tools-summary__status {
+  color: #fff8f6 !important;
+}
+
+.ui-theme-red_energy .search-box,
+.ui-theme-red_energy .hero-search,
+.ui-theme-red_energy .keyword-input,
+.ui-theme-red_energy .filter-input,
+.ui-theme-red_energy .form-input,
+.ui-theme-red_energy .form-textarea,
+.ui-theme-red_energy .shortcut-btn,
+.ui-theme-red_energy .upload-placeholder {
+  background: rgba(255, 248, 244, 0.92) !important;
+  color: #861a12 !important;
+}
+
+.ui-theme-red_energy .tab-pill.active,
+.ui-theme-red_energy .filter-chip.active,
+.ui-theme-red_energy .filter-btn.primary,
+.ui-theme-red_energy .action-btn.primary,
+.ui-theme-red_energy .footer-btn.primary {
+  background: linear-gradient(135deg, #980913 0%, #ca1726 54%, #ef8437 100%) !important;
+  color: #fff8f6 !important;
+}
+
+.ui-theme-red_energy .action-btn.secondary,
+.ui-theme-red_energy .footer-btn.secondary,
+.ui-theme-red_energy .footer-btn.ghost,
+.ui-theme-red_energy .filter-btn,
+.ui-theme-red_energy .tab-pill,
+.ui-theme-red_energy .filter-chip {
+  background: linear-gradient(180deg, #fff7f2 0%, #ffe8df 100%) !important;
+  color: #9b1d16 !important;
+}
+
+.ui-theme-red_energy .goods-price,
+.ui-theme-red_energy .price-row,
+.ui-theme-red_energy .price-value,
+.ui-theme-red_energy .text-red {
+  color: #c81f23 !important;
+}
+
+.ui-theme-red_energy .uni-page-head,
+.ui-theme-red_energy .uni-page-head-hd,
+.ui-theme-red_energy .uni-page-head-btn,
+.ui-theme-red_energy .uni-page-head__title,
+.ui-theme-red_energy .uni-page-head__title text {
+  background: #a30c15 !important;
+  color: #ffffff !important;
+}
+
+.ui-theme-red_energy .banner-card,
+.ui-theme-red_energy .banner-wrap {
+  position: relative;
+}
+
+.ui-theme-red_energy .banner-card::before,
+.ui-theme-red_energy .banner-wrap::before {
+  content: "";
+  position: absolute;
+  inset: -8rpx;
+  border-radius: 34rpx;
+  border: 2rpx solid rgba(255, 232, 210, 0.55);
+  pointer-events: none;
+}
+
+.ui-theme-red_energy .action-bar {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.12), transparent 18%),
+    linear-gradient(135deg, rgba(162, 12, 21, 0.94) 0%, rgba(232, 95, 38, 0.94) 100%) !important;
+}
+
+.ui-theme-red_energy .action-bar .shortcut-btn {
+  background: rgba(255, 247, 242, 0.92) !important;
+  color: #8e1712 !important;
+}
+
+.ui-theme-red_energy .action-bar .action-btn.secondary {
+  background: linear-gradient(180deg, #fff2e8 0%, #ffd8c6 100%) !important;
+}
+
+.ui-theme-red_energy .action-bar .action-btn.primary {
+  background: linear-gradient(135deg, #a10914 0%, #d71827 54%, #ff8d3b 100%) !important;
+}
+
+.ui-theme-red_energy .zaiui-my-box .merchant-tools-summary {
+  border: 1rpx solid rgba(255, 232, 210, 0.45) !important;
+}
+
+.ui-theme-red_energy .zaiui-my-box .merchant-tools-summary__badge {
+  letter-spacing: 2rpx;
+}
+
+.ui-theme-yellow_energy,
+.ui-theme-yellow_energy {
+  background:
+    radial-gradient(circle at top right, rgba(255, 226, 150, 0.24), transparent 24%),
+    linear-gradient(180deg, #f7cf53 0%, #ffe18a 58%, #fff4cf 100%) !important;
+}
+
+.ui-theme-yellow_energy .home-header,
+.ui-theme-yellow_energy .zaiui-head-box,
+.ui-theme-yellow_energy .hero-card,
+.ui-theme-yellow_energy .pending-reminder-card,
+.ui-theme-yellow_energy .merchant-tools-summary,
+.ui-theme-yellow_energy .zaiui-user-info-tip-box {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.16), transparent 22%),
+    linear-gradient(135deg, #f6cd52 0%, #ffe58c 50%, #fff6d9 100%) !important;
+  color: #9a1f12 !important;
+}
+
+.ui-theme-yellow_energy .content-section,
+.ui-theme-yellow_energy .section-card,
+.ui-theme-yellow_energy .gallery-card,
+.ui-theme-yellow_energy .action-bar,
+.ui-theme-yellow_energy .zaiui-user-info-order-box,
+.ui-theme-yellow_energy .zaiui-user-info-tools-box {
+  background: linear-gradient(180deg, rgba(255, 251, 239, 0.98) 0%, rgba(255, 245, 217, 0.96) 100%) !important;
+  border: 1rpx solid rgba(196, 48, 20, 0.14) !important;
+  box-shadow: 0 16rpx 38rpx rgba(161, 68, 13, 0.12) !important;
+}
+
+.ui-theme-yellow_energy .banner-wrap,
+.ui-theme-yellow_energy .banner-swiper,
+.ui-theme-yellow_energy .banner-image,
+.ui-theme-yellow_energy .gallery-swiper,
+.ui-theme-yellow_energy .gallery-image {
+  border-radius: 30rpx !important;
+  overflow: hidden !important;
+  box-shadow: 0 12rpx 28rpx rgba(168, 83, 18, 0.18) !important;
+}
+
+.ui-theme-yellow_energy .section-title,
+.ui-theme-yellow_energy .goods-title,
+.ui-theme-yellow_energy .merchant-title,
+.ui-theme-yellow_energy .entity-title,
+.ui-theme-yellow_energy .hero-title,
+.ui-theme-yellow_energy .merchant-tools-summary__title,
+.ui-theme-yellow_energy .text-black,
+.ui-theme-yellow_energy .text-lg,
+.ui-theme-yellow_energy .text-xl,
+.ui-theme-yellow_energy .text-xxl {
+  color: #9b220f !important;
+}
+
+.ui-theme-yellow_energy .hero-card .hero-title,
+.ui-theme-yellow_energy .hero-card .hero-subtitle,
+.ui-theme-yellow_energy .hero-card .price-value,
+.ui-theme-yellow_energy .hero-card .price-meta,
+.ui-theme-yellow_energy .hero-card .hero-side-label,
+.ui-theme-yellow_energy .hero-card .hero-side-value,
+.ui-theme-yellow_energy .hero-card .hero-side-tip,
+.ui-theme-yellow_energy .hero-card .metric-label,
+.ui-theme-yellow_energy .hero-card .metric-value,
+.ui-theme-yellow_energy .zaiui-head-box text,
+.ui-theme-yellow_energy .zaiui-head-box view,
+.ui-theme-yellow_energy .merchant-tools-summary__desc,
+.ui-theme-yellow_energy .merchant-tools-summary__status {
+  color: #9b220f !important;
+}
+
+.ui-theme-yellow_energy .search-box,
+.ui-theme-yellow_energy .hero-search,
+.ui-theme-yellow_energy .keyword-input,
+.ui-theme-yellow_energy .filter-input,
+.ui-theme-yellow_energy .form-input,
+.ui-theme-yellow_energy .form-textarea,
+.ui-theme-yellow_energy .shortcut-btn,
+.ui-theme-yellow_energy .upload-placeholder {
+  background: rgba(255, 250, 235, 0.94) !important;
+  color: #9b220f !important;
+}
+
+.ui-theme-yellow_energy .tab-pill.active,
+.ui-theme-yellow_energy .filter-chip.active,
+.ui-theme-yellow_energy .filter-btn.primary,
+.ui-theme-yellow_energy .action-btn.primary,
+.ui-theme-yellow_energy .footer-btn.primary {
+  background: linear-gradient(135deg, #b72013 0%, #d94d1d 52%, #f2ab31 100%) !important;
+  color: #fff8f2 !important;
+}
+
+.ui-theme-yellow_energy .action-btn.secondary,
+.ui-theme-yellow_energy .footer-btn.secondary,
+.ui-theme-yellow_energy .footer-btn.ghost,
+.ui-theme-yellow_energy .filter-btn,
+.ui-theme-yellow_energy .tab-pill,
+.ui-theme-yellow_energy .filter-chip {
+  background: linear-gradient(180deg, #fff7dc 0%, #ffefbc 100%) !important;
+  color: #a42a15 !important;
+}
+
+.ui-theme-yellow_energy .goods-price,
+.ui-theme-yellow_energy .price-row,
+.ui-theme-yellow_energy .price-value,
+.ui-theme-yellow_energy .text-red {
+  color: #bf2414 !important;
+}
+
+.ui-theme-yellow_energy .uni-page-head,
+.ui-theme-yellow_energy .uni-page-head-hd,
+.ui-theme-yellow_energy .uni-page-head-btn,
+.ui-theme-yellow_energy .uni-page-head__title,
+.ui-theme-yellow_energy .uni-page-head__title text {
+  background: #f4c53f !important;
+  color: #000000 !important;
+}
+
+.ui-theme-yellow_energy .banner-card,
+.ui-theme-yellow_energy .banner-wrap {
+  position: relative;
+}
+
+.ui-theme-yellow_energy .banner-card::before,
+.ui-theme-yellow_energy .banner-wrap::before {
+  content: "";
+  position: absolute;
+  inset: -8rpx;
+  border-radius: 34rpx;
+  border: 2rpx solid rgba(184, 34, 18, 0.22);
+  box-shadow: inset 0 0 0 2rpx rgba(255, 227, 150, 0.45);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .banner-card .section-title,
+.ui-theme-yellow_energy .banner-wrap .section-title,
+.ui-theme-yellow_energy .banner-card .section-tip {
+  color: #a82816 !important;
+}
+
+.ui-theme-yellow_energy .action-bar {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.18), transparent 18%),
+    linear-gradient(135deg, rgba(246, 205, 82, 0.98) 0%, rgba(255, 233, 163, 0.96) 52%, rgba(255, 246, 220, 0.95) 100%) !important;
+  border: 1rpx solid rgba(193, 48, 22, 0.14) !important;
+}
+
+.ui-theme-yellow_energy .action-bar .shortcut-btn {
+  background: rgba(255, 250, 238, 0.96) !important;
+  color: #a12a16 !important;
+}
+
+.ui-theme-yellow_energy .action-bar .action-btn.secondary {
+  background: linear-gradient(180deg, #fff6dc 0%, #ffe8b5 100%) !important;
+  color: #a12a16 !important;
+}
+
+.ui-theme-yellow_energy .action-bar .action-btn.primary {
+  background: linear-gradient(135deg, #ba1e13 0%, #de571f 52%, #f3b232 100%) !important;
+  color: #fff9f2 !important;
+}
+
+.ui-theme-yellow_energy .zaiui-my-box .merchant-tools-summary {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.16), transparent 18%),
+    linear-gradient(135deg, rgba(246, 205, 82, 0.98) 0%, rgba(255, 233, 163, 0.95) 54%, rgba(255, 247, 219, 0.94) 100%) !important;
+}
+
+.ui-theme-yellow_energy .zaiui-my-box .merchant-tools-summary__badge,
+.ui-theme-yellow_energy .zaiui-my-box .merchant-tools-summary__status {
+  background: rgba(183, 32, 18, 0.1) !important;
+  color: #a82816 !important;
+}
+
+.ui-theme-jade_modern,
+.ui-theme-jade_modern {
+  background:
+    radial-gradient(circle at top right, rgba(227, 197, 109, 0.18), transparent 20%),
+    linear-gradient(180deg, #edf3ee 0%, #f6efe4 100%) !important;
+}
+
+.ui-theme-jade_modern .home-header,
+.ui-theme-jade_modern .zaiui-head-box,
+.ui-theme-jade_modern .hero-card,
+.ui-theme-jade_modern .pending-reminder-card,
+.ui-theme-jade_modern .merchant-tools-summary,
+.ui-theme-jade_modern .zaiui-user-info-tip-box {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.14), transparent 22%),
+    linear-gradient(135deg, #184c43 0%, #1f6d61 54%, #d8a43a 100%) !important;
+  color: #f8f4ea !important;
+}
+
+.ui-theme-jade_modern .content-section,
+.ui-theme-jade_modern .section-card,
+.ui-theme-jade_modern .gallery-card,
+.ui-theme-jade_modern .action-bar,
+.ui-theme-jade_modern .zaiui-user-info-order-box,
+.ui-theme-jade_modern .zaiui-user-info-tools-box {
+  background: linear-gradient(180deg, rgba(255, 252, 247, 0.98) 0%, rgba(246, 238, 224, 0.96) 100%) !important;
+  border: 1rpx solid rgba(24, 76, 67, 0.12) !important;
+  box-shadow: 0 16rpx 34rpx rgba(25, 54, 50, 0.12) !important;
+}
+
+.ui-theme-jade_modern .banner-wrap,
+.ui-theme-jade_modern .banner-swiper,
+.ui-theme-jade_modern .banner-image,
+.ui-theme-jade_modern .gallery-swiper,
+.ui-theme-jade_modern .gallery-image {
+  border-radius: 32rpx !important;
+  overflow: hidden !important;
+  box-shadow: 0 18rpx 32rpx rgba(24, 76, 67, 0.14) !important;
+}
+
+.ui-theme-jade_modern .section-title,
+.ui-theme-jade_modern .goods-title,
+.ui-theme-jade_modern .merchant-title,
+.ui-theme-jade_modern .entity-title,
+.ui-theme-jade_modern .hero-title,
+.ui-theme-jade_modern .merchant-tools-summary__title,
+.ui-theme-jade_modern .text-black,
+.ui-theme-jade_modern .text-lg,
+.ui-theme-jade_modern .text-xl,
+.ui-theme-jade_modern .text-xxl {
+  color: #173d37 !important;
+}
+
+.ui-theme-jade_modern .hero-card .hero-title,
+.ui-theme-jade_modern .hero-card .hero-subtitle,
+.ui-theme-jade_modern .hero-card .price-value,
+.ui-theme-jade_modern .hero-card .price-meta,
+.ui-theme-jade_modern .hero-card .hero-side-label,
+.ui-theme-jade_modern .hero-card .hero-side-value,
+.ui-theme-jade_modern .hero-card .hero-side-tip,
+.ui-theme-jade_modern .hero-card .metric-label,
+.ui-theme-jade_modern .hero-card .metric-value,
+.ui-theme-jade_modern .zaiui-head-box text,
+.ui-theme-jade_modern .zaiui-head-box view,
+.ui-theme-jade_modern .merchant-tools-summary__desc,
+.ui-theme-jade_modern .merchant-tools-summary__status {
+  color: #f8f4ea !important;
+}
+
+.ui-theme-jade_modern .search-box,
+.ui-theme-jade_modern .hero-search,
+.ui-theme-jade_modern .keyword-input,
+.ui-theme-jade_modern .filter-input,
+.ui-theme-jade_modern .form-input,
+.ui-theme-jade_modern .form-textarea,
+.ui-theme-jade_modern .shortcut-btn,
+.ui-theme-jade_modern .upload-placeholder {
+  background: rgba(250, 246, 239, 0.94) !important;
+  color: #1a4a43 !important;
+}
+
+.ui-theme-jade_modern .tab-pill.active,
+.ui-theme-jade_modern .filter-chip.active,
+.ui-theme-jade_modern .filter-btn.primary,
+.ui-theme-jade_modern .action-btn.primary,
+.ui-theme-jade_modern .footer-btn.primary {
+  background: linear-gradient(135deg, #17483f 0%, #1f6c60 54%, #d8a43a 100%) !important;
+  color: #f8f4ea !important;
+}
+
+.ui-theme-jade_modern .action-btn.secondary,
+.ui-theme-jade_modern .footer-btn.secondary,
+.ui-theme-jade_modern .footer-btn.ghost,
+.ui-theme-jade_modern .filter-btn,
+.ui-theme-jade_modern .tab-pill,
+.ui-theme-jade_modern .filter-chip {
+  background: linear-gradient(180deg, #fbf5ea 0%, #efe4cf 100%) !important;
+  color: #1f5d53 !important;
+}
+
+.ui-theme-jade_modern .goods-price,
+.ui-theme-jade_modern .price-row,
+.ui-theme-jade_modern .price-value,
+.ui-theme-jade_modern .text-red {
+  color: #c98618 !important;
+}
+
+.ui-theme-jade_modern .uni-page-head,
+.ui-theme-jade_modern .uni-page-head-hd,
+.ui-theme-jade_modern .uni-page-head-btn,
+.ui-theme-jade_modern .uni-page-head__title,
+.ui-theme-jade_modern .uni-page-head__title text {
+  background: #164c43 !important;
+  color: #ffffff !important;
+}
+
+.ui-theme-jade_modern .banner-card,
+.ui-theme-jade_modern .banner-wrap {
+  position: relative;
+}
+
+.ui-theme-jade_modern .banner-card::before,
+.ui-theme-jade_modern .banner-wrap::before {
+  content: "";
+  position: absolute;
+  inset: -10rpx;
+  border-radius: 36rpx;
+  border: 2rpx solid rgba(24, 76, 67, 0.14);
+  pointer-events: none;
+}
+
+.ui-theme-jade_modern .action-bar {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.16), transparent 18%),
+    linear-gradient(135deg, rgba(24, 76, 67, 0.94) 0%, rgba(32, 109, 96, 0.94) 54%, rgba(216, 164, 58, 0.92) 100%) !important;
+}
+
+.ui-theme-jade_modern .action-bar .shortcut-btn {
+  background: rgba(250, 245, 238, 0.96) !important;
+  color: #1b5a50 !important;
+}
+
+.ui-theme-jade_modern .action-bar .action-btn.secondary {
+  background: linear-gradient(180deg, #fbf5ea 0%, #efe0bf 100%) !important;
+  color: #1d5f55 !important;
+}
+
+.ui-theme-jade_modern .action-bar .action-btn.primary {
+  background: linear-gradient(135deg, #184c43 0%, #1f6d61 58%, #d8a43a 100%) !important;
+  color: #f8f4ea !important;
+}
+
+.ui-theme-jade_modern .zaiui-my-box .merchant-tools-summary {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.16), transparent 20%),
+    linear-gradient(135deg, rgba(24, 76, 67, 0.96) 0%, rgba(31, 109, 97, 0.95) 54%, rgba(216, 164, 58, 0.92) 100%) !important;
+}
+
+.ui-theme-jade_modern .zaiui-my-box .merchant-tools-summary__badge,
+.ui-theme-jade_modern .zaiui-my-box .merchant-tools-summary__status {
+  background: rgba(248, 244, 234, 0.16) !important;
+  color: #f8f4ea !important;
+}
+
+.ui-theme-red_energy .home-header,
+.ui-theme-yellow_energy .home-header,
+.ui-theme-jade_modern .home-header,
+.ui-theme-red_energy .banner-wrap,
+.ui-theme-yellow_energy .banner-wrap,
+.ui-theme-jade_modern .banner-wrap,
+.ui-theme-red_energy .gallery-card,
+.ui-theme-yellow_energy .gallery-card,
+.ui-theme-jade_modern .gallery-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.ui-theme-red_energy .detail-page {
+  background:
+    radial-gradient(circle at top right, rgba(255, 190, 150, 0.24), transparent 24%),
+    linear-gradient(180deg, #8f0814 0%, #b70d1b 22%, #d52023 42%, #f2eee8 43%, #f6eee7 100%) !important;
+}
+
+.ui-theme-red_energy .home-header::before {
+  content: "";
+  position: absolute;
+  inset: auto -80rpx -120rpx auto;
+  width: 320rpx;
+  height: 320rpx;
+  background: radial-gradient(circle, rgba(255, 219, 184, 0.42) 0%, rgba(255, 219, 184, 0) 70%);
+  pointer-events: none;
+}
+
+.ui-theme-red_energy .home-header::after {
+  content: "";
+  position: absolute;
+  left: 26rpx;
+  right: 26rpx;
+  bottom: 18rpx;
+  height: 8rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, rgba(255, 235, 211, 0.08) 0%, rgba(255, 235, 211, 0.85) 50%, rgba(255, 235, 211, 0.08) 100%);
+  pointer-events: none;
+}
+
+.ui-theme-red_energy .search-box {
+  border: 1rpx solid rgba(255, 245, 237, 0.22) !important;
+  box-shadow: inset 0 0 0 1rpx rgba(255, 255, 255, 0.05) !important;
+}
+
+.ui-theme-red_energy .tab-pill {
+  border: 1rpx solid rgba(255, 244, 233, 0.18) !important;
+}
+
+.ui-theme-red_energy .tab-pill.active {
+  background: linear-gradient(135deg, #8f0912 0%, #c91d24 62%, #f08d3f 100%) !important;
+  color: #fff8f4 !important;
+  box-shadow: 0 12rpx 26rpx rgba(111, 8, 12, 0.22) !important;
+}
+
+.ui-theme-red_energy .banner-wrap {
+  padding: 10rpx;
+  background:
+    radial-gradient(circle at top right, rgba(255, 235, 211, 0.24), transparent 22%),
+    linear-gradient(135deg, rgba(117, 9, 12, 0.92) 0%, rgba(196, 18, 29, 0.92) 56%, rgba(241, 140, 60, 0.92) 100%) !important;
+  box-shadow: 0 20rpx 40rpx rgba(82, 0, 0, 0.2) !important;
+}
+
+.ui-theme-red_energy .banner-wrap::after,
+.ui-theme-red_energy .gallery-card::before {
+  content: "";
+  position: absolute;
+  inset: 10rpx;
+  border-radius: 24rpx;
+  border: 1rpx solid rgba(255, 233, 212, 0.38);
+  pointer-events: none;
+}
+
+.ui-theme-red_energy .hero-card,
+.ui-theme-red_energy .pending-reminder-card {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.14), transparent 24%),
+    linear-gradient(135deg, #8e0812 0%, #c51424 54%, #ef7d35 100%) !important;
+}
+
+.ui-theme-red_energy .gallery-badge {
+  background: rgba(109, 8, 12, 0.68) !important;
+  border: 1rpx solid rgba(255, 229, 202, 0.32) !important;
+  color: #fff8f4 !important;
+}
+
+.ui-theme-red_energy .merchant-tools-summary,
+.ui-theme-red_energy .pending-reminder-card {
+  border: 1rpx solid rgba(255, 231, 206, 0.34) !important;
+}
+
+.ui-theme-red_energy .tool-badge {
+  background: linear-gradient(135deg, #a90d15 0%, #ed8739 100%) !important;
+  color: #fff8f4 !important;
+}
+
+.ui-theme-yellow_energy .detail-page {
+  background:
+    radial-gradient(circle at top right, rgba(255, 226, 140, 0.28), transparent 26%),
+    linear-gradient(180deg, #f4c63f 0%, #f7d869 21%, #fbf1ca 44%, #fff9ea 100%) !important;
+}
+
+.ui-theme-yellow_energy .home-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(120deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 42%),
+    radial-gradient(circle at top right, rgba(255, 244, 205, 0.42), rgba(255, 244, 205, 0) 62%);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .home-header::after {
+  content: "";
+  position: absolute;
+  left: 30rpx;
+  right: 30rpx;
+  bottom: 16rpx;
+  height: 10rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, rgba(183, 32, 18, 0.05) 0%, rgba(183, 32, 18, 0.55) 50%, rgba(183, 32, 18, 0.05) 100%);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .search-box {
+  border: 1rpx solid rgba(183, 32, 18, 0.1) !important;
+  box-shadow: inset 0 0 0 1rpx rgba(255, 255, 255, 0.3) !important;
+}
+
+.ui-theme-yellow_energy .tab-pill {
+  border: 1rpx solid rgba(183, 32, 18, 0.08) !important;
+}
+
+.ui-theme-yellow_energy .tab-pill.active {
+  background: linear-gradient(135deg, #b82013 0%, #dc531e 55%, #f3b132 100%) !important;
+  color: #fff8ef !important;
+  box-shadow: 0 12rpx 24rpx rgba(183, 61, 16, 0.16) !important;
+}
+
+.ui-theme-yellow_energy .banner-wrap {
+  padding: 12rpx;
+  background:
+    linear-gradient(135deg, rgba(247, 208, 86, 0.98) 0%, rgba(255, 231, 151, 0.96) 62%, rgba(255, 246, 220, 0.98) 100%) !important;
+  box-shadow: 0 18rpx 34rpx rgba(175, 101, 20, 0.16) !important;
+}
+
+.ui-theme-yellow_energy .banner-wrap::after,
+.ui-theme-yellow_energy .gallery-card::before {
+  content: "";
+  position: absolute;
+  inset: 10rpx;
+  border-radius: 24rpx;
+  border: 1rpx solid rgba(183, 32, 18, 0.18);
+  box-shadow: inset 0 0 0 1rpx rgba(255, 245, 212, 0.72);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .hero-card,
+.ui-theme-yellow_energy .pending-reminder-card {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.16), transparent 24%),
+    linear-gradient(135deg, #f2c23f 0%, #f8da74 48%, #fff7df 100%) !important;
+  color: #9b210f !important;
+}
+
+.ui-theme-yellow_energy .hero-card .price-value,
+.ui-theme-yellow_energy .hero-card .hero-title,
+.ui-theme-yellow_energy .hero-card .hero-subtitle,
+.ui-theme-yellow_energy .pending-reminder-card .pending-title,
+.ui-theme-yellow_energy .pending-reminder-card .pending-desc,
+.ui-theme-yellow_energy .pending-reminder-card .pending-action {
+  color: #9b210f !important;
+}
+
+.ui-theme-yellow_energy .gallery-badge {
+  background: rgba(183, 32, 18, 0.16) !important;
+  border: 1rpx solid rgba(183, 32, 18, 0.12) !important;
+  color: #9b210f !important;
+}
+
+.ui-theme-yellow_energy .zaiui-my-box .merchant-tools-summary {
+  border: 1rpx solid rgba(183, 32, 18, 0.16) !important;
+  box-shadow: 0 16rpx 32rpx rgba(177, 100, 20, 0.12) !important;
+}
+
+.ui-theme-yellow_energy .tool-badge {
+  background: linear-gradient(135deg, #b82013 0%, #f2b232 100%) !important;
+  color: #fff8ef !important;
+}
+
+.ui-theme-yellow_energy .home-header {
+  background:
+    radial-gradient(circle at top right, rgba(255, 247, 214, 0.42), transparent 28%),
+    linear-gradient(135deg, #f2c339 0%, #f8da70 46%, #fff0ba 100%) !important;
+  box-shadow: 0 20rpx 42rpx rgba(173, 92, 18, 0.18) !important;
+}
+
+.ui-theme-yellow_energy .header-copy,
+.ui-theme-yellow_energy .header-title,
+.ui-theme-yellow_energy .header-subtitle,
+.ui-theme-yellow_energy .search-placeholder {
+  color: #a32513 !important;
+}
+
+.ui-theme-yellow_energy .header-title {
+  letter-spacing: 2rpx;
+  text-shadow: 0 6rpx 18rpx rgba(255, 248, 233, 0.42);
+}
+
+.ui-theme-yellow_energy .header-subtitle {
+  opacity: 0.88;
+}
+
+.ui-theme-yellow_energy .content-section {
+  position: relative;
+}
+
+.ui-theme-yellow_energy .content-section::before {
+  content: "";
+  position: absolute;
+  left: 28rpx;
+  right: 28rpx;
+  top: 0;
+  height: 8rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, rgba(183, 32, 18, 0.08) 0%, rgba(183, 32, 18, 0.72) 48%, rgba(243, 178, 50, 0.78) 100%);
+}
+
+.ui-theme-yellow_energy .section-head {
+  align-items: center;
+}
+
+.ui-theme-yellow_energy .section-title {
+  position: relative;
+  padding-left: 24rpx;
+}
+
+.ui-theme-yellow_energy .section-title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 12rpx;
+  height: 34rpx;
+  border-radius: 999rpx;
+  transform: translateY(-50%);
+  background: linear-gradient(180deg, #b71f12 0%, #f2b232 100%);
+}
+
+.ui-theme-yellow_energy .section-tip {
+  color: #b42b15 !important;
+  font-weight: 600;
+}
+
+.ui-theme-yellow_energy .goods-card,
+.ui-theme-yellow_energy .merchant-card {
+  padding: 22rpx !important;
+  border-radius: 26rpx !important;
+  background: linear-gradient(180deg, rgba(255, 252, 242, 0.98) 0%, rgba(255, 246, 220, 0.94) 100%) !important;
+  border: 1rpx solid rgba(183, 32, 18, 0.1) !important;
+  box-shadow: 0 12rpx 26rpx rgba(177, 100, 20, 0.1) !important;
+}
+
+.ui-theme-yellow_energy .goods-card + .goods-card,
+.ui-theme-yellow_energy .merchant-card + .merchant-card {
+  border-top: none !important;
+  margin-top: 18rpx;
+}
+
+.ui-theme-yellow_energy .goods-image,
+.ui-theme-yellow_energy .merchant-avatar {
+  border: 2rpx solid rgba(245, 210, 111, 0.65) !important;
+  box-shadow: 0 10rpx 20rpx rgba(173, 92, 18, 0.12) !important;
+}
+
+.ui-theme-yellow_energy .goods-title,
+.ui-theme-yellow_energy .merchant-title {
+  color: #8f1f0f !important;
+}
+
+.ui-theme-yellow_energy .goods-spec,
+.ui-theme-yellow_energy .merchant-desc {
+  color: #b16825 !important;
+}
+
+.ui-theme-yellow_energy .goods-price {
+  font-size: 34rpx !important;
+  font-weight: 700 !important;
+}
+
+.ui-theme-yellow_energy .goods-sales,
+.ui-theme-yellow_energy .goods-merchant {
+  color: #a76b27 !important;
+}
+
+.ui-theme-yellow_energy .merchant-arrow {
+  min-width: 110rpx;
+  height: 56rpx;
+  border-radius: 999rpx;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(183, 32, 18, 0.08) 0%, rgba(242, 178, 50, 0.18) 100%) !important;
+  color: #ad2814 !important;
+  font-weight: 600;
+}
+
+.ui-theme-yellow_energy .hero-card {
+  position: relative;
+  overflow: hidden;
+  border: 1rpx solid rgba(183, 32, 18, 0.12) !important;
+  box-shadow: 0 18rpx 34rpx rgba(177, 100, 20, 0.14) !important;
+}
+
+.ui-theme-yellow_energy .hero-card::before {
+  content: "";
+  position: absolute;
+  top: -90rpx;
+  right: -40rpx;
+  width: 260rpx;
+  height: 260rpx;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0) 72%);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .price-row,
+.ui-theme-yellow_energy .price-meta,
+.ui-theme-yellow_energy .hero-side-label,
+.ui-theme-yellow_energy .hero-side-value,
+.ui-theme-yellow_energy .hero-side-tip {
+  color: #991f10 !important;
+}
+
+.ui-theme-yellow_energy .hero-side {
+  background: rgba(183, 32, 18, 0.08) !important;
+  border: 1rpx solid rgba(183, 32, 18, 0.1) !important;
+}
+
+.ui-theme-yellow_energy .label-chip {
+  background: rgba(183, 32, 18, 0.08) !important;
+  border: 1rpx solid rgba(183, 32, 18, 0.1) !important;
+  color: #ab2614 !important;
+}
+
+.ui-theme-yellow_energy .entity-card {
+  background: linear-gradient(180deg, rgba(255, 252, 244, 0.98) 0%, rgba(255, 245, 221, 0.94) 100%) !important;
+  border: 1rpx solid rgba(183, 32, 18, 0.08) !important;
+}
+
+.ui-theme-yellow_energy .entity-title {
+  color: #921f10 !important;
+}
+
+.ui-theme-yellow_energy .entity-desc,
+.ui-theme-yellow_energy .info-label,
+.ui-theme-yellow_energy .info-value {
+  color: #b16825 !important;
+}
+
+.ui-theme-yellow_energy .action-shortcuts,
+.ui-theme-yellow_energy .action-group {
+  padding: 8rpx;
+  border-radius: 28rpx;
+  background: rgba(255, 250, 235, 0.42) !important;
+}
+
+.ui-theme-yellow_energy .action-bar .shortcut-btn {
+  border: 1rpx solid rgba(183, 32, 18, 0.08) !important;
+  box-shadow: 0 8rpx 18rpx rgba(173, 92, 18, 0.08) !important;
+}
+
+.ui-theme-yellow_energy .gallery-card {
+  border: 1rpx solid rgba(183, 32, 18, 0.1) !important;
+}
+
+.ui-theme-yellow_energy .zaiui-head-box {
+  box-shadow: 0 24rpx 48rpx rgba(177, 100, 20, 0.16) !important;
+}
+
+.ui-theme-yellow_energy .zaiui-user-info-tip-box {
+  background:
+    linear-gradient(135deg, rgba(247, 208, 86, 0.96) 0%, rgba(255, 234, 155, 0.96) 58%, rgba(255, 248, 226, 0.96) 100%) !important;
+  border: 1rpx solid rgba(183, 32, 18, 0.1) !important;
+}
+
+.ui-theme-yellow_energy .zaiui-user-info-tip-box .text-cut,
+.ui-theme-yellow_energy .zaiui-user-info-tip-box .icon {
+  color: #ad2614 !important;
+}
+
+.ui-theme-yellow_energy .pending-reminder-card {
+  border: 1rpx solid rgba(183, 32, 18, 0.12) !important;
+}
+
+.ui-theme-yellow_energy .pending-reminder-card .pending-badge {
+  background: rgba(183, 32, 18, 0.08) !important;
+  color: #a72614 !important;
+}
+
+.ui-theme-yellow_energy .merchant-tools-summary__head {
+  padding-bottom: 14rpx;
+  border-bottom: 1rpx solid rgba(183, 32, 18, 0.08);
+}
+
+.ui-theme-yellow_energy .merchant-tools-summary__desc {
+  color: #a96a25 !important;
+}
+
+.ui-theme-yellow_energy .zaiui-tools-list-box .cu-item::before {
+  content: "";
+  position: absolute;
+  left: 12rpx;
+  right: 12rpx;
+  top: 10rpx;
+  bottom: 10rpx;
+  border-radius: 22rpx;
+  background: linear-gradient(180deg, rgba(255, 252, 243, 0.98) 0%, rgba(255, 246, 223, 0.94) 100%);
+  border: 1rpx solid rgba(183, 32, 18, 0.08);
+  box-shadow: 0 8rpx 18rpx rgba(177, 100, 20, 0.08);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .zaiui-tools-list-box .cu-item .text-black,
+.ui-theme-yellow_energy .zaiui-tools-list-box .cu-item text {
+  position: relative;
+  z-index: 1;
+}
+
+.ui-theme-yellow_energy .home-header {
+  border-bottom: 1rpx solid rgba(183, 32, 18, 0.1) !important;
+}
+
+.ui-theme-yellow_energy .home-header::before {
+  background:
+    radial-gradient(circle at 86% 14%, rgba(255, 249, 220, 0.56), rgba(255, 249, 220, 0) 42%),
+    radial-gradient(circle at 20% 18%, rgba(183, 32, 18, 0.08), rgba(183, 32, 18, 0) 32%),
+    linear-gradient(120deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0) 42%) !important;
+}
+
+.ui-theme-yellow_energy .home-header::after {
+  height: 12rpx !important;
+  background:
+    linear-gradient(90deg, rgba(183, 32, 18, 0) 0%, rgba(183, 32, 18, 0.4) 26%, rgba(242, 178, 50, 0.9) 52%, rgba(183, 32, 18, 0.4) 76%, rgba(183, 32, 18, 0) 100%) !important;
+  box-shadow: 0 0 22rpx rgba(242, 178, 50, 0.28);
+}
+
+.ui-theme-yellow_energy .header-copy {
+  position: relative;
+  z-index: 1;
+}
+
+.ui-theme-yellow_energy .header-copy::before {
+  content: "";
+  position: absolute;
+  left: -12rpx;
+  top: -18rpx;
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 50%;
+  border: 2rpx solid rgba(183, 32, 18, 0.08);
+  box-shadow:
+    0 0 0 18rpx rgba(248, 217, 105, 0.1),
+    0 0 0 42rpx rgba(248, 217, 105, 0.05);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .header-copy::after {
+  content: "";
+  position: absolute;
+  left: 8rpx;
+  top: 18rpx;
+  width: 136rpx;
+  height: 10rpx;
+  border-radius: 999rpx;
+  background:
+    linear-gradient(90deg, rgba(183, 32, 18, 0.14) 0%, rgba(183, 32, 18, 0.68) 52%, rgba(242, 178, 50, 0.88) 100%);
+  box-shadow: 0 0 18rpx rgba(242, 178, 50, 0.24);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .search-box {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(255, 250, 237, 0.98) 0%, rgba(255, 243, 204, 0.94) 100%) !important;
+}
+
+.ui-theme-yellow_energy .search-box::before {
+  content: "";
+  position: absolute;
+  inset: 2rpx;
+  border-radius: 999rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.52);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .tab-row {
+  padding: 8rpx;
+  border-radius: 999rpx;
+  background: rgba(183, 32, 18, 0.06) !important;
+  box-shadow: inset 0 0 0 1rpx rgba(183, 32, 18, 0.05);
+}
+
+.ui-theme-yellow_energy .tab-pill {
+  position: relative;
+  overflow: hidden;
+}
+
+.ui-theme-yellow_energy .tab-pill::after {
+  content: "";
+  position: absolute;
+  inset: 2rpx;
+  border-radius: 999rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.28);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .tab-pill.active::before {
+  content: "";
+  position: absolute;
+  left: -14rpx;
+  top: -22rpx;
+  width: 120rpx;
+  height: 120rpx;
+  background: radial-gradient(circle, rgba(255, 249, 229, 0.44) 0%, rgba(255, 249, 229, 0) 68%);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .banner-wrap {
+  border: 1rpx solid rgba(183, 32, 18, 0.14) !important;
+}
+
+.ui-theme-yellow_energy .banner-wrap::before {
+  inset: -12rpx !important;
+  border: 2rpx solid rgba(183, 32, 18, 0.24) !important;
+  box-shadow:
+    0 0 0 10rpx rgba(248, 217, 105, 0.14),
+    0 22rpx 44rpx rgba(177, 100, 20, 0.18) !important;
+}
+
+.ui-theme-yellow_energy .banner-wrap::after {
+  box-shadow:
+    inset 0 0 0 1rpx rgba(255, 245, 212, 0.74),
+    inset 0 0 48rpx rgba(255, 249, 228, 0.18) !important;
+}
+
+.ui-theme-yellow_energy .banner-swiper::before {
+  content: "";
+  position: absolute;
+  left: 26rpx;
+  right: 26rpx;
+  top: 18rpx;
+  height: 1rpx;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(183, 32, 18, 0.3) 0,
+    rgba(183, 32, 18, 0.3) 12rpx,
+    rgba(242, 178, 50, 0) 12rpx,
+    rgba(242, 178, 50, 0) 24rpx
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+.ui-theme-yellow_energy .banner-swiper::after {
+  content: "";
+  position: absolute;
+  right: 24rpx;
+  top: 26rpx;
+  width: 118rpx;
+  height: 118rpx;
+  border-radius: 50%;
+  border: 1rpx solid rgba(183, 32, 18, 0.18);
+  box-shadow:
+    0 0 0 12rpx rgba(248, 217, 105, 0.1),
+    0 0 0 26rpx rgba(248, 217, 105, 0.04);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.ui-theme-yellow_energy .content-section {
+  overflow: hidden;
+}
+
+.ui-theme-yellow_energy .content-section::after {
+  content: "";
+  position: absolute;
+  right: -38rpx;
+  top: -46rpx;
+  width: 170rpx;
+  height: 170rpx;
+  border-radius: 50%;
+  border: 2rpx solid rgba(183, 32, 18, 0.08);
+  box-shadow:
+    0 0 0 18rpx rgba(248, 217, 105, 0.12),
+    0 0 0 42rpx rgba(248, 217, 105, 0.06);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .goods-card,
+.ui-theme-yellow_energy .merchant-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.ui-theme-yellow_energy .goods-card::before,
+.ui-theme-yellow_energy .merchant-card::before {
+  content: "";
+  position: absolute;
+  left: 24rpx;
+  right: 24rpx;
+  top: 0;
+  height: 6rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, rgba(183, 32, 18, 0.08) 0%, rgba(183, 32, 18, 0.62) 46%, rgba(242, 178, 50, 0.82) 100%);
+}
+
+.ui-theme-yellow_energy .goods-card::after,
+.ui-theme-yellow_energy .merchant-card::after {
+  content: "";
+  position: absolute;
+  right: -26rpx;
+  bottom: -24rpx;
+  width: 118rpx;
+  height: 118rpx;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(248, 217, 105, 0.16) 0%, rgba(248, 217, 105, 0) 72%);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .merchant-arrow {
+  box-shadow: inset 0 0 0 1rpx rgba(255, 255, 255, 0.32);
+}
+
+.ui-theme-yellow_energy .gallery-card {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 18rpx 34rpx rgba(177, 100, 20, 0.14) !important;
+}
+
+.ui-theme-yellow_energy .gallery-card::after {
+  content: "";
+  position: absolute;
+  inset: 18rpx;
+  border-radius: 26rpx;
+  border: 1rpx solid rgba(255, 244, 209, 0.42);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .hero-card {
+  background:
+    radial-gradient(circle at 84% 12%, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 28%),
+    linear-gradient(135deg, #f0c23a 0%, #f6d76a 42%, #fff8e6 100%) !important;
+}
+
+.ui-theme-yellow_energy .hero-card::after {
+  content: "";
+  position: absolute;
+  right: -38rpx;
+  top: -54rpx;
+  width: 250rpx;
+  height: 250rpx;
+  border-radius: 50%;
+  border: 2rpx solid rgba(183, 32, 18, 0.12);
+  box-shadow:
+    0 0 0 18rpx rgba(255, 245, 212, 0.28),
+    0 0 0 42rpx rgba(255, 245, 212, 0.14),
+    0 0 0 74rpx rgba(255, 245, 212, 0.08);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .hero-top {
+  position: relative;
+  z-index: 1;
+}
+
+.ui-theme-yellow_energy .hero-top::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -18rpx;
+  height: 1rpx;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(183, 32, 18, 0.2) 0,
+    rgba(183, 32, 18, 0.2) 10rpx,
+    rgba(242, 178, 50, 0) 10rpx,
+    rgba(242, 178, 50, 0) 20rpx
+  );
+}
+
+.ui-theme-yellow_energy .price-value {
+  text-shadow: 0 8rpx 18rpx rgba(255, 251, 236, 0.38);
+  letter-spacing: 1rpx;
+}
+
+.ui-theme-yellow_energy .price-row {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  padding-right: 24rpx;
+}
+
+.ui-theme-yellow_energy .price-row::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  background: radial-gradient(circle, rgba(183, 32, 18, 0.82) 0%, rgba(242, 178, 50, 0.9) 100%);
+  box-shadow: 0 0 12rpx rgba(242, 178, 50, 0.32);
+}
+
+.ui-theme-yellow_energy .hero-side {
+  box-shadow:
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.34),
+    0 10rpx 20rpx rgba(177, 100, 20, 0.08) !important;
+}
+
+.ui-theme-yellow_energy .label-chip {
+  box-shadow: inset 0 0 0 1rpx rgba(255, 255, 255, 0.26);
+}
+
+.ui-theme-yellow_energy .entity-card {
+  box-shadow: inset 0 0 0 1rpx rgba(255, 255, 255, 0.24);
+}
+
+.ui-theme-yellow_energy .action-bar {
+  position: fixed;
+  overflow: hidden;
+  box-shadow: 0 22rpx 42rpx rgba(177, 100, 20, 0.18) !important;
+}
+
+.ui-theme-yellow_energy .action-bar::before {
+  content: "";
+  position: absolute;
+  left: 22rpx;
+  right: 22rpx;
+  top: 12rpx;
+  height: 8rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, rgba(183, 32, 18, 0) 0%, rgba(183, 32, 18, 0.44) 30%, rgba(242, 178, 50, 0.92) 50%, rgba(183, 32, 18, 0.44) 70%, rgba(183, 32, 18, 0) 100%);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .action-bar::after {
+  content: "";
+  position: absolute;
+  right: -40rpx;
+  bottom: -56rpx;
+  width: 220rpx;
+  height: 220rpx;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 248, 221, 0.28) 0%, rgba(255, 248, 221, 0) 70%);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .action-shortcuts,
+.ui-theme-yellow_energy .action-group {
+  position: relative;
+  z-index: 1;
+}
+
+.ui-theme-yellow_energy .action-group::before {
+  content: "";
+  position: absolute;
+  left: 14rpx;
+  right: 14rpx;
+  top: 8rpx;
+  height: 1rpx;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(183, 32, 18, 0.16) 0,
+    rgba(183, 32, 18, 0.16) 10rpx,
+    rgba(242, 178, 50, 0) 10rpx,
+    rgba(242, 178, 50, 0) 18rpx
+  );
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .action-bar .action-btn.primary {
+  box-shadow: 0 14rpx 28rpx rgba(183, 61, 16, 0.18) !important;
+  letter-spacing: 2rpx;
+}
+
+.ui-theme-yellow_energy .action-bar .action-btn.secondary {
+  border: 1rpx solid rgba(183, 32, 18, 0.08) !important;
+}
+
+.ui-theme-yellow_energy .zaiui-head-box {
+  position: relative;
+  overflow: hidden;
+}
+
+.ui-theme-yellow_energy .zaiui-head-box::before {
+  content: "";
+  position: absolute;
+  right: -68rpx;
+  top: -72rpx;
+  width: 260rpx;
+  height: 260rpx;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 248, 221, 0.3) 0%, rgba(255, 248, 221, 0) 72%);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .pending-reminder-card,
+.ui-theme-yellow_energy .merchant-tools-summary {
+  position: relative;
+  overflow: hidden;
+}
+
+.ui-theme-yellow_energy .pending-reminder-card::before,
+.ui-theme-yellow_energy .merchant-tools-summary::before {
+  content: "";
+  position: absolute;
+  right: -40rpx;
+  top: -56rpx;
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0) 72%);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .pending-reminder-card::after,
+.ui-theme-yellow_energy .merchant-tools-summary::after {
+  content: "";
+  position: absolute;
+  left: 18rpx;
+  right: 18rpx;
+  bottom: 12rpx;
+  height: 8rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, rgba(183, 32, 18, 0) 0%, rgba(183, 32, 18, 0.4) 34%, rgba(242, 178, 50, 0.8) 50%, rgba(183, 32, 18, 0.4) 66%, rgba(183, 32, 18, 0) 100%);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .pending-reminder-card .pending-title,
+.ui-theme-yellow_energy .merchant-tools-summary__title {
+  text-shadow: 0 4rpx 12rpx rgba(255, 249, 230, 0.24);
+}
+
+.ui-theme-yellow_energy .merchant-tools-summary__head {
+  position: relative;
+  z-index: 1;
+}
+
+.ui-theme-yellow_energy .merchant-tools-summary__head::after {
+  content: "";
+  position: absolute;
+  right: 8rpx;
+  top: 0;
+  width: 92rpx;
+  height: 92rpx;
+  border-radius: 50%;
+  border: 1rpx solid rgba(183, 32, 18, 0.12);
+  box-shadow:
+    0 0 0 10rpx rgba(248, 217, 105, 0.08),
+    0 0 0 22rpx rgba(248, 217, 105, 0.04);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .pending-reminder-card .pending-badge,
+.ui-theme-yellow_energy .merchant-tools-summary__badge,
+.ui-theme-yellow_energy .merchant-tools-summary__status {
+  box-shadow: inset 0 0 0 1rpx rgba(255, 255, 255, 0.24);
+}
+
+.ui-theme-yellow_energy .zaiui-user-info-tools-box {
+  position: relative;
+  overflow: hidden;
+}
+
+.ui-theme-yellow_energy .zaiui-user-info-tools-box::before {
+  content: "";
+  position: absolute;
+  left: 22rpx;
+  right: 22rpx;
+  top: 0;
+  height: 8rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, rgba(183, 32, 18, 0.1) 0%, rgba(183, 32, 18, 0.7) 44%, rgba(242, 178, 50, 0.88) 100%);
+}
+
+.ui-theme-yellow_energy .tools-view {
+  position: relative;
+  z-index: 1;
+}
+
+.ui-theme-yellow_energy .tools-view::after {
+  content: "";
+  position: absolute;
+  right: 18rpx;
+  top: 10rpx;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+  border: 1rpx solid rgba(183, 32, 18, 0.1);
+  box-shadow:
+    0 0 0 10rpx rgba(248, 217, 105, 0.08),
+    0 0 0 22rpx rgba(248, 217, 105, 0.03);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .zaiui-tools-list-box .cu-item::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 18rpx;
+  width: 58rpx;
+  height: 6rpx;
+  border-radius: 999rpx;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, rgba(183, 32, 18, 0.12) 0%, rgba(183, 32, 18, 0.62) 48%, rgba(242, 178, 50, 0.82) 100%);
+  z-index: 1;
+}
+
+.ui-theme-yellow_energy .tool-badge {
+  box-shadow:
+    0 8rpx 18rpx rgba(183, 61, 16, 0.16),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.26);
+  letter-spacing: 1rpx;
+}
+
+.ui-theme-yellow_energy .header-title,
+.ui-theme-yellow_energy .section-title,
+.ui-theme-yellow_energy .hero-title,
+.ui-theme-yellow_energy .goods-title,
+.ui-theme-yellow_energy .merchant-title,
+.ui-theme-yellow_energy .entity-title,
+.ui-theme-yellow_energy .pending-title,
+.ui-theme-yellow_energy .merchant-tools-summary__title {
+  font-family: "Kaiti SC", "STKaiti", "KaiTi", "FangSong", "STSong", "SimSun", serif !important;
+  letter-spacing: 2rpx;
+  font-weight: 700 !important;
+}
+
+.ui-theme-yellow_energy .header-subtitle,
+.ui-theme-yellow_energy .search-placeholder,
+.ui-theme-yellow_energy .section-tip,
+.ui-theme-yellow_energy .goods-spec,
+.ui-theme-yellow_energy .merchant-desc,
+.ui-theme-yellow_energy .entity-desc,
+.ui-theme-yellow_energy .price-meta,
+.ui-theme-yellow_energy .goods-sales,
+.ui-theme-yellow_energy .goods-merchant,
+.ui-theme-yellow_energy .pending-desc,
+.ui-theme-yellow_energy .merchant-tools-summary__desc {
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif !important;
+}
+
+.ui-theme-yellow_energy .tab-pill,
+.ui-theme-yellow_energy .merchant-arrow,
+.ui-theme-yellow_energy .action-btn,
+.ui-theme-yellow_energy .popup-btn,
+.ui-theme-yellow_energy .review-service-btn {
+  position: relative;
+  overflow: hidden;
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif !important;
+  font-weight: 600 !important;
+  letter-spacing: 1rpx;
+}
+
+.ui-theme-yellow_energy .tab-pill::before,
+.ui-theme-yellow_energy .merchant-arrow::before,
+.ui-theme-yellow_energy .action-btn::before,
+.ui-theme-yellow_energy .popup-btn::before,
+.ui-theme-yellow_energy .review-service-btn::before {
+  content: "";
+  position: absolute;
+  left: -24rpx;
+  top: -28rpx;
+  width: 110rpx;
+  height: 110rpx;
+  background: radial-gradient(circle, rgba(255, 251, 232, 0.36) 0%, rgba(255, 251, 232, 0) 72%);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .action-btn.primary,
+.ui-theme-yellow_energy .popup-btn.primary,
+.ui-theme-yellow_energy .review-service-btn,
+.ui-theme-yellow_energy .merchant-arrow,
+.ui-theme-yellow_energy .tab-pill.active {
+  box-shadow:
+    0 12rpx 24rpx rgba(183, 61, 16, 0.16),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.24) !important;
+}
+
+.ui-theme-yellow_energy .action-btn.secondary,
+.ui-theme-yellow_energy .popup-btn.ghost,
+.ui-theme-yellow_energy .tab-pill:not(.active) {
+  box-shadow:
+    0 8rpx 18rpx rgba(173, 92, 18, 0.08),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.32) !important;
+}
+
+.ui-theme-yellow_energy .zaiui-tools-list-box .cu-item > text,
+.ui-theme-yellow_energy .zaiui-user-info-order-box .cu-item > text {
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif !important;
+  font-weight: 600;
+  letter-spacing: 1rpx;
+}
+
+.ui-theme-yellow_energy .zaiui-tools-list-box .cu-item [class*="cuIcon"],
+.ui-theme-yellow_energy .zaiui-user-info-order-box .cu-item [class*="cuIcon"],
+.ui-theme-yellow_energy .zaiui-user-info-num-box .cu-item [class*="cuIcon"],
+.ui-theme-yellow_energy .action-bar .shortcut-btn [class*="cuIcon"] {
+  position: relative;
+  z-index: 1;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 72rpx;
+  height: 72rpx;
+  margin: 0 auto 10rpx !important;
+  border-radius: 24rpx;
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.22), transparent 26%),
+    linear-gradient(135deg, rgba(247, 214, 106, 0.96) 0%, rgba(255, 243, 201, 0.96) 100%) !important;
+  color: #ac2514 !important;
+  box-shadow:
+    0 10rpx 18rpx rgba(173, 92, 18, 0.12),
+    inset 0 0 0 1rpx rgba(183, 32, 18, 0.08);
+}
+
+.ui-theme-yellow_energy .zaiui-tools-list-box .cu-item [class*="cuIcon"]::after,
+.ui-theme-yellow_energy .zaiui-user-info-order-box .cu-item [class*="cuIcon"]::after,
+.ui-theme-yellow_energy .zaiui-user-info-num-box .cu-item [class*="cuIcon"]::after,
+.ui-theme-yellow_energy .action-bar .shortcut-btn [class*="cuIcon"]::after {
+  content: "";
+  position: absolute;
+  inset: 6rpx;
+  border-radius: 18rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.44);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .zaiui-tools-list-box .cu-item .tool-badge {
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif !important;
+}
+
+.ui-theme-yellow_energy .merchant-tools-summary__badge,
+.ui-theme-yellow_energy .merchant-tools-summary__status,
+.ui-theme-yellow_energy .pending-badge {
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif !important;
+  font-weight: 600;
+  letter-spacing: 1rpx;
+}
+
+.ui-theme-yellow_energy .header-copy {
+  position: relative;
+  display: inline-block;
+  padding: 18rpx 26rpx 24rpx 22rpx;
+  border-radius: 28rpx;
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.18), transparent 30%),
+    linear-gradient(135deg, rgba(255, 250, 232, 0.24) 0%, rgba(255, 244, 205, 0.14) 100%);
+  border: 1rpx solid rgba(183, 32, 18, 0.08);
+  box-shadow:
+    0 16rpx 28rpx rgba(177, 100, 20, 0.08),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.18);
+}
+
+.ui-theme-yellow_energy .header-copy::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 196rpx;
+  height: 196rpx;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  border: 2rpx solid rgba(183, 32, 18, 0.08);
+  box-shadow:
+    0 0 0 16rpx rgba(248, 217, 105, 0.08),
+    0 0 0 34rpx rgba(248, 217, 105, 0.04);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .header-copy::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 14rpx;
+  width: 150rpx;
+  height: 10rpx;
+  border-radius: 999rpx;
+  transform: translateX(-50%);
+  background:
+    linear-gradient(90deg, rgba(183, 32, 18, 0) 0%, rgba(183, 32, 18, 0.5) 28%, rgba(242, 178, 50, 0.92) 50%, rgba(183, 32, 18, 0.5) 72%, rgba(183, 32, 18, 0) 100%);
+  box-shadow: 0 0 18rpx rgba(242, 178, 50, 0.24);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .header-title {
+  position: relative;
+  z-index: 1;
+  font-size: 50rpx !important;
+}
+
+.ui-theme-yellow_energy .header-subtitle {
+  position: relative;
+  z-index: 1;
+  margin-top: 12rpx;
+}
+
+.ui-theme-yellow_energy .accord-page,
+.ui-theme-yellow_energy .accord-center-page,
+.ui-theme-yellow_energy .notice-detail-page,
+.ui-theme-yellow_energy .settings-page {
+  background:
+    radial-gradient(circle at top right, rgba(255, 232, 146, 0.24), transparent 24%),
+    linear-gradient(180deg, #f4c53f 0%, #f7d869 12%, #fbf2cf 15%, #fff9ea 100%) !important;
+}
+
+.ui-theme-yellow_energy .accord-head,
+.ui-theme-yellow_energy .accord-content,
+.ui-theme-yellow_energy .accord-center-page .hero-card,
+.ui-theme-yellow_energy .accord-center-page .list-card,
+.ui-theme-yellow_energy .notice-detail-page .hero-card,
+.ui-theme-yellow_energy .notice-detail-page .content-card,
+.ui-theme-yellow_energy .settings-page .hero-card,
+.ui-theme-yellow_energy .settings-page .section-card {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(255, 252, 243, 0.98) 0%, rgba(255, 246, 222, 0.95) 100%) !important;
+  border: 1rpx solid rgba(183, 32, 18, 0.1) !important;
+  box-shadow: 0 18rpx 34rpx rgba(177, 100, 20, 0.12) !important;
+}
+
+.ui-theme-yellow_energy .accord-head::before,
+.ui-theme-yellow_energy .accord-content::before,
+.ui-theme-yellow_energy .accord-center-page .hero-card::before,
+.ui-theme-yellow_energy .accord-center-page .list-card::before,
+.ui-theme-yellow_energy .notice-detail-page .hero-card::before,
+.ui-theme-yellow_energy .notice-detail-page .content-card::before,
+.ui-theme-yellow_energy .settings-page .hero-card::before,
+.ui-theme-yellow_energy .settings-page .section-card::before {
+  content: "";
+  position: absolute;
+  left: 20rpx;
+  right: 20rpx;
+  top: 0;
+  height: 6rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, rgba(183, 32, 18, 0.08) 0%, rgba(183, 32, 18, 0.68) 48%, rgba(242, 178, 50, 0.84) 100%);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .accord-head::after,
+.ui-theme-yellow_energy .accord-center-page .hero-card::after,
+.ui-theme-yellow_energy .notice-detail-page .hero-card::after,
+.ui-theme-yellow_energy .settings-page .hero-card::after {
+  content: "";
+  position: absolute;
+  right: -34rpx;
+  top: -44rpx;
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 50%;
+  border: 1rpx solid rgba(183, 32, 18, 0.12);
+  box-shadow:
+    0 0 0 16rpx rgba(248, 217, 105, 0.08),
+    0 0 0 34rpx rgba(248, 217, 105, 0.04);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .accord-title,
+.ui-theme-yellow_energy .notice-detail-page .title,
+.ui-theme-yellow_energy .settings-page .hero-title,
+.ui-theme-yellow_energy .settings-page .section-title,
+.ui-theme-yellow_energy .accord-center-page .hero-title,
+.ui-theme-yellow_energy .accord-center-page .accord-title {
+  color: #941f10 !important;
+  font-family: "Kaiti SC", "STKaiti", "KaiTi", serif !important;
+  font-weight: 700 !important;
+  letter-spacing: 2rpx;
+}
+
+.ui-theme-yellow_energy .accord-desc,
+.ui-theme-yellow_energy .font-view,
+.ui-theme-yellow_energy .accord-center-page .hero-subtitle,
+.ui-theme-yellow_energy .accord-center-page .accord-desc,
+.ui-theme-yellow_energy .accord-center-page .accord-time,
+.ui-theme-yellow_energy .accord-center-page .accord-arrow,
+.ui-theme-yellow_energy .notice-detail-page .desc,
+.ui-theme-yellow_energy .notice-detail-page .meta-text,
+.ui-theme-yellow_energy .notice-detail-page .html-content,
+.ui-theme-yellow_energy .settings-page .hero-subtitle,
+.ui-theme-yellow_energy .settings-page .section-tip,
+.ui-theme-yellow_energy .settings-page .setting-desc,
+.ui-theme-yellow_energy .settings-page .text-action,
+.ui-theme-yellow_energy .settings-page .picker-value {
+  color: #ad6a24 !important;
+}
+
+.ui-theme-yellow_energy .font-view pre,
+.ui-theme-yellow_energy .notice-detail-page .html-content pre {
+  background: linear-gradient(180deg, #7f180f 0%, #a82112 100%) !important;
+  border: 1rpx solid rgba(248, 217, 105, 0.18);
+}
+
+.ui-theme-yellow_energy .accord-center-page .hero-badge,
+.ui-theme-yellow_energy .settings-page .hero-badge,
+.ui-theme-yellow_energy .accord-center-page .accord-status,
+.ui-theme-yellow_energy .accord-center-page .accord-action-btn {
+  background: linear-gradient(180deg, rgba(255, 251, 239, 0.98) 0%, rgba(255, 241, 206, 0.94) 100%) !important;
+  color: #a72514 !important;
+  border: 1rpx solid rgba(183, 32, 18, 0.08) !important;
+  box-shadow:
+    0 8rpx 16rpx rgba(173, 92, 18, 0.08),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.26) !important;
+}
+
+.ui-theme-yellow_energy .accord-center-page .accord-status.accepted,
+.ui-theme-yellow_energy .accord-center-page .accord-status.pending,
+.ui-theme-yellow_energy .accord-center-page .accord-action-btn,
+.ui-theme-yellow_energy .settings-page .logout-btn {
+  background: linear-gradient(135deg, #b82013 0%, #dc531e 55%, #f3b132 100%) !important;
+  color: #fff8ef !important;
+  box-shadow:
+    0 14rpx 28rpx rgba(183, 61, 16, 0.16),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.22) !important;
+}
+
+.ui-theme-yellow_energy .accord-center-page .accord-item,
+.ui-theme-yellow_energy .settings-page .setting-item {
+  border-bottom-color: rgba(183, 32, 18, 0.08) !important;
+}
+
+.ui-theme-yellow_energy .settings-page .setting-label {
+  color: #941f10 !important;
+  font-family: "Kaiti SC", "STKaiti", "KaiTi", serif !important;
+  font-weight: 700 !important;
+}
+
+.ui-theme-yellow_energy .settings-page .setting-avatar,
+.ui-theme-yellow_energy .settings-page .hero-avatar {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.22), transparent 24%),
+    linear-gradient(135deg, rgba(247, 214, 106, 0.96) 0%, rgba(255, 243, 201, 0.96) 100%) !important;
+  border-color: rgba(183, 32, 18, 0.08) !important;
+  box-shadow:
+    0 10rpx 18rpx rgba(173, 92, 18, 0.12),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.3);
+}
+
+.ui-theme-yellow_energy .service-page,
+.ui-theme-yellow_energy .apply-page,
+.ui-theme-yellow_energy .register {
+  background:
+    radial-gradient(circle at top right, rgba(255, 232, 146, 0.24), transparent 24%),
+    linear-gradient(180deg, #f4c53f 0%, #f7d869 12%, #fbf2cf 15%, #fff9ea 100%) !important;
+}
+
+.ui-theme-yellow_energy .service-page .hero-card,
+.ui-theme-yellow_energy .service-page .section-card,
+.ui-theme-yellow_energy .apply-page .hero-card,
+.ui-theme-yellow_energy .apply-page .section-card,
+.ui-theme-yellow_energy .register .content {
+  position: relative;
+  overflow: hidden;
+}
+
+.ui-theme-yellow_energy .service-page .hero-card,
+.ui-theme-yellow_energy .apply-page .hero-card,
+.ui-theme-yellow_energy .register .content {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.22), transparent 26%),
+    linear-gradient(135deg, rgba(247, 208, 86, 0.98) 0%, rgba(255, 234, 155, 0.96) 54%, rgba(255, 248, 226, 0.96) 100%) !important;
+  border: 1rpx solid rgba(183, 32, 18, 0.1) !important;
+  box-shadow: 0 18rpx 34rpx rgba(177, 100, 20, 0.12) !important;
+}
+
+.ui-theme-yellow_energy .service-page .section-card,
+.ui-theme-yellow_energy .apply-page .section-card,
+.ui-theme-yellow_energy .register .main,
+.ui-theme-yellow_energy .register .agreement-footer {
+  background: linear-gradient(180deg, rgba(255, 252, 243, 0.98) 0%, rgba(255, 246, 222, 0.95) 100%) !important;
+  border: 1rpx solid rgba(183, 32, 18, 0.1) !important;
+  box-shadow: 0 18rpx 34rpx rgba(177, 100, 20, 0.12) !important;
+}
+
+.ui-theme-yellow_energy .service-page .hero-title,
+.ui-theme-yellow_energy .service-page .section-title,
+.ui-theme-yellow_energy .apply-page .hero-title,
+.ui-theme-yellow_energy .apply-page .section-title,
+.ui-theme-yellow_energy .register .login-tab.is-active text,
+.ui-theme-yellow_energy .register .mode-tip {
+  color: #941f10 !important;
+}
+
+.ui-theme-yellow_energy .service-page .hero-title,
+.ui-theme-yellow_energy .service-page .section-title,
+.ui-theme-yellow_energy .apply-page .hero-title,
+.ui-theme-yellow_energy .apply-page .section-title,
+.ui-theme-yellow_energy .register .login-tab.is-active text {
+  font-family: "Kaiti SC", "STKaiti", "KaiTi", serif !important;
+  font-weight: 700 !important;
+  letter-spacing: 2rpx;
+}
+
+.ui-theme-yellow_energy .service-page .hero-subtitle,
+.ui-theme-yellow_energy .service-page .section-tip,
+.ui-theme-yellow_energy .service-page .single-line-label,
+.ui-theme-yellow_energy .service-page .single-line-value,
+.ui-theme-yellow_energy .service-page .contact-left,
+.ui-theme-yellow_energy .service-page .contact-value,
+.ui-theme-yellow_energy .apply-page .hero-subtitle,
+.ui-theme-yellow_energy .apply-page .section-tip,
+.ui-theme-yellow_energy .apply-page .form-label,
+.ui-theme-yellow_energy .apply-page .form-input,
+.ui-theme-yellow_energy .apply-page .agreement-text,
+.ui-theme-yellow_energy .apply-page .agreement-link,
+.ui-theme-yellow_energy .apply-page .info-key,
+.ui-theme-yellow_energy .apply-page .info-value,
+.ui-theme-yellow_energy .register .login-tab text,
+.ui-theme-yellow_energy .register .agreement-check-text,
+.ui-theme-yellow_energy .register .agreement-link {
+  color: #ad6a24 !important;
+}
+
+.ui-theme-yellow_energy .service-page .single-line-card,
+.ui-theme-yellow_energy .service-page .contact-item,
+.ui-theme-yellow_energy .apply-page .form-input,
+.ui-theme-yellow_energy .apply-page .upload-placeholder,
+.ui-theme-yellow_energy .apply-page .info-row,
+.ui-theme-yellow_energy .register .login-tab,
+.ui-theme-yellow_energy .register .plain-input-wrap,
+.ui-theme-yellow_energy .register .wechat-panel,
+.ui-theme-yellow_energy .register .agreement-footer {
+  border-color: rgba(183, 32, 18, 0.08) !important;
+}
+
+.ui-theme-yellow_energy .service-page .single-line-card,
+.ui-theme-yellow_energy .service-page .contact-item,
+.ui-theme-yellow_energy .apply-page .form-input,
+.ui-theme-yellow_energy .apply-page .upload-placeholder,
+.ui-theme-yellow_energy .register .login-tab,
+.ui-theme-yellow_energy .register .plain-input-wrap,
+.ui-theme-yellow_energy .register .wechat-panel {
+  background: linear-gradient(180deg, rgba(255, 251, 239, 0.98) 0%, rgba(255, 241, 206, 0.94) 100%) !important;
+  box-shadow:
+    0 8rpx 16rpx rgba(173, 92, 18, 0.08),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.26) !important;
+}
+
+.ui-theme-yellow_energy .service-page .contact-item + .contact-item,
+.ui-theme-yellow_energy .apply-page .info-row + .info-row {
+  border-top-color: rgba(183, 32, 18, 0.08) !important;
+}
+
+.ui-theme-yellow_energy .apply-page .upload-remove,
+.ui-theme-yellow_energy .register .wechat-login-btn,
+.ui-theme-yellow_energy .apply-page .action-btn.primary,
+.ui-theme-yellow_energy .apply-page .action-btn.secondary {
+  box-shadow:
+    0 12rpx 24rpx rgba(183, 61, 16, 0.16),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.22) !important;
+}
+
+.ui-theme-yellow_energy .apply-page .action-btn.primary,
+.ui-theme-yellow_energy .register .wechat-login-btn,
+.ui-theme-yellow_energy .register .wbutton button,
+.ui-theme-yellow_energy .register .wbutton view {
+  background: linear-gradient(135deg, #b82013 0%, #dc531e 55%, #f3b132 100%) !important;
+  color: #fff8ef !important;
+}
+
+.ui-theme-yellow_energy .apply-page .action-btn.secondary,
+.ui-theme-yellow_energy .register .login-tab {
+  background: linear-gradient(180deg, rgba(255, 251, 239, 0.98) 0%, rgba(255, 241, 206, 0.94) 100%) !important;
+  color: #a72514 !important;
+}
+
+.ui-theme-yellow_energy .zaiui-topic-card-list-box,
+.ui-theme-yellow_energy .content-view-box {
+  position: relative;
+}
+
+.ui-theme-yellow_energy .zaiui-topic-card-list-box .cu-list.menu-avatar,
+.ui-theme-yellow_energy .content-view-box {
+  margin: 24rpx !important;
+  border-radius: 28rpx !important;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(255, 252, 243, 0.98) 0%, rgba(255, 246, 222, 0.95) 100%) !important;
+  border: 1rpx solid rgba(183, 32, 18, 0.1) !important;
+  box-shadow: 0 18rpx 34rpx rgba(177, 100, 20, 0.12) !important;
+}
+
+.ui-theme-yellow_energy .zaiui-topic-card-list-box .cu-list.menu-avatar::before,
+.ui-theme-yellow_energy .content-view-box::before {
+  content: "";
+  position: absolute;
+  left: 20rpx;
+  right: 20rpx;
+  top: 0;
+  height: 6rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, rgba(183, 32, 18, 0.08) 0%, rgba(183, 32, 18, 0.68) 48%, rgba(242, 178, 50, 0.84) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.ui-theme-yellow_energy .zaiui-topic-card-list-box .cu-list.menu-avatar > .cu-item {
+  background: linear-gradient(180deg, rgba(255, 252, 244, 0.98) 0%, rgba(255, 246, 223, 0.95) 100%) !important;
+}
+
+.ui-theme-yellow_energy .zaiui-topic-card-list-box .cu-list.menu-avatar > .cu-item + .cu-item {
+  border-top: 1rpx solid rgba(183, 32, 18, 0.08);
+}
+
+.ui-theme-yellow_energy .zaiui-topic-card-list-box .cu-list.menu-avatar > .cu-item > .cu-avatar {
+  border: 2rpx solid rgba(247, 214, 106, 0.62) !important;
+  box-shadow: 0 10rpx 18rpx rgba(173, 92, 18, 0.12) !important;
+}
+
+.ui-theme-yellow_energy .zaiui-topic-card-list-box .text-cut-2,
+.ui-theme-yellow_energy .content-view-box .font-view {
+  color: #941f10 !important;
+}
+
+.ui-theme-yellow_energy .zaiui-topic-card-list-box .text-cut-2 {
+  font-family: "Kaiti SC", "STKaiti", "KaiTi", serif !important;
+  font-weight: 700 !important;
+  line-height: 1.6;
+}
+
+.ui-theme-yellow_energy .zaiui-topic-card-list-box .text-gray,
+.ui-theme-yellow_energy .zaiui-topic-card-list-box .text-sm,
+.ui-theme-yellow_energy .content-view-box .font-view,
+.ui-theme-yellow_energy .margin-lr.text-gray {
+  color: #ad6a24 !important;
+}
+
+.ui-theme-yellow_energy .zaiui-topic-card-list-box .corner-mark {
+  box-shadow:
+    0 8rpx 16rpx rgba(173, 92, 18, 0.14),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.26);
+}
+
+.ui-theme-yellow_energy .zaiui-topic-card-list-box .corner-mark.one,
+.ui-theme-yellow_energy .zaiui-topic-card-list-box .corner-mark.two,
+.ui-theme-yellow_energy .zaiui-topic-card-list-box .corner-mark.three,
+.ui-theme-yellow_energy .zaiui-topic-card-list-box .corner-mark {
+  background: linear-gradient(135deg, #b82013 0%, #dc531e 55%, #f3b132 100%) !important;
+  color: #fff8ef !important;
+}
+
+.ui-theme-yellow_energy .content-view-box .font-view {
+  font-size: 30rpx !important;
+  line-height: 1.95 !important;
+}
+
+.ui-theme-yellow_energy .margin-lr.text-gray.text-sm.text-right {
+  margin: 24rpx 24rpx 0 !important;
+  padding: 10rpx 12rpx 0 !important;
+}
+
+.ui-theme-yellow_energy .audit-page {
+  background:
+    radial-gradient(circle at top right, rgba(255, 232, 146, 0.24), transparent 24%),
+    linear-gradient(180deg, #f4c53f 0%, #f7d869 12%, #fbf2cf 15%, #fff9ea 100%) !important;
+}
+
+.ui-theme-yellow_energy .audit-page .hero-card,
+.ui-theme-yellow_energy .audit-page .audit-card,
+.ui-theme-yellow_energy .audit-page .sheet-card,
+.ui-theme-yellow_energy .audit-page .dialog-card {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(255, 252, 243, 0.98) 0%, rgba(255, 246, 222, 0.95) 100%) !important;
+  border: 1rpx solid rgba(183, 32, 18, 0.1) !important;
+  box-shadow: 0 18rpx 34rpx rgba(177, 100, 20, 0.12) !important;
+}
+
+.ui-theme-yellow_energy .audit-page .hero-card::before,
+.ui-theme-yellow_energy .audit-page .audit-card::before,
+.ui-theme-yellow_energy .audit-page .sheet-card::before,
+.ui-theme-yellow_energy .audit-page .dialog-card::before {
+  content: "";
+  position: absolute;
+  left: 20rpx;
+  right: 20rpx;
+  top: 0;
+  height: 6rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, rgba(183, 32, 18, 0.08) 0%, rgba(183, 32, 18, 0.68) 48%, rgba(242, 178, 50, 0.84) 100%);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .audit-page .hero-title,
+.ui-theme-yellow_energy .audit-page .merchant-title,
+.ui-theme-yellow_energy .audit-page .sheet-title,
+.ui-theme-yellow_energy .audit-page .group-title,
+.ui-theme-yellow_energy .audit-page .dialog-title {
+  color: #941f10 !important;
+  font-family: "Kaiti SC", "STKaiti", "KaiTi", serif !important;
+  font-weight: 700 !important;
+}
+
+.ui-theme-yellow_energy .audit-page .hero-subtitle,
+.ui-theme-yellow_energy .audit-page .merchant-subtitle,
+.ui-theme-yellow_energy .audit-page .meta-label,
+.ui-theme-yellow_energy .audit-page .meta-value,
+.ui-theme-yellow_energy .audit-page .sheet-label,
+.ui-theme-yellow_energy .audit-page .sheet-value,
+.ui-theme-yellow_energy .audit-page .empty-inline,
+.ui-theme-yellow_energy .audit-page .close-icon {
+  color: #ad6a24 !important;
+}
+
+.ui-theme-yellow_energy .audit-page .status-pill,
+.ui-theme-yellow_energy .audit-page .tab-chip {
+  border: 1rpx solid rgba(183, 32, 18, 0.08) !important;
+  box-shadow:
+    0 8rpx 16rpx rgba(173, 92, 18, 0.08),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.24) !important;
+}
+
+.ui-theme-yellow_energy .audit-page .status-pill,
+.ui-theme-yellow_energy .audit-page .tab-chip.active,
+.ui-theme-yellow_energy .audit-page .action-btn.success,
+.ui-theme-yellow_energy .audit-page .action-btn.danger {
+  background: linear-gradient(135deg, #b82013 0%, #dc531e 55%, #f3b132 100%) !important;
+  color: #fff8ef !important;
+}
+
+.ui-theme-yellow_energy .audit-page .tab-chip:not(.active),
+.ui-theme-yellow_energy .audit-page .action-btn.light,
+.ui-theme-yellow_energy .audit-page .meta-item,
+.ui-theme-yellow_energy .audit-page .dialog-textarea {
+  background: linear-gradient(180deg, rgba(255, 251, 239, 0.98) 0%, rgba(255, 241, 206, 0.94) 100%) !important;
+  color: #a72514 !important;
+  border: 1rpx solid rgba(183, 32, 18, 0.08) !important;
+  box-shadow:
+    0 8rpx 16rpx rgba(173, 92, 18, 0.08),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.24) !important;
+}
+
+.ui-theme-yellow_energy .order-page .head-title,
+.ui-theme-yellow_energy .order-page .dialog-title {
+  color: #941f10 !important;
+  font-family: "Kaiti SC", "STKaiti", "KaiTi", serif !important;
+  font-weight: 700 !important;
+}
+
+.ui-theme-yellow_energy .order-page .head-subtitle,
+.ui-theme-yellow_energy .order-page .summary-label,
+.ui-theme-yellow_energy .order-page .summary-value,
+.ui-theme-yellow_energy .order-page .summary-danger {
+  color: #ad6a24 !important;
+}
+
+.ui-theme-yellow_energy .order-page .summary-item,
+.ui-theme-yellow_energy .order-page .dialog-textarea {
+  background: linear-gradient(180deg, rgba(255, 251, 239, 0.98) 0%, rgba(255, 241, 206, 0.94) 100%) !important;
+  border: 1rpx solid rgba(183, 32, 18, 0.08) !important;
+  box-shadow:
+    0 8rpx 16rpx rgba(173, 92, 18, 0.08),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.24) !important;
+}
+
+.ui-theme-yellow_energy .order-page .status-pill,
+.ui-theme-yellow_energy .order-page .status-pill.is-warning,
+.ui-theme-yellow_energy .order-page .status-pill.is-primary,
+.ui-theme-yellow_energy .order-page .status-pill.is-success,
+.ui-theme-yellow_energy .order-page .action-btn.success,
+.ui-theme-yellow_energy .order-page .action-btn.danger,
+.ui-theme-yellow_energy .order-page .action-btn.primary {
+  background: linear-gradient(135deg, #b82013 0%, #dc531e 55%, #f3b132 100%) !important;
+  color: #fff8ef !important;
+  box-shadow:
+    0 12rpx 24rpx rgba(183, 61, 16, 0.16),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.22) !important;
+}
+
+.ui-theme-yellow_energy .popup-mask {
+  background: rgba(85, 41, 8, 0.42) !important;
+  backdrop-filter: blur(6rpx);
+}
+
+.ui-theme-yellow_energy .popup-card {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(255, 252, 243, 0.99) 0%, rgba(255, 246, 222, 0.97) 100%) !important;
+  border: 1rpx solid rgba(183, 32, 18, 0.1) !important;
+  box-shadow: 0 20rpx 40rpx rgba(177, 100, 20, 0.18) !important;
+}
+
+.ui-theme-yellow_energy .popup-card::before {
+  content: "";
+  position: absolute;
+  left: 20rpx;
+  right: 20rpx;
+  top: 0;
+  height: 6rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, rgba(183, 32, 18, 0.08) 0%, rgba(183, 32, 18, 0.68) 48%, rgba(242, 178, 50, 0.84) 100%);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .popup-card::after {
+  content: "";
+  position: absolute;
+  right: -34rpx;
+  top: -38rpx;
+  width: 168rpx;
+  height: 168rpx;
+  border-radius: 50%;
+  border: 1rpx solid rgba(183, 32, 18, 0.12);
+  box-shadow:
+    0 0 0 16rpx rgba(248, 217, 105, 0.08),
+    0 0 0 34rpx rgba(248, 217, 105, 0.04);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .popup-close {
+  background: linear-gradient(135deg, rgba(183, 32, 18, 0.16) 0%, rgba(242, 178, 50, 0.24) 100%) !important;
+  color: #a72514 !important;
+  box-shadow: inset 0 0 0 1rpx rgba(255, 255, 255, 0.28);
+}
+
+.ui-theme-yellow_energy .popup-title {
+  color: #941f10 !important;
+  font-family: "Kaiti SC", "STKaiti", "KaiTi", serif !important;
+  font-weight: 700 !important;
+}
+
+.ui-theme-yellow_energy .popup-desc,
+.ui-theme-yellow_energy .popup-html {
+  color: #ad6a24 !important;
+}
+
+.ui-theme-yellow_energy .popup-scroll {
+  background: linear-gradient(180deg, rgba(255, 251, 239, 0.98) 0%, rgba(255, 241, 206, 0.94) 100%) !important;
+  border: 1rpx solid rgba(183, 32, 18, 0.08) !important;
+  box-shadow:
+    0 8rpx 16rpx rgba(173, 92, 18, 0.08),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.24) !important;
+}
+
+.ui-theme-yellow_energy .renew-page {
+  background:
+    radial-gradient(circle at top right, rgba(255, 232, 146, 0.24), transparent 24%),
+    linear-gradient(180deg, #f4c53f 0%, #f7d869 12%, #fbf2cf 15%, #fff9ea 100%) !important;
+}
+
+.ui-theme-yellow_energy .renew-page .hero-card,
+.ui-theme-yellow_energy .renew-page .status-card,
+.ui-theme-yellow_energy .renew-page .action-card,
+.ui-theme-yellow_energy .renew-page .record-card {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(255, 252, 243, 0.98) 0%, rgba(255, 246, 222, 0.95) 100%) !important;
+  border: 1rpx solid rgba(183, 32, 18, 0.1) !important;
+  box-shadow: 0 18rpx 34rpx rgba(177, 100, 20, 0.12) !important;
+}
+
+.ui-theme-yellow_energy .renew-page .hero-card::before,
+.ui-theme-yellow_energy .renew-page .status-card::before,
+.ui-theme-yellow_energy .renew-page .action-card::before,
+.ui-theme-yellow_energy .renew-page .record-card::before {
+  content: "";
+  position: absolute;
+  left: 20rpx;
+  right: 20rpx;
+  top: 0;
+  height: 6rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, rgba(183, 32, 18, 0.08) 0%, rgba(183, 32, 18, 0.68) 48%, rgba(242, 178, 50, 0.84) 100%);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .renew-page .hero-card::after {
+  content: "";
+  position: absolute;
+  right: -36rpx;
+  top: -42rpx;
+  width: 176rpx;
+  height: 176rpx;
+  border-radius: 50%;
+  border: 1rpx solid rgba(183, 32, 18, 0.12);
+  box-shadow:
+    0 0 0 16rpx rgba(248, 217, 105, 0.08),
+    0 0 0 34rpx rgba(248, 217, 105, 0.04);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .renew-page .hero-badge,
+.ui-theme-yellow_energy .renew-page .card-link,
+.ui-theme-yellow_energy .renew-page .action-btn.ghost,
+.ui-theme-yellow_energy .renew-page .status-item {
+  background: linear-gradient(180deg, rgba(255, 251, 239, 0.98) 0%, rgba(255, 241, 206, 0.94) 100%) !important;
+  color: #a72514 !important;
+  border: 1rpx solid rgba(183, 32, 18, 0.08) !important;
+  box-shadow:
+    0 8rpx 16rpx rgba(173, 92, 18, 0.08),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.24) !important;
+}
+
+.ui-theme-yellow_energy .renew-page .hero-title,
+.ui-theme-yellow_energy .renew-page .card-title,
+.ui-theme-yellow_energy .renew-page .step-title {
+  color: #941f10 !important;
+  font-family: "Kaiti SC", "STKaiti", "KaiTi", serif !important;
+  font-weight: 700 !important;
+}
+
+.ui-theme-yellow_energy .renew-page .hero-desc,
+.ui-theme-yellow_energy .renew-page .status-label,
+.ui-theme-yellow_energy .renew-page .status-value,
+.ui-theme-yellow_energy .renew-page .step-desc,
+.ui-theme-yellow_energy .renew-page .record-source,
+.ui-theme-yellow_energy .renew-page .record-time,
+.ui-theme-yellow_energy .renew-page .record-row,
+.ui-theme-yellow_energy .renew-page .empty-box {
+  color: #ad6a24 !important;
+}
+
+.ui-theme-yellow_energy .renew-page .step-index,
+.ui-theme-yellow_energy .renew-page .action-btn.primary {
+  background: linear-gradient(135deg, #b82013 0%, #dc531e 55%, #f3b132 100%) !important;
+  color: #fff8ef !important;
+  box-shadow:
+    0 12rpx 24rpx rgba(183, 61, 16, 0.16),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.22) !important;
+}
+
+.ui-theme-yellow_energy .renew-page .record-item + .record-item {
+  border-top: 1rpx solid rgba(183, 32, 18, 0.08);
+}
+
+.ui-theme-yellow_energy .popup-actions {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16rpx !important;
+}
+
+.ui-theme-yellow_energy .popup-btn {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 82rpx !important;
+  line-height: 82rpx !important;
+  border-radius: 24rpx !important;
+  text-align: center !important;
+  justify-content: center !important;
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif !important;
+  font-weight: 600 !important;
+  letter-spacing: 1rpx;
+}
+
+.ui-theme-yellow_energy .popup-btn.ghost {
+  background: linear-gradient(180deg, rgba(255, 251, 239, 0.98) 0%, rgba(255, 241, 206, 0.94) 100%) !important;
+  color: #a72514 !important;
+  border: 1rpx solid rgba(183, 32, 18, 0.08) !important;
+  box-shadow:
+    0 8rpx 16rpx rgba(173, 92, 18, 0.08),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.24) !important;
+}
+
+.ui-theme-yellow_energy .popup-btn.primary {
+  background: linear-gradient(135deg, #b82013 0%, #dc531e 55%, #f3b132 100%) !important;
+  color: #fff8ef !important;
+  box-shadow:
+    0 12rpx 24rpx rgba(183, 61, 16, 0.16),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.22) !important;
+}
+
+.ui-theme-yellow_energy .analytics-page {
+  background:
+    radial-gradient(circle at top right, rgba(255, 232, 146, 0.24), transparent 24%),
+    linear-gradient(180deg, #f4c53f 0%, #f7d869 12%, #fbf2cf 15%, #fff9ea 100%) !important;
+}
+
+.ui-theme-yellow_energy .analytics-page .hero-card,
+.ui-theme-yellow_energy .analytics-page .section-card,
+.ui-theme-yellow_energy .analytics-page .custom-range-panel {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(255, 252, 243, 0.98) 0%, rgba(255, 246, 222, 0.95) 100%) !important;
+  border: 1rpx solid rgba(183, 32, 18, 0.1) !important;
+  box-shadow: 0 18rpx 34rpx rgba(177, 100, 20, 0.12) !important;
+}
+
+.ui-theme-yellow_energy .analytics-page .hero-card::before,
+.ui-theme-yellow_energy .analytics-page .section-card::before,
+.ui-theme-yellow_energy .analytics-page .custom-range-panel::before {
+  content: "";
+  position: absolute;
+  left: 20rpx;
+  right: 20rpx;
+  top: 0;
+  height: 6rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, rgba(183, 32, 18, 0.08) 0%, rgba(183, 32, 18, 0.68) 48%, rgba(242, 178, 50, 0.84) 100%);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .analytics-page .hero-card::after {
+  content: "";
+  position: absolute;
+  right: -38rpx;
+  top: -42rpx;
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 50%;
+  border: 1rpx solid rgba(183, 32, 18, 0.12);
+  box-shadow:
+    0 0 0 16rpx rgba(248, 217, 105, 0.08),
+    0 0 0 34rpx rgba(248, 217, 105, 0.04);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .analytics-page .hero-title,
+.ui-theme-yellow_energy .analytics-page .section-title,
+.ui-theme-yellow_energy .analytics-page .custom-range-title,
+.ui-theme-yellow_energy .analytics-page .goods-title {
+  color: #941f10 !important;
+  font-family: "Kaiti SC", "STKaiti", "KaiTi", serif !important;
+  font-weight: 700 !important;
+  letter-spacing: 2rpx;
+}
+
+.ui-theme-yellow_energy .analytics-page .hero-subtitle,
+.ui-theme-yellow_energy .analytics-page .hero-date,
+.ui-theme-yellow_energy .analytics-page .section-tip,
+.ui-theme-yellow_energy .analytics-page .metric-label,
+.ui-theme-yellow_energy .analytics-page .metric-value,
+.ui-theme-yellow_energy .analytics-page .overview-label,
+.ui-theme-yellow_energy .analytics-page .overview-value,
+.ui-theme-yellow_energy .analytics-page .summary-key,
+.ui-theme-yellow_energy .analytics-page .summary-value,
+.ui-theme-yellow_energy .analytics-page .comparison-label,
+.ui-theme-yellow_energy .analytics-page .comparison-value,
+.ui-theme-yellow_energy .analytics-page .comparison-meta,
+.ui-theme-yellow_energy .analytics-page .trend-label,
+.ui-theme-yellow_energy .analytics-page .trend-meta,
+.ui-theme-yellow_energy .analytics-page .status-name,
+.ui-theme-yellow_energy .analytics-page .status-value,
+.ui-theme-yellow_energy .analytics-page .goods-meta,
+.ui-theme-yellow_energy .analytics-page .goods-amount,
+.ui-theme-yellow_energy .analytics-page .empty-state,
+.ui-theme-yellow_energy .analytics-page .custom-range-tip,
+.ui-theme-yellow_energy .analytics-page .custom-date-label,
+.ui-theme-yellow_energy .analytics-page .custom-date-value {
+  color: #ad6a24 !important;
+}
+
+.ui-theme-yellow_energy .analytics-page .hero-date,
+.ui-theme-yellow_energy .analytics-page .range-tab,
+.ui-theme-yellow_energy .analytics-page .hero-metric,
+.ui-theme-yellow_energy .analytics-page .overview-item,
+.ui-theme-yellow_energy .analytics-page .today-comparison-item,
+.ui-theme-yellow_energy .analytics-page .comparison-item,
+.ui-theme-yellow_energy .analytics-page .comparison-summary-item,
+.ui-theme-yellow_energy .analytics-page .custom-date-field,
+.ui-theme-yellow_energy .analytics-page .custom-range-ghost,
+.ui-theme-yellow_energy .analytics-page .goods-item,
+.ui-theme-yellow_energy .analytics-page .status-row {
+  background: linear-gradient(180deg, rgba(255, 251, 239, 0.98) 0%, rgba(255, 241, 206, 0.94) 100%) !important;
+  border: 1rpx solid rgba(183, 32, 18, 0.08) !important;
+  box-shadow:
+    0 8rpx 16rpx rgba(173, 92, 18, 0.08),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.24) !important;
+}
+
+.ui-theme-yellow_energy .analytics-page .range-tab.active,
+.ui-theme-yellow_energy .analytics-page .custom-range-submit,
+.ui-theme-yellow_energy .analytics-page .comparison-item.buy,
+.ui-theme-yellow_energy .analytics-page .comparison-item.sale,
+.ui-theme-yellow_energy .analytics-page .status-bar,
+.ui-theme-yellow_energy .analytics-page .goods-rank {
+  background: linear-gradient(135deg, #b82013 0%, #dc531e 55%, #f3b132 100%) !important;
+  color: #fff8ef !important;
+  box-shadow:
+    0 12rpx 24rpx rgba(183, 61, 16, 0.16),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.22) !important;
+}
+
+.ui-theme-yellow_energy .analytics-page .trend-track {
+  background: rgba(183, 32, 18, 0.08) !important;
+}
+
+.ui-theme-yellow_energy .analytics-page .trend-bar.buy-bar,
+.ui-theme-yellow_energy .analytics-page .trend-bar.sale-overlay {
+  background: linear-gradient(90deg, rgba(183, 32, 18, 0.42) 0%, rgba(242, 178, 50, 0.9) 100%) !important;
+}
+
+.ui-theme-red_energy {
+  --energy-page-bg:
+    radial-gradient(circle at top right, rgba(255, 190, 150, 0.22), transparent 24%),
+    linear-gradient(180deg, #8f0713 0%, #c31826 12%, #fff0e8 15%, #fff8f4 100%);
+  --energy-card-bg: linear-gradient(180deg, rgba(255, 249, 246, 0.99) 0%, rgba(255, 239, 232, 0.96) 100%);
+  --energy-hero-bg:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.16), transparent 26%),
+    linear-gradient(135deg, #8f0912 0%, #c91d24 56%, #f08d3f 100%);
+  --energy-title: #8b140f;
+  --energy-text: #a85a3a;
+  --energy-hero-text: #fff8f4;
+  --energy-hero-subtext: rgba(255, 248, 244, 0.86);
+  --energy-border: rgba(201, 29, 36, 0.12);
+  --energy-shadow: rgba(111, 8, 12, 0.14);
+  --energy-soft-bg: linear-gradient(180deg, rgba(255, 246, 240, 0.98) 0%, rgba(255, 229, 216, 0.95) 100%);
+  --energy-accent-bg: linear-gradient(135deg, #8f0912 0%, #c91d24 62%, #f08d3f 100%);
+  --energy-accent-text: #fff8f4;
+  --energy-ghost-bg: linear-gradient(180deg, #fff3eb 0%, #ffdccc 100%);
+  --energy-ghost-text: #9f1d15;
+  --energy-mask: rgba(72, 6, 9, 0.42);
+  --energy-pre-bg: linear-gradient(180deg, #5d0710 0%, #8f0912 100%);
+}
+
+.ui-theme-jade_modern {
+  --energy-page-bg:
+    radial-gradient(circle at top right, rgba(216, 164, 58, 0.18), transparent 24%),
+    linear-gradient(180deg, #dce7e0 0%, #eef2eb 12%, #f7f1e7 15%, #fbf8f2 100%);
+  --energy-card-bg: linear-gradient(180deg, rgba(255, 251, 245, 0.99) 0%, rgba(245, 237, 225, 0.96) 100%);
+  --energy-hero-bg:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.16), transparent 26%),
+    linear-gradient(135deg, #184c43 0%, #206b60 56%, #d7a13e 100%);
+  --energy-title: #173d37;
+  --energy-text: #7a6d58;
+  --energy-hero-text: #f8f4ea;
+  --energy-hero-subtext: rgba(248, 244, 234, 0.86);
+  --energy-border: rgba(24, 76, 67, 0.12);
+  --energy-shadow: rgba(19, 52, 47, 0.12);
+  --energy-soft-bg: linear-gradient(180deg, rgba(251, 245, 234, 0.98) 0%, rgba(239, 228, 207, 0.95) 100%);
+  --energy-accent-bg: linear-gradient(135deg, #184b42 0%, #1d665b 54%, #d5a13b 100%);
+  --energy-accent-text: #f8f4ea;
+  --energy-ghost-bg: linear-gradient(180deg, #fbf5ea 0%, #efe0bf 100%);
+  --energy-ghost-text: #1f5d53;
+  --energy-mask: rgba(19, 42, 38, 0.38);
+  --energy-pre-bg: linear-gradient(180deg, #123b34 0%, #184c43 100%);
+}
+
+.ui-theme-red_energy .header-copy,
+.ui-theme-jade_modern .header-copy {
+  position: relative;
+  display: inline-block;
+  padding: 18rpx 26rpx 24rpx 22rpx;
+  border-radius: 28rpx;
+  background: var(--energy-soft-bg) !important;
+  border: 1rpx solid var(--energy-border) !important;
+  box-shadow:
+    0 16rpx 28rpx var(--energy-shadow),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.18);
+}
+
+.ui-theme-red_energy .header-copy::before,
+.ui-theme-jade_modern .header-copy::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 196rpx;
+  height: 196rpx;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  border: 2rpx solid var(--energy-border);
+  box-shadow:
+    0 0 0 16rpx rgba(255, 255, 255, 0.05),
+    0 0 0 34rpx rgba(255, 255, 255, 0.02);
+  pointer-events: none;
+}
+
+.ui-theme-red_energy .header-copy::after,
+.ui-theme-jade_modern .header-copy::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 14rpx;
+  width: 150rpx;
+  height: 10rpx;
+  border-radius: 999rpx;
+  transform: translateX(-50%);
+  background: var(--energy-accent-bg);
+  box-shadow: 0 0 18rpx var(--energy-shadow);
+  pointer-events: none;
+}
+
+.ui-theme-red_energy .accord-page,
+.ui-theme-red_energy .accord-center-page,
+.ui-theme-red_energy .notice-detail-page,
+.ui-theme-red_energy .settings-page,
+.ui-theme-red_energy .service-page,
+.ui-theme-red_energy .apply-page,
+.ui-theme-red_energy .register,
+.ui-theme-red_energy .renew-page,
+.ui-theme-red_energy .analytics-page,
+.ui-theme-red_energy .audit-page,
+.ui-theme-red_energy .order-page,
+.ui-theme-jade_modern .accord-page,
+.ui-theme-jade_modern .accord-center-page,
+.ui-theme-jade_modern .notice-detail-page,
+.ui-theme-jade_modern .settings-page,
+.ui-theme-jade_modern .service-page,
+.ui-theme-jade_modern .apply-page,
+.ui-theme-jade_modern .register,
+.ui-theme-jade_modern .renew-page,
+.ui-theme-jade_modern .analytics-page,
+.ui-theme-jade_modern .audit-page,
+.ui-theme-jade_modern .order-page {
+  background: var(--energy-page-bg) !important;
+}
+
+.ui-theme-red_energy .accord-head,
+.ui-theme-red_energy .accord-content,
+.ui-theme-red_energy .accord-center-page .list-card,
+.ui-theme-red_energy .notice-detail-page .content-card,
+.ui-theme-red_energy .settings-page .section-card,
+.ui-theme-red_energy .service-page .section-card,
+.ui-theme-red_energy .apply-page .section-card,
+.ui-theme-red_energy .register .main,
+.ui-theme-red_energy .register .agreement-footer,
+.ui-theme-red_energy .zaiui-topic-card-list-box .cu-list.menu-avatar,
+.ui-theme-red_energy .content-view-box,
+.ui-theme-red_energy .renew-page .status-card,
+.ui-theme-red_energy .renew-page .action-card,
+.ui-theme-red_energy .renew-page .record-card,
+.ui-theme-red_energy .analytics-page .section-card,
+.ui-theme-red_energy .analytics-page .custom-range-panel,
+.ui-theme-red_energy .audit-page .audit-card,
+.ui-theme-red_energy .audit-page .sheet-card,
+.ui-theme-red_energy .audit-page .dialog-card,
+.ui-theme-red_energy .popup-card,
+.ui-theme-jade_modern .accord-head,
+.ui-theme-jade_modern .accord-content,
+.ui-theme-jade_modern .accord-center-page .list-card,
+.ui-theme-jade_modern .notice-detail-page .content-card,
+.ui-theme-jade_modern .settings-page .section-card,
+.ui-theme-jade_modern .service-page .section-card,
+.ui-theme-jade_modern .apply-page .section-card,
+.ui-theme-jade_modern .register .main,
+.ui-theme-jade_modern .register .agreement-footer,
+.ui-theme-jade_modern .zaiui-topic-card-list-box .cu-list.menu-avatar,
+.ui-theme-jade_modern .content-view-box,
+.ui-theme-jade_modern .renew-page .status-card,
+.ui-theme-jade_modern .renew-page .action-card,
+.ui-theme-jade_modern .renew-page .record-card,
+.ui-theme-jade_modern .analytics-page .section-card,
+.ui-theme-jade_modern .analytics-page .custom-range-panel,
+.ui-theme-jade_modern .audit-page .audit-card,
+.ui-theme-jade_modern .audit-page .sheet-card,
+.ui-theme-jade_modern .audit-page .dialog-card,
+.ui-theme-jade_modern .popup-card {
+  position: relative;
+  overflow: hidden;
+  background: var(--energy-card-bg) !important;
+  border: 1rpx solid var(--energy-border) !important;
+  box-shadow: 0 18rpx 34rpx var(--energy-shadow) !important;
+}
+
+.ui-theme-red_energy .accord-head::before,
+.ui-theme-red_energy .accord-content::before,
+.ui-theme-red_energy .accord-center-page .list-card::before,
+.ui-theme-red_energy .notice-detail-page .content-card::before,
+.ui-theme-red_energy .settings-page .section-card::before,
+.ui-theme-red_energy .service-page .section-card::before,
+.ui-theme-red_energy .apply-page .section-card::before,
+.ui-theme-red_energy .zaiui-topic-card-list-box .cu-list.menu-avatar::before,
+.ui-theme-red_energy .content-view-box::before,
+.ui-theme-red_energy .renew-page .status-card::before,
+.ui-theme-red_energy .renew-page .action-card::before,
+.ui-theme-red_energy .renew-page .record-card::before,
+.ui-theme-red_energy .analytics-page .section-card::before,
+.ui-theme-red_energy .analytics-page .custom-range-panel::before,
+.ui-theme-red_energy .audit-page .audit-card::before,
+.ui-theme-red_energy .audit-page .sheet-card::before,
+.ui-theme-red_energy .audit-page .dialog-card::before,
+.ui-theme-red_energy .popup-card::before,
+.ui-theme-jade_modern .accord-head::before,
+.ui-theme-jade_modern .accord-content::before,
+.ui-theme-jade_modern .accord-center-page .list-card::before,
+.ui-theme-jade_modern .notice-detail-page .content-card::before,
+.ui-theme-jade_modern .settings-page .section-card::before,
+.ui-theme-jade_modern .service-page .section-card::before,
+.ui-theme-jade_modern .apply-page .section-card::before,
+.ui-theme-jade_modern .zaiui-topic-card-list-box .cu-list.menu-avatar::before,
+.ui-theme-jade_modern .content-view-box::before,
+.ui-theme-jade_modern .renew-page .status-card::before,
+.ui-theme-jade_modern .renew-page .action-card::before,
+.ui-theme-jade_modern .renew-page .record-card::before,
+.ui-theme-jade_modern .analytics-page .section-card::before,
+.ui-theme-jade_modern .analytics-page .custom-range-panel::before,
+.ui-theme-jade_modern .audit-page .audit-card::before,
+.ui-theme-jade_modern .audit-page .sheet-card::before,
+.ui-theme-jade_modern .audit-page .dialog-card::before,
+.ui-theme-jade_modern .popup-card::before {
+  content: "";
+  position: absolute;
+  left: 20rpx;
+  right: 20rpx;
+  top: 0;
+  height: 6rpx;
+  border-radius: 999rpx;
+  background: var(--energy-accent-bg);
+  pointer-events: none;
+}
+
+.ui-theme-red_energy .accord-center-page .hero-card,
+.ui-theme-red_energy .notice-detail-page .hero-card,
+.ui-theme-red_energy .settings-page .hero-card,
+.ui-theme-red_energy .service-page .hero-card,
+.ui-theme-red_energy .apply-page .hero-card,
+.ui-theme-red_energy .renew-page .hero-card,
+.ui-theme-red_energy .analytics-page .hero-card,
+.ui-theme-red_energy .audit-page .hero-card,
+.ui-theme-jade_modern .accord-center-page .hero-card,
+.ui-theme-jade_modern .notice-detail-page .hero-card,
+.ui-theme-jade_modern .settings-page .hero-card,
+.ui-theme-jade_modern .service-page .hero-card,
+.ui-theme-jade_modern .apply-page .hero-card,
+.ui-theme-jade_modern .renew-page .hero-card,
+.ui-theme-jade_modern .analytics-page .hero-card,
+.ui-theme-jade_modern .audit-page .hero-card {
+  position: relative;
+  overflow: hidden;
+  background: var(--energy-hero-bg) !important;
+  border: 1rpx solid var(--energy-border) !important;
+  box-shadow: 0 20rpx 36rpx var(--energy-shadow) !important;
+}
+
+.ui-theme-red_energy .accord-center-page .hero-card::after,
+.ui-theme-red_energy .notice-detail-page .hero-card::after,
+.ui-theme-red_energy .settings-page .hero-card::after,
+.ui-theme-red_energy .renew-page .hero-card::after,
+.ui-theme-red_energy .analytics-page .hero-card::after,
+.ui-theme-jade_modern .accord-center-page .hero-card::after,
+.ui-theme-jade_modern .notice-detail-page .hero-card::after,
+.ui-theme-jade_modern .settings-page .hero-card::after,
+.ui-theme-jade_modern .renew-page .hero-card::after,
+.ui-theme-jade_modern .analytics-page .hero-card::after {
+  content: "";
+  position: absolute;
+  right: -36rpx;
+  top: -40rpx;
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 50%;
+  border: 1rpx solid var(--energy-border);
+  box-shadow:
+    0 0 0 16rpx rgba(255, 255, 255, 0.04),
+    0 0 0 34rpx rgba(255, 255, 255, 0.02);
+  pointer-events: none;
+}
+
+.ui-theme-red_energy .accord-title,
+.ui-theme-red_energy .notice-detail-page .title,
+.ui-theme-red_energy .settings-page .section-title,
+.ui-theme-red_energy .service-page .section-title,
+.ui-theme-red_energy .apply-page .section-title,
+.ui-theme-red_energy .renew-page .card-title,
+.ui-theme-red_energy .renew-page .step-title,
+.ui-theme-red_energy .analytics-page .section-title,
+.ui-theme-red_energy .analytics-page .custom-range-title,
+.ui-theme-red_energy .analytics-page .goods-title,
+.ui-theme-red_energy .audit-page .merchant-title,
+.ui-theme-red_energy .audit-page .sheet-title,
+.ui-theme-red_energy .audit-page .group-title,
+.ui-theme-red_energy .audit-page .dialog-title,
+.ui-theme-red_energy .order-page .head-title,
+.ui-theme-red_energy .order-page .dialog-title,
+.ui-theme-jade_modern .accord-title,
+.ui-theme-jade_modern .notice-detail-page .title,
+.ui-theme-jade_modern .settings-page .section-title,
+.ui-theme-jade_modern .service-page .section-title,
+.ui-theme-jade_modern .apply-page .section-title,
+.ui-theme-jade_modern .renew-page .card-title,
+.ui-theme-jade_modern .renew-page .step-title,
+.ui-theme-jade_modern .analytics-page .section-title,
+.ui-theme-jade_modern .analytics-page .custom-range-title,
+.ui-theme-jade_modern .analytics-page .goods-title,
+.ui-theme-jade_modern .audit-page .merchant-title,
+.ui-theme-jade_modern .audit-page .sheet-title,
+.ui-theme-jade_modern .audit-page .group-title,
+.ui-theme-jade_modern .audit-page .dialog-title,
+.ui-theme-jade_modern .order-page .head-title,
+.ui-theme-jade_modern .order-page .dialog-title {
+  color: var(--energy-title) !important;
+  font-family: "Kaiti SC", "STKaiti", "KaiTi", "STSong", "SimSun", serif !important;
+  font-weight: 700 !important;
+  letter-spacing: 2rpx;
+}
+
+.ui-theme-red_energy .accord-center-page .hero-title,
+.ui-theme-red_energy .accord-center-page .hero-subtitle,
+.ui-theme-red_energy .notice-detail-page .hero-card .title,
+.ui-theme-red_energy .notice-detail-page .hero-card .desc,
+.ui-theme-red_energy .settings-page .hero-title,
+.ui-theme-red_energy .settings-page .hero-subtitle,
+.ui-theme-red_energy .service-page .hero-title,
+.ui-theme-red_energy .service-page .hero-subtitle,
+.ui-theme-red_energy .apply-page .hero-title,
+.ui-theme-red_energy .apply-page .hero-subtitle,
+.ui-theme-red_energy .renew-page .hero-title,
+.ui-theme-red_energy .renew-page .hero-desc,
+.ui-theme-red_energy .analytics-page .hero-title,
+.ui-theme-red_energy .analytics-page .hero-subtitle,
+.ui-theme-red_energy .analytics-page .hero-date,
+.ui-theme-red_energy .analytics-page .metric-label,
+.ui-theme-red_energy .analytics-page .metric-value,
+.ui-theme-red_energy .audit-page .hero-title,
+.ui-theme-red_energy .audit-page .hero-subtitle,
+.ui-theme-jade_modern .accord-center-page .hero-title,
+.ui-theme-jade_modern .accord-center-page .hero-subtitle,
+.ui-theme-jade_modern .notice-detail-page .hero-card .title,
+.ui-theme-jade_modern .notice-detail-page .hero-card .desc,
+.ui-theme-jade_modern .settings-page .hero-title,
+.ui-theme-jade_modern .settings-page .hero-subtitle,
+.ui-theme-jade_modern .service-page .hero-title,
+.ui-theme-jade_modern .service-page .hero-subtitle,
+.ui-theme-jade_modern .apply-page .hero-title,
+.ui-theme-jade_modern .apply-page .hero-subtitle,
+.ui-theme-jade_modern .renew-page .hero-title,
+.ui-theme-jade_modern .renew-page .hero-desc,
+.ui-theme-jade_modern .analytics-page .hero-title,
+.ui-theme-jade_modern .analytics-page .hero-subtitle,
+.ui-theme-jade_modern .analytics-page .hero-date,
+.ui-theme-jade_modern .analytics-page .metric-label,
+.ui-theme-jade_modern .analytics-page .metric-value,
+.ui-theme-jade_modern .audit-page .hero-title,
+.ui-theme-jade_modern .audit-page .hero-subtitle {
+  color: var(--energy-hero-text) !important;
+}
+
+.ui-theme-red_energy .accord-desc,
+.ui-theme-red_energy .font-view,
+.ui-theme-red_energy .notice-detail-page .meta-text,
+.ui-theme-red_energy .notice-detail-page .html-content,
+.ui-theme-red_energy .settings-page .setting-desc,
+.ui-theme-red_energy .settings-page .text-action,
+.ui-theme-red_energy .settings-page .picker-value,
+.ui-theme-red_energy .service-page .section-tip,
+.ui-theme-red_energy .service-page .single-line-label,
+.ui-theme-red_energy .service-page .single-line-value,
+.ui-theme-red_energy .service-page .contact-left,
+.ui-theme-red_energy .service-page .contact-value,
+.ui-theme-red_energy .apply-page .form-label,
+.ui-theme-red_energy .apply-page .form-input,
+.ui-theme-red_energy .apply-page .agreement-text,
+.ui-theme-red_energy .apply-page .agreement-link,
+.ui-theme-red_energy .apply-page .info-key,
+.ui-theme-red_energy .apply-page .info-value,
+.ui-theme-red_energy .renew-page .status-label,
+.ui-theme-red_energy .renew-page .status-value,
+.ui-theme-red_energy .renew-page .record-source,
+.ui-theme-red_energy .renew-page .record-time,
+.ui-theme-red_energy .renew-page .record-row,
+.ui-theme-red_energy .analytics-page .section-tip,
+.ui-theme-red_energy .analytics-page .overview-label,
+.ui-theme-red_energy .analytics-page .overview-value,
+.ui-theme-red_energy .analytics-page .summary-key,
+.ui-theme-red_energy .analytics-page .summary-value,
+.ui-theme-red_energy .analytics-page .comparison-label,
+.ui-theme-red_energy .analytics-page .comparison-value,
+.ui-theme-red_energy .analytics-page .comparison-meta,
+.ui-theme-red_energy .analytics-page .trend-label,
+.ui-theme-red_energy .analytics-page .trend-meta,
+.ui-theme-red_energy .analytics-page .status-name,
+.ui-theme-red_energy .analytics-page .status-value,
+.ui-theme-red_energy .analytics-page .goods-meta,
+.ui-theme-red_energy .analytics-page .goods-amount,
+.ui-theme-red_energy .audit-page .merchant-subtitle,
+.ui-theme-red_energy .audit-page .meta-label,
+.ui-theme-red_energy .audit-page .meta-value,
+.ui-theme-red_energy .audit-page .sheet-label,
+.ui-theme-red_energy .audit-page .sheet-value,
+.ui-theme-red_energy .order-page .head-subtitle,
+.ui-theme-red_energy .order-page .summary-label,
+.ui-theme-red_energy .order-page .summary-value,
+.ui-theme-red_energy .order-page .summary-danger,
+.ui-theme-jade_modern .accord-desc,
+.ui-theme-jade_modern .font-view,
+.ui-theme-jade_modern .notice-detail-page .meta-text,
+.ui-theme-jade_modern .notice-detail-page .html-content,
+.ui-theme-jade_modern .settings-page .setting-desc,
+.ui-theme-jade_modern .settings-page .text-action,
+.ui-theme-jade_modern .settings-page .picker-value,
+.ui-theme-jade_modern .service-page .section-tip,
+.ui-theme-jade_modern .service-page .single-line-label,
+.ui-theme-jade_modern .service-page .single-line-value,
+.ui-theme-jade_modern .service-page .contact-left,
+.ui-theme-jade_modern .service-page .contact-value,
+.ui-theme-jade_modern .apply-page .form-label,
+.ui-theme-jade_modern .apply-page .form-input,
+.ui-theme-jade_modern .apply-page .agreement-text,
+.ui-theme-jade_modern .apply-page .agreement-link,
+.ui-theme-jade_modern .apply-page .info-key,
+.ui-theme-jade_modern .apply-page .info-value,
+.ui-theme-jade_modern .renew-page .status-label,
+.ui-theme-jade_modern .renew-page .status-value,
+.ui-theme-jade_modern .renew-page .record-source,
+.ui-theme-jade_modern .renew-page .record-time,
+.ui-theme-jade_modern .renew-page .record-row,
+.ui-theme-jade_modern .analytics-page .section-tip,
+.ui-theme-jade_modern .analytics-page .overview-label,
+.ui-theme-jade_modern .analytics-page .overview-value,
+.ui-theme-jade_modern .analytics-page .summary-key,
+.ui-theme-jade_modern .analytics-page .summary-value,
+.ui-theme-jade_modern .analytics-page .comparison-label,
+.ui-theme-jade_modern .analytics-page .comparison-value,
+.ui-theme-jade_modern .analytics-page .comparison-meta,
+.ui-theme-jade_modern .analytics-page .trend-label,
+.ui-theme-jade_modern .analytics-page .trend-meta,
+.ui-theme-jade_modern .analytics-page .status-name,
+.ui-theme-jade_modern .analytics-page .status-value,
+.ui-theme-jade_modern .analytics-page .goods-meta,
+.ui-theme-jade_modern .analytics-page .goods-amount,
+.ui-theme-jade_modern .audit-page .merchant-subtitle,
+.ui-theme-jade_modern .audit-page .meta-label,
+.ui-theme-jade_modern .audit-page .meta-value,
+.ui-theme-jade_modern .audit-page .sheet-label,
+.ui-theme-jade_modern .audit-page .sheet-value,
+.ui-theme-jade_modern .order-page .head-subtitle,
+.ui-theme-jade_modern .order-page .summary-label,
+.ui-theme-jade_modern .order-page .summary-value,
+.ui-theme-jade_modern .order-page .summary-danger {
+  color: var(--energy-text) !important;
+}
+
+.ui-theme-red_energy .popup-mask,
+.ui-theme-jade_modern .popup-mask {
+  background: var(--energy-mask) !important;
+}
+
+.ui-theme-red_energy .popup-actions,
+.ui-theme-jade_modern .popup-actions {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16rpx !important;
+}
+
+.ui-theme-red_energy .popup-btn,
+.ui-theme-jade_modern .popup-btn,
+.ui-theme-red_energy .renew-page .action-btn,
+.ui-theme-jade_modern .renew-page .action-btn,
+.ui-theme-red_energy .analytics-page .range-tab,
+.ui-theme-red_energy .analytics-page .custom-range-submit,
+.ui-theme-red_energy .analytics-page .custom-range-ghost,
+.ui-theme-jade_modern .analytics-page .range-tab,
+.ui-theme-jade_modern .analytics-page .custom-range-submit,
+.ui-theme-jade_modern .analytics-page .custom-range-ghost,
+.ui-theme-red_energy .audit-page .tab-chip,
+.ui-theme-jade_modern .audit-page .tab-chip,
+.ui-theme-red_energy .order-page .tab-chip,
+.ui-theme-jade_modern .order-page .tab-chip {
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif !important;
+  font-weight: 600 !important;
+  letter-spacing: 1rpx;
+}
+
+.ui-theme-red_energy .popup-btn.ghost,
+.ui-theme-red_energy .renew-page .action-btn.ghost,
+.ui-theme-red_energy .analytics-page .custom-range-ghost,
+.ui-theme-red_energy .audit-page .action-btn.light,
+.ui-theme-red_energy .order-page .action-btn.light,
+.ui-theme-red_energy .analytics-page .range-tab,
+.ui-theme-red_energy .analytics-page .hero-date,
+.ui-theme-red_energy .analytics-page .hero-metric,
+.ui-theme-red_energy .analytics-page .overview-item,
+.ui-theme-red_energy .analytics-page .today-comparison-item,
+.ui-theme-red_energy .analytics-page .comparison-summary-item,
+.ui-theme-red_energy .analytics-page .custom-date-field,
+.ui-theme-red_energy .analytics-page .goods-item,
+.ui-theme-red_energy .analytics-page .status-row,
+.ui-theme-red_energy .renew-page .status-item,
+.ui-theme-red_energy .apply-page .form-input,
+.ui-theme-red_energy .apply-page .upload-placeholder,
+.ui-theme-red_energy .service-page .single-line-card,
+.ui-theme-red_energy .service-page .contact-item,
+.ui-theme-red_energy .register .login-tab,
+.ui-theme-red_energy .register .plain-input-wrap,
+.ui-theme-red_energy .register .wechat-panel,
+.ui-theme-red_energy .zaiui-topic-card-list-box .cu-list.menu-avatar > .cu-item,
+.ui-theme-red_energy .order-page .summary-item,
+.ui-theme-red_energy .audit-page .meta-item,
+.ui-theme-red_energy .audit-page .dialog-textarea,
+.ui-theme-red_energy .order-page .dialog-textarea,
+.ui-theme-red_energy .popup-scroll,
+.ui-theme-jade_modern .popup-btn.ghost,
+.ui-theme-jade_modern .renew-page .action-btn.ghost,
+.ui-theme-jade_modern .analytics-page .custom-range-ghost,
+.ui-theme-jade_modern .audit-page .action-btn.light,
+.ui-theme-jade_modern .order-page .action-btn.light,
+.ui-theme-jade_modern .analytics-page .range-tab,
+.ui-theme-jade_modern .analytics-page .hero-date,
+.ui-theme-jade_modern .analytics-page .hero-metric,
+.ui-theme-jade_modern .analytics-page .overview-item,
+.ui-theme-jade_modern .analytics-page .today-comparison-item,
+.ui-theme-jade_modern .analytics-page .comparison-summary-item,
+.ui-theme-jade_modern .analytics-page .custom-date-field,
+.ui-theme-jade_modern .analytics-page .goods-item,
+.ui-theme-jade_modern .analytics-page .status-row,
+.ui-theme-jade_modern .renew-page .status-item,
+.ui-theme-jade_modern .apply-page .form-input,
+.ui-theme-jade_modern .apply-page .upload-placeholder,
+.ui-theme-jade_modern .service-page .single-line-card,
+.ui-theme-jade_modern .service-page .contact-item,
+.ui-theme-jade_modern .register .login-tab,
+.ui-theme-jade_modern .register .plain-input-wrap,
+.ui-theme-jade_modern .register .wechat-panel,
+.ui-theme-jade_modern .zaiui-topic-card-list-box .cu-list.menu-avatar > .cu-item,
+.ui-theme-jade_modern .order-page .summary-item,
+.ui-theme-jade_modern .audit-page .meta-item,
+.ui-theme-jade_modern .audit-page .dialog-textarea,
+.ui-theme-jade_modern .order-page .dialog-textarea,
+.ui-theme-jade_modern .popup-scroll {
+  background: var(--energy-ghost-bg) !important;
+  color: var(--energy-ghost-text) !important;
+  border: 1rpx solid var(--energy-border) !important;
+  box-shadow:
+    0 8rpx 16rpx var(--energy-shadow),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.22) !important;
+}
+
+.ui-theme-red_energy .popup-btn.primary,
+.ui-theme-red_energy .renew-page .action-btn.primary,
+.ui-theme-red_energy .analytics-page .range-tab.active,
+.ui-theme-red_energy .analytics-page .custom-range-submit,
+.ui-theme-red_energy .analytics-page .comparison-item.buy,
+.ui-theme-red_energy .analytics-page .comparison-item.sale,
+.ui-theme-red_energy .analytics-page .status-bar,
+.ui-theme-red_energy .analytics-page .goods-rank,
+.ui-theme-red_energy .renew-page .step-index,
+.ui-theme-red_energy .renew-page .hero-badge,
+.ui-theme-red_energy .renew-page .card-link,
+.ui-theme-red_energy .accord-center-page .accord-status,
+.ui-theme-red_energy .accord-center-page .accord-status.accepted,
+.ui-theme-red_energy .accord-center-page .accord-status.pending,
+.ui-theme-red_energy .accord-center-page .accord-action-btn,
+.ui-theme-red_energy .audit-page .status-pill,
+.ui-theme-red_energy .audit-page .tab-chip.active,
+.ui-theme-red_energy .audit-page .action-btn.success,
+.ui-theme-red_energy .audit-page .action-btn.danger,
+.ui-theme-red_energy .order-page .tab-chip.active,
+.ui-theme-red_energy .order-page .status-pill,
+.ui-theme-red_energy .order-page .action-btn.primary,
+.ui-theme-red_energy .order-page .action-btn.success,
+.ui-theme-red_energy .order-page .action-btn.danger,
+.ui-theme-red_energy .zaiui-footer-fixed .cu-btn.bg-red,
+.ui-theme-red_energy .zaiui-btn-view .cu-btn.bg-red,
+.ui-theme-red_energy .register .wechat-login-btn,
+.ui-theme-red_energy .register .wbutton button,
+.ui-theme-red_energy .register .wbutton view,
+.ui-theme-red_energy .apply-page .action-btn.primary,
+.ui-theme-red_energy .zaiui-topic-card-list-box .corner-mark,
+.ui-theme-red_energy .goods-page .goods-tag,
+.ui-theme-red_energy .search-page .quick-tag,
+.ui-theme-jade_modern .popup-btn.primary,
+.ui-theme-jade_modern .renew-page .action-btn.primary,
+.ui-theme-jade_modern .analytics-page .range-tab.active,
+.ui-theme-jade_modern .analytics-page .custom-range-submit,
+.ui-theme-jade_modern .analytics-page .comparison-item.buy,
+.ui-theme-jade_modern .analytics-page .comparison-item.sale,
+.ui-theme-jade_modern .analytics-page .status-bar,
+.ui-theme-jade_modern .analytics-page .goods-rank,
+.ui-theme-jade_modern .renew-page .step-index,
+.ui-theme-jade_modern .renew-page .hero-badge,
+.ui-theme-jade_modern .renew-page .card-link,
+.ui-theme-jade_modern .accord-center-page .accord-status,
+.ui-theme-jade_modern .accord-center-page .accord-status.accepted,
+.ui-theme-jade_modern .accord-center-page .accord-status.pending,
+.ui-theme-jade_modern .accord-center-page .accord-action-btn,
+.ui-theme-jade_modern .audit-page .status-pill,
+.ui-theme-jade_modern .audit-page .tab-chip.active,
+.ui-theme-jade_modern .audit-page .action-btn.success,
+.ui-theme-jade_modern .audit-page .action-btn.danger,
+.ui-theme-jade_modern .order-page .tab-chip.active,
+.ui-theme-jade_modern .order-page .status-pill,
+.ui-theme-jade_modern .order-page .action-btn.primary,
+.ui-theme-jade_modern .order-page .action-btn.success,
+.ui-theme-jade_modern .order-page .action-btn.danger,
+.ui-theme-jade_modern .zaiui-footer-fixed .cu-btn.bg-red,
+.ui-theme-jade_modern .zaiui-btn-view .cu-btn.bg-red,
+.ui-theme-jade_modern .register .wechat-login-btn,
+.ui-theme-jade_modern .register .wbutton button,
+.ui-theme-jade_modern .register .wbutton view,
+.ui-theme-jade_modern .apply-page .action-btn.primary,
+.ui-theme-jade_modern .zaiui-topic-card-list-box .corner-mark,
+.ui-theme-jade_modern .goods-page .goods-tag,
+.ui-theme-jade_modern .search-page .quick-tag {
+  background: var(--energy-accent-bg) !important;
+  color: var(--energy-accent-text) !important;
+  box-shadow:
+    0 12rpx 24rpx var(--energy-shadow),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.22) !important;
+}
+
+.ui-theme-red_energy .accord-center-page .accord-arrow,
+.ui-theme-red_energy .renew-page .status-label,
+.ui-theme-red_energy .renew-page .card-link,
+.ui-theme-red_energy .order-page .tab-chip,
+.ui-theme-jade_modern .accord-center-page .accord-arrow,
+.ui-theme-jade_modern .renew-page .status-label,
+.ui-theme-jade_modern .renew-page .card-link,
+.ui-theme-jade_modern .order-page .tab-chip {
+  color: var(--energy-text) !important;
+}
+
+.ui-theme-red_energy .order-page .tab-chip,
+.ui-theme-jade_modern .order-page .tab-chip {
+  background: var(--energy-ghost-bg) !important;
+  border: 1rpx solid var(--energy-border) !important;
+  box-shadow:
+    0 8rpx 16rpx var(--energy-shadow),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.22) !important;
+}
+
+.ui-theme-red_energy .entity-card,
+.ui-theme-jade_modern .entity-card {
+  background: var(--energy-card-bg) !important;
+  border: 1rpx solid var(--energy-border) !important;
+  box-shadow: 0 10rpx 20rpx var(--energy-shadow) !important;
+}
+
+.ui-theme-red_energy .entity-avatar,
+.ui-theme-jade_modern .entity-avatar {
+  background: var(--energy-ghost-bg) !important;
+  color: var(--energy-title) !important;
+  box-shadow:
+    0 10rpx 18rpx var(--energy-shadow),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.24) !important;
+}
+
+.ui-theme-red_energy .notice-detail-page .html-content pre,
+.ui-theme-red_energy .font-view pre,
+.ui-theme-jade_modern .notice-detail-page .html-content pre,
+.ui-theme-jade_modern .font-view pre {
+  background: var(--energy-pre-bg) !important;
+  border: 1rpx solid var(--energy-border) !important;
+}
+
+.ui-theme-red_energy .analytics-page {
+  background:
+    radial-gradient(circle at top right, rgba(255, 220, 198, 0.22), transparent 24%),
+    linear-gradient(180deg, #a30b15 0%, #b9111d 9%, #fff1ea 10%, #fff8f4 100%) !important;
+}
+
+.ui-theme-red_energy .analytics-page .hero-card {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.16), transparent 24%),
+    linear-gradient(135deg, #8d0711 0%, #bf1623 58%, #ef7f38 100%) !important;
+}
+
+.ui-theme-red_energy .analytics-page .hero-metric,
+.ui-theme-red_energy .analytics-page .hero-date {
+  background: rgba(255, 247, 242, 0.16) !important;
+  border: 1rpx solid rgba(255, 241, 234, 0.14) !important;
+}
+
+.ui-theme-red_energy .analytics-page .section-card,
+.ui-theme-red_energy .analytics-page .custom-range-panel {
+  background: linear-gradient(180deg, rgba(255, 252, 249, 0.99) 0%, rgba(255, 244, 238, 0.96) 100%) !important;
+  box-shadow: 0 18rpx 30rpx rgba(116, 8, 12, 0.1) !important;
+}
+
+.ui-theme-red_energy .analytics-page .overview-item,
+.ui-theme-red_energy .analytics-page .today-comparison-item,
+.ui-theme-red_energy .analytics-page .comparison-summary-item,
+.ui-theme-red_energy .analytics-page .custom-date-field,
+.ui-theme-red_energy .analytics-page .goods-item,
+.ui-theme-red_energy .analytics-page .status-row {
+  background: linear-gradient(180deg, rgba(255, 245, 240, 0.98) 0%, rgba(255, 234, 225, 0.95) 100%) !important;
+}
+
+.ui-theme-red_energy .analytics-page .comparison-item.buy {
+  background: linear-gradient(135deg, #8f0912 0%, #bc1622 70%, #ea7333 100%) !important;
+}
+
+.ui-theme-red_energy .analytics-page .comparison-item.sale {
+  background: linear-gradient(135deg, #b7111d 0%, #db2a26 60%, #f28a39 100%) !important;
+}
+
+.ui-theme-red_energy .analytics-page .comparison-item.buy .comparison-label,
+.ui-theme-red_energy .analytics-page .comparison-item.buy .comparison-value,
+.ui-theme-red_energy .analytics-page .comparison-item.buy .comparison-meta,
+.ui-theme-red_energy .analytics-page .comparison-item.sale .comparison-label,
+.ui-theme-red_energy .analytics-page .comparison-item.sale .comparison-value,
+.ui-theme-red_energy .analytics-page .comparison-item.sale .comparison-meta {
+  color: #fff8f4 !important;
+}
+
+.ui-theme-red_energy .analytics-page .trend-track {
+  background: rgba(196, 28, 34, 0.08) !important;
+}
+
+.ui-theme-red_energy .analytics-page .trend-bar.buy-bar,
+.ui-theme-red_energy .analytics-page .trend-bar.sale-overlay {
+  background: linear-gradient(90deg, rgba(168, 14, 21, 0.62) 0%, rgba(239, 127, 56, 0.9) 100%) !important;
+}
+
+.ui-theme-red_energy .mall-page {
+  background:
+    radial-gradient(circle at top right, rgba(255, 220, 198, 0.22), transparent 24%),
+    linear-gradient(180deg, #a30b15 0%, #b9111d 8%, #fff1ea 9%, #fff8f4 100%) !important;
+}
+
+.ui-theme-red_energy .mall-page .hero-card {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.14), transparent 24%),
+    linear-gradient(135deg, #8f0912 0%, #c41825 58%, #ef8339 100%) !important;
+}
+
+.ui-theme-red_energy .mall-page .hero-search,
+.ui-theme-red_energy .mall-page .hero-metric {
+  background: rgba(255, 247, 242, 0.14) !important;
+  border: 1rpx solid rgba(255, 241, 234, 0.14) !important;
+}
+
+.ui-theme-red_energy .mall-page .section-card {
+  background: linear-gradient(180deg, rgba(255, 252, 249, 0.99) 0%, rgba(255, 244, 238, 0.96) 100%) !important;
+  border: 1rpx solid rgba(201, 29, 36, 0.12) !important;
+  box-shadow: 0 18rpx 30rpx rgba(116, 8, 12, 0.1) !important;
+}
+
+.ui-theme-red_energy .mall-page .notice-bar,
+.ui-theme-red_energy .mall-page .keyword-input,
+.ui-theme-red_energy .mall-page .filter-input,
+.ui-theme-red_energy .mall-page .filter-summary,
+.ui-theme-red_energy .mall-page .active-filter-card,
+.ui-theme-red_energy .mall-page .active-filter-chip,
+.ui-theme-red_energy .mall-page .filter-chip {
+  background: linear-gradient(180deg, rgba(255, 245, 240, 0.98) 0%, rgba(255, 234, 225, 0.95) 100%) !important;
+  color: #9f1d15 !important;
+  border: 1rpx solid rgba(201, 29, 36, 0.08) !important;
+  box-shadow:
+    0 8rpx 16rpx rgba(116, 8, 12, 0.08),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.22) !important;
+}
+
+.ui-theme-red_energy .mall-page .filter-btn.primary,
+.ui-theme-red_energy .mall-page .filter-chip.active {
+  background: linear-gradient(135deg, #8f0912 0%, #c91d24 62%, #f08d3f 100%) !important;
+  color: #fff8f4 !important;
+}
+
+.ui-theme-red_energy .mall-page .goods-card {
+  background: linear-gradient(180deg, rgba(255, 251, 248, 0.99) 0%, rgba(255, 240, 233, 0.96) 100%) !important;
+  border: 1rpx solid rgba(201, 29, 36, 0.1) !important;
+  box-shadow: 0 12rpx 22rpx rgba(116, 8, 12, 0.08) !important;
+}
+
+.ui-theme-red_energy .mall-page .goods-card::before {
+  content: "";
+  position: absolute;
+  left: 18rpx;
+  right: 18rpx;
+  top: 0;
+  height: 5rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, rgba(201, 29, 36, 0.12) 0%, rgba(201, 29, 36, 0.72) 46%, rgba(240, 141, 63, 0.82) 100%);
+}
+
+.ui-theme-red_energy .mall-page .goods-tag {
+  background: rgba(201, 29, 36, 0.08) !important;
+  color: #a21d15 !important;
+  border: 1rpx solid rgba(201, 29, 36, 0.08) !important;
+}
+
+.ui-theme-red_energy .mall-page .goods-title,
+.ui-theme-red_energy .mall-page .goods-price {
+  color: #8f140f !important;
+}
+
+.ui-theme-red_energy .mall-page .goods-spec,
+.ui-theme-red_energy .mall-page .goods-sales,
+.ui-theme-red_energy .mall-page .goods-merchant {
+  color: #a9613e !important;
+}
+
+.ui-theme-red_energy .goods-page,
+.ui-theme-red_energy .cart-page,
+.ui-theme-red_energy .search-page,
+.ui-theme-jade_modern .goods-page,
+.ui-theme-jade_modern .cart-page,
+.ui-theme-jade_modern .search-page {
+  background: var(--energy-page-bg) !important;
+}
+
+.ui-theme-red_energy .goods-page .hero-card,
+.ui-theme-red_energy .cart-page .hero-card,
+.ui-theme-red_energy .search-page .hero-card,
+.ui-theme-jade_modern .goods-page .hero-card,
+.ui-theme-jade_modern .cart-page .hero-card,
+.ui-theme-jade_modern .search-page .hero-card {
+  background: var(--energy-hero-bg) !important;
+  border: 1rpx solid var(--energy-border) !important;
+  box-shadow: 0 20rpx 36rpx var(--energy-shadow) !important;
+}
+
+.ui-theme-red_energy .goods-page .hero-card::after,
+.ui-theme-red_energy .cart-page .hero-card::after,
+.ui-theme-red_energy .search-page .hero-card::after,
+.ui-theme-jade_modern .goods-page .hero-card::after,
+.ui-theme-jade_modern .cart-page .hero-card::after,
+.ui-theme-jade_modern .search-page .hero-card::after {
+  content: "";
+  position: absolute;
+  right: -36rpx;
+  top: -40rpx;
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 50%;
+  border: 1rpx solid var(--energy-border);
+  box-shadow:
+    0 0 0 16rpx rgba(255, 255, 255, 0.04),
+    0 0 0 34rpx rgba(255, 255, 255, 0.02);
+  pointer-events: none;
+}
+
+.ui-theme-red_energy .goods-page .section-card,
+.ui-theme-red_energy .cart-page .shop-card,
+.ui-theme-red_energy .cart-page .action-bar,
+.ui-theme-red_energy .search-page .section-card,
+.ui-theme-jade_modern .goods-page .section-card,
+.ui-theme-jade_modern .cart-page .shop-card,
+.ui-theme-jade_modern .cart-page .action-bar,
+.ui-theme-jade_modern .search-page .section-card {
+  background: var(--energy-card-bg) !important;
+  border: 1rpx solid var(--energy-border) !important;
+  box-shadow: 0 18rpx 34rpx var(--energy-shadow) !important;
+}
+
+.ui-theme-red_energy .goods-page .section-title,
+.ui-theme-red_energy .goods-page .goods-title,
+.ui-theme-red_energy .cart-page .shop-name,
+.ui-theme-red_energy .cart-page .goods-title,
+.ui-theme-red_energy .search-page .section-title,
+.ui-theme-jade_modern .goods-page .section-title,
+.ui-theme-jade_modern .goods-page .goods-title,
+.ui-theme-jade_modern .cart-page .shop-name,
+.ui-theme-jade_modern .cart-page .goods-title,
+.ui-theme-jade_modern .search-page .section-title {
+  color: var(--energy-title) !important;
+  font-family: "Kaiti SC", "STKaiti", "KaiTi", "STSong", "SimSun", serif !important;
+  font-weight: 700 !important;
+}
+
+.ui-theme-red_energy .goods-page .section-tip,
+.ui-theme-red_energy .goods-page .goods-spec,
+.ui-theme-red_energy .goods-page .goods-sales,
+.ui-theme-red_energy .goods-page .goods-merchant,
+.ui-theme-red_energy .search-page .section-tip,
+.ui-theme-red_energy .search-page .helper-text,
+.ui-theme-red_energy .cart-page .shop-count,
+.ui-theme-red_energy .cart-page .goods-spec,
+.ui-theme-red_energy .cart-page .summary-count,
+.ui-theme-jade_modern .goods-page .section-tip,
+.ui-theme-jade_modern .goods-page .goods-spec,
+.ui-theme-jade_modern .goods-page .goods-sales,
+.ui-theme-jade_modern .goods-page .goods-merchant,
+.ui-theme-jade_modern .search-page .section-tip,
+.ui-theme-jade_modern .search-page .helper-text,
+.ui-theme-jade_modern .cart-page .shop-count,
+.ui-theme-jade_modern .cart-page .goods-spec,
+.ui-theme-jade_modern .cart-page .summary-count {
+  color: var(--energy-text) !important;
+}
+
+.ui-theme-red_energy .goods-page .keyword-input,
+.ui-theme-red_energy .goods-page .filter-input,
+.ui-theme-red_energy .goods-page .filter-summary,
+.ui-theme-red_energy .goods-page .active-filter-card,
+.ui-theme-red_energy .goods-page .active-filter-chip,
+.ui-theme-red_energy .goods-page .filter-chip,
+.ui-theme-red_energy .search-page .search-input-row,
+.ui-theme-red_energy .search-page .quick-tag,
+.ui-theme-red_energy .search-page .helper-card,
+.ui-theme-red_energy .cart-page .goods-card,
+.ui-theme-jade_modern .goods-page .keyword-input,
+.ui-theme-jade_modern .goods-page .filter-input,
+.ui-theme-jade_modern .goods-page .filter-summary,
+.ui-theme-jade_modern .goods-page .active-filter-card,
+.ui-theme-jade_modern .goods-page .active-filter-chip,
+.ui-theme-jade_modern .goods-page .filter-chip,
+.ui-theme-jade_modern .search-page .search-input-row,
+.ui-theme-jade_modern .search-page .quick-tag,
+.ui-theme-jade_modern .search-page .helper-card,
+.ui-theme-jade_modern .cart-page .goods-card {
+  background: var(--energy-ghost-bg) !important;
+  color: var(--energy-ghost-text) !important;
+  border: 1rpx solid var(--energy-border) !important;
+  box-shadow:
+    0 8rpx 16rpx var(--energy-shadow),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.22) !important;
+}
+
+.ui-theme-red_energy .goods-page .filter-btn.primary,
+.ui-theme-red_energy .goods-page .filter-chip.active,
+.ui-theme-red_energy .search-page .action-btn.primary,
+.ui-theme-red_energy .cart-page .action-btn.primary,
+.ui-theme-red_energy .cart-page .action-btn.warning,
+.ui-theme-red_energy .cart-page .edit-btn,
+.ui-theme-jade_modern .goods-page .filter-btn.primary,
+.ui-theme-jade_modern .goods-page .filter-chip.active,
+.ui-theme-jade_modern .search-page .action-btn.primary,
+.ui-theme-jade_modern .cart-page .action-btn.primary,
+.ui-theme-jade_modern .cart-page .action-btn.warning,
+.ui-theme-jade_modern .cart-page .edit-btn {
+  background: var(--energy-accent-bg) !important;
+  color: var(--energy-accent-text) !important;
+  box-shadow:
+    0 12rpx 24rpx var(--energy-shadow),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.22) !important;
+}
+
+.ui-theme-jade_modern .mall-page {
+  background:
+    radial-gradient(circle at top right, rgba(216, 164, 58, 0.18), transparent 22%),
+    linear-gradient(180deg, #dfe8e0 0%, #eef2eb 8%, #f7f1e7 9%, #fbf8f2 100%) !important;
+}
+
+.ui-theme-jade_modern .mall-page .hero-card {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.14), transparent 24%),
+    linear-gradient(135deg, #184b42 0%, #206a5f 58%, #d7a13e 100%) !important;
+}
+
+.ui-theme-jade_modern .mall-page .hero-search,
+.ui-theme-jade_modern .mall-page .hero-metric {
+  background: rgba(248, 244, 234, 0.16) !important;
+  border: 1rpx solid rgba(248, 244, 234, 0.14) !important;
+}
+
+.ui-theme-jade_modern .mall-page .section-card {
+  background: linear-gradient(180deg, rgba(255, 252, 247, 0.99) 0%, rgba(246, 238, 225, 0.96) 100%) !important;
+  border: 1rpx solid rgba(24, 76, 67, 0.1) !important;
+  box-shadow: 0 18rpx 30rpx rgba(19, 52, 47, 0.1) !important;
+}
+
+.ui-theme-jade_modern .mall-page .notice-bar,
+.ui-theme-jade_modern .mall-page .keyword-input,
+.ui-theme-jade_modern .mall-page .filter-input,
+.ui-theme-jade_modern .mall-page .filter-summary,
+.ui-theme-jade_modern .mall-page .active-filter-card,
+.ui-theme-jade_modern .mall-page .active-filter-chip,
+.ui-theme-jade_modern .mall-page .filter-chip {
+  background: linear-gradient(180deg, rgba(251, 245, 234, 0.98) 0%, rgba(239, 228, 207, 0.95) 100%) !important;
+  color: #1f5d53 !important;
+  border: 1rpx solid rgba(24, 76, 67, 0.08) !important;
+  box-shadow:
+    0 8rpx 16rpx rgba(19, 52, 47, 0.08),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.22) !important;
+}
+
+.ui-theme-jade_modern .mall-page .filter-btn.primary,
+.ui-theme-jade_modern .mall-page .filter-chip.active {
+  background: linear-gradient(135deg, #184b42 0%, #1d665b 54%, #d5a13b 100%) !important;
+  color: #f8f4ea !important;
+}
+
+.ui-theme-jade_modern .mall-page .goods-card {
+  background: linear-gradient(180deg, rgba(255, 251, 246, 0.99) 0%, rgba(244, 236, 223, 0.96) 100%) !important;
+  border: 1rpx solid rgba(24, 76, 67, 0.1) !important;
+  box-shadow: 0 12rpx 22rpx rgba(19, 52, 47, 0.08) !important;
+}
+
+.ui-theme-jade_modern .mall-page .goods-card::before {
+  content: "";
+  position: absolute;
+  left: 18rpx;
+  right: 18rpx;
+  top: 0;
+  height: 5rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, rgba(24, 76, 67, 0.12) 0%, rgba(24, 76, 67, 0.62) 46%, rgba(216, 164, 58, 0.82) 100%);
+}
+
+.ui-theme-jade_modern .mall-page .goods-title,
+.ui-theme-jade_modern .mall-page .goods-price {
+  color: #18453f !important;
+}
+
+.ui-theme-jade_modern .mall-page .goods-spec,
+.ui-theme-jade_modern .mall-page .goods-sales,
+.ui-theme-jade_modern .mall-page .goods-merchant {
+  color: #7b6e5c !important;
+}
+
+.ui-theme-jade_modern .mall-page .goods-tag {
+  background: rgba(24, 76, 67, 0.06) !important;
+  color: #1f5d53 !important;
+  border: 1rpx solid rgba(24, 76, 67, 0.08) !important;
+}
+
+.ui-theme-jade_modern .analytics-page {
+  background:
+    radial-gradient(circle at top right, rgba(216, 164, 58, 0.18), transparent 22%),
+    linear-gradient(180deg, #dfe8e0 0%, #eef2eb 8%, #f7f1e7 9%, #fbf8f2 100%) !important;
+}
+
+.ui-theme-jade_modern .analytics-page .hero-card {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.16), transparent 24%),
+    linear-gradient(135deg, #184b42 0%, #206a5f 58%, #d7a13e 100%) !important;
+}
+
+.ui-theme-jade_modern .analytics-page .hero-metric,
+.ui-theme-jade_modern .analytics-page .hero-date {
+  background: rgba(248, 244, 234, 0.16) !important;
+  border: 1rpx solid rgba(248, 244, 234, 0.14) !important;
+}
+
+.ui-theme-jade_modern .analytics-page .section-card,
+.ui-theme-jade_modern .analytics-page .custom-range-panel {
+  background: linear-gradient(180deg, rgba(255, 252, 247, 0.99) 0%, rgba(246, 238, 225, 0.96) 100%) !important;
+  box-shadow: 0 18rpx 30rpx rgba(19, 52, 47, 0.1) !important;
+}
+
+.ui-theme-jade_modern .analytics-page .overview-item,
+.ui-theme-jade_modern .analytics-page .today-comparison-item,
+.ui-theme-jade_modern .analytics-page .comparison-summary-item,
+.ui-theme-jade_modern .analytics-page .custom-date-field,
+.ui-theme-jade_modern .analytics-page .goods-item,
+.ui-theme-jade_modern .analytics-page .status-row {
+  background: linear-gradient(180deg, rgba(251, 245, 234, 0.98) 0%, rgba(239, 228, 207, 0.95) 100%) !important;
+}
+
+.ui-theme-jade_modern .analytics-page .comparison-item.buy {
+  background: linear-gradient(135deg, #184b42 0%, #20675c 70%, #c89835 100%) !important;
+}
+
+.ui-theme-jade_modern .analytics-page .comparison-item.sale {
+  background: linear-gradient(135deg, #1d6156 0%, #2d7e71 64%, #d8a43a 100%) !important;
+}
+
+.ui-theme-jade_modern .analytics-page .comparison-item.buy .comparison-label,
+.ui-theme-jade_modern .analytics-page .comparison-item.buy .comparison-value,
+.ui-theme-jade_modern .analytics-page .comparison-item.buy .comparison-meta,
+.ui-theme-jade_modern .analytics-page .comparison-item.sale .comparison-label,
+.ui-theme-jade_modern .analytics-page .comparison-item.sale .comparison-value,
+.ui-theme-jade_modern .analytics-page .comparison-item.sale .comparison-meta {
+  color: #f8f4ea !important;
+}
+
+.ui-theme-jade_modern .analytics-page .trend-track {
+  background: rgba(24, 76, 67, 0.08) !important;
+}
+
+.ui-theme-jade_modern .analytics-page .trend-bar.buy-bar,
+.ui-theme-jade_modern .analytics-page .trend-bar.sale-overlay {
+  background: linear-gradient(90deg, rgba(24, 76, 67, 0.58) 0%, rgba(216, 164, 58, 0.9) 100%) !important;
+}
+
+.ui-theme-jade_modern .renew-page .status-item,
+.ui-theme-jade_modern .renew-page .action-btn.ghost {
+  background: linear-gradient(180deg, rgba(251, 245, 234, 0.98) 0%, rgba(239, 228, 207, 0.95) 100%) !important;
+  color: #1f5d53 !important;
+}
+
+.ui-theme-jade_modern .renew-page .step-index,
+.ui-theme-jade_modern .renew-page .action-btn.primary,
+.ui-theme-jade_modern .renew-page .hero-badge,
+.ui-theme-jade_modern .renew-page .card-link {
+  background: linear-gradient(135deg, #184b42 0%, #1d665b 54%, #d5a13b 100%) !important;
+  color: #f8f4ea !important;
+}
+
+.ui-theme-jade_modern .accord-center-page .accord-status,
+.ui-theme-jade_modern .accord-center-page .accord-status.accepted,
+.ui-theme-jade_modern .accord-center-page .accord-status.pending,
+.ui-theme-jade_modern .accord-center-page .accord-action-btn {
+  background: linear-gradient(135deg, #184b42 0%, #1d665b 54%, #d5a13b 100%) !important;
+  color: #f8f4ea !important;
+}
+
+.ui-theme-jade_modern .accord-center-page .accord-arrow {
+  color: #1f5d53 !important;
+}
+
+.ui-theme-jade_modern .order-page .tab-chip {
+  background: linear-gradient(180deg, rgba(251, 245, 234, 0.98) 0%, rgba(239, 228, 207, 0.95) 100%) !important;
+  color: #1f5d53 !important;
+}
+
+.ui-theme-jade_modern .order-page .tab-chip.active,
+.ui-theme-jade_modern .order-page .status-pill,
+.ui-theme-jade_modern .order-page .action-btn.primary,
+.ui-theme-jade_modern .order-page .action-btn.success,
+.ui-theme-jade_modern .order-page .action-btn.danger {
+  background: linear-gradient(135deg, #184b42 0%, #1d665b 54%, #d5a13b 100%) !important;
+  color: #f8f4ea !important;
+}
+
+.ui-theme-jade_modern .zaiui-topic-card-list-box .corner-mark {
+  background: linear-gradient(135deg, #184b42 0%, #1d665b 54%, #d5a13b 100%) !important;
+  color: #f8f4ea !important;
+}
+
+.ui-theme-jade_modern .entity-card {
+  background: linear-gradient(180deg, rgba(255, 251, 246, 0.99) 0%, rgba(244, 236, 223, 0.96) 100%) !important;
+}
+
+.ui-theme-jade_modern .entity-avatar {
+  background: linear-gradient(180deg, rgba(251, 245, 234, 0.98) 0%, rgba(239, 228, 207, 0.95) 100%) !important;
+  color: #18453f !important;
+}
+
+.ui-theme-red_energy .goods-page .goods-card,
+.ui-theme-jade_modern .goods-page .goods-card {
+  background: var(--energy-card-bg) !important;
+  border: 1rpx solid var(--energy-border) !important;
+  box-shadow: 0 12rpx 22rpx var(--energy-shadow) !important;
+}
+
+.ui-theme-red_energy .goods-page .goods-card::before,
+.ui-theme-jade_modern .goods-page .goods-card::before {
+  content: "";
+  position: absolute;
+  left: 18rpx;
+  right: 18rpx;
+  top: 0;
+  height: 5rpx;
+  border-radius: 999rpx;
+  background: var(--energy-accent-bg);
+}
+
+.ui-theme-red_energy .goods-page .goods-price,
+.ui-theme-red_energy .cart-page .goods-price,
+.ui-theme-red_energy .cart-page .summary-price,
+.ui-theme-jade_modern .goods-page .goods-price,
+.ui-theme-jade_modern .cart-page .goods-price,
+.ui-theme-jade_modern .cart-page .summary-price {
+  color: var(--energy-title) !important;
+}
+
+.ui-theme-red_energy .goods-page .goods-tag,
+.ui-theme-red_energy .search-page .quick-tag,
+.ui-theme-jade_modern .goods-page .goods-tag,
+.ui-theme-jade_modern .search-page .quick-tag {
+  background: var(--energy-ghost-bg) !important;
+  color: var(--energy-ghost-text) !important;
+  border: 1rpx solid var(--energy-border) !important;
+}
+
+.ui-theme-red_energy .zaiui-banner-swiper-box,
+.ui-theme-jade_modern .zaiui-banner-swiper-box {
+  margin: 24rpx;
+  border-radius: 28rpx;
+  overflow: hidden;
+  border: 1rpx solid var(--energy-border) !important;
+  box-shadow: 0 18rpx 34rpx var(--energy-shadow) !important;
+}
+
+.ui-theme-red_energy .screen-swiper,
+.ui-theme-jade_modern .screen-swiper {
+  border-radius: 28rpx;
+}
+
+.ui-theme-red_energy .cu-bar.bg-white.solid-bottom,
+.ui-theme-jade_modern .cu-bar.bg-white.solid-bottom {
+  background: var(--energy-card-bg) !important;
+  border-bottom-color: var(--energy-border) !important;
+}
+
+.ui-theme-red_energy .cu-bar.bg-white.solid-bottom .action,
+.ui-theme-jade_modern .cu-bar.bg-white.solid-bottom .action,
+.ui-theme-red_energy .cu-form-group .title,
+.ui-theme-jade_modern .cu-form-group .title {
+  color: var(--energy-title) !important;
+}
+
+.ui-theme-red_energy .zaiui-view-box .zaiui-card,
+.ui-theme-red_energy .load-error-card,
+.ui-theme-red_energy .merchant-limit-card,
+.ui-theme-red_energy .agreement-card .agreement-row,
+.ui-theme-red_energy .zaiui-price-view,
+.ui-theme-jade_modern .zaiui-view-box .zaiui-card,
+.ui-theme-jade_modern .load-error-card,
+.ui-theme-jade_modern .merchant-limit-card,
+.ui-theme-jade_modern .agreement-card .agreement-row,
+.ui-theme-jade_modern .zaiui-price-view {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24rpx !important;
+  background: var(--energy-card-bg) !important;
+  border: 1rpx solid var(--energy-border) !important;
+  box-shadow: 0 18rpx 34rpx var(--energy-shadow) !important;
+}
+
+.ui-theme-red_energy .zaiui-view-box .zaiui-card::before,
+.ui-theme-red_energy .load-error-card::before,
+.ui-theme-red_energy .merchant-limit-card::before,
+.ui-theme-red_energy .agreement-card .agreement-row::before,
+.ui-theme-red_energy .zaiui-price-view::before,
+.ui-theme-jade_modern .zaiui-view-box .zaiui-card::before,
+.ui-theme-jade_modern .load-error-card::before,
+.ui-theme-jade_modern .merchant-limit-card::before,
+.ui-theme-jade_modern .agreement-card .agreement-row::before,
+.ui-theme-jade_modern .zaiui-price-view::before {
+  content: "";
+  position: absolute;
+  left: 20rpx;
+  right: 20rpx;
+  top: 0;
+  height: 6rpx;
+  border-radius: 999rpx;
+  background: var(--energy-accent-bg);
+  pointer-events: none;
+}
+
+.ui-theme-red_energy .nav,
+.ui-theme-jade_modern .nav {
+  border-radius: 22rpx !important;
+  overflow: hidden;
+  background: var(--energy-card-bg) !important;
+  border: 1rpx solid var(--energy-border) !important;
+  box-shadow: 0 14rpx 28rpx var(--energy-shadow) !important;
+}
+
+.ui-theme-red_energy .nav .cu-item,
+.ui-theme-jade_modern .nav .cu-item {
+  position: relative;
+  color: var(--energy-text) !important;
+  font-family: "Kaiti SC", "STKaiti", "KaiTi", "STSong", "SimSun", serif !important;
+  font-size: 28rpx !important;
+  font-weight: 700 !important;
+}
+
+.ui-theme-red_energy .nav .cu-item.cur,
+.ui-theme-red_energy .nav .cu-item.text-red,
+.ui-theme-jade_modern .nav .cu-item.cur,
+.ui-theme-jade_modern .nav .cu-item.text-red {
+  color: var(--energy-title) !important;
+}
+
+.ui-theme-red_energy .nav .cu-item.cur::after,
+.ui-theme-red_energy .nav .cu-item.text-red::after,
+.ui-theme-jade_modern .nav .cu-item.cur::after,
+.ui-theme-jade_modern .nav .cu-item.text-red::after {
+  background: var(--energy-accent-bg) !important;
+  height: 6rpx !important;
+  border-radius: 999rpx;
+}
+
+.ui-theme-red_energy .cu-form-group,
+.ui-theme-jade_modern .cu-form-group {
+  background: var(--energy-card-bg) !important;
+  border-bottom-color: var(--energy-border) !important;
+}
+
+.ui-theme-red_energy .cu-form-group .title,
+.ui-theme-red_energy .form-view .title,
+.ui-theme-red_energy .merchant-limit-title,
+.ui-theme-red_energy .load-error-title,
+.ui-theme-jade_modern .cu-form-group .title,
+.ui-theme-jade_modern .form-view .title,
+.ui-theme-jade_modern .merchant-limit-title,
+.ui-theme-jade_modern .load-error-title {
+  color: var(--energy-title) !important;
+  font-family: "Kaiti SC", "STKaiti", "KaiTi", "STSong", "SimSun", serif !important;
+  font-weight: 700 !important;
+  letter-spacing: 1rpx;
+}
+
+.ui-theme-red_energy .cu-form-group input,
+.ui-theme-red_energy .cu-form-group .picker,
+.ui-theme-red_energy .cu-form-group view:not(.title),
+.ui-theme-red_energy .merchant-limit-desc,
+.ui-theme-red_energy .merchant-limit-label,
+.ui-theme-red_energy .merchant-limit-value,
+.ui-theme-red_energy .agreement-text,
+.ui-theme-red_energy .agreement-link,
+.ui-theme-red_energy .load-error-desc,
+.ui-theme-jade_modern .cu-form-group input,
+.ui-theme-jade_modern .cu-form-group .picker,
+.ui-theme-jade_modern .cu-form-group view:not(.title),
+.ui-theme-jade_modern .merchant-limit-desc,
+.ui-theme-jade_modern .merchant-limit-label,
+.ui-theme-jade_modern .merchant-limit-value,
+.ui-theme-jade_modern .agreement-text,
+.ui-theme-jade_modern .agreement-link,
+.ui-theme-jade_modern .load-error-desc {
+  color: var(--energy-text) !important;
+}
+
+.ui-theme-red_energy .address-view .cu-list.menu-avatar > .cu-item,
+.ui-theme-jade_modern .address-view .cu-list.menu-avatar > .cu-item {
+  background: var(--energy-card-bg) !important;
+}
+
+.ui-theme-red_energy .address-view .icon-view,
+.ui-theme-red_energy .title-view .cu-avatar,
+.ui-theme-red_energy .merchant-icon,
+.ui-theme-jade_modern .address-view .icon-view,
+.ui-theme-jade_modern .title-view .cu-avatar,
+.ui-theme-jade_modern .merchant-icon {
+  background: var(--energy-ghost-bg) !important;
+  color: var(--energy-title) !important;
+  box-shadow:
+    0 10rpx 18rpx var(--energy-shadow),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.24);
+}
+
+.ui-theme-red_energy .goods-view .goods-info-view-box,
+.ui-theme-red_energy .order-card .goods-card,
+.ui-theme-jade_modern .goods-view .goods-info-view-box,
+.ui-theme-jade_modern .order-card .goods-card {
+  border-radius: 24rpx !important;
+  background: var(--energy-card-bg) !important;
+  border: 1rpx solid var(--energy-border) !important;
+  box-shadow: 0 12rpx 24rpx var(--energy-shadow) !important;
+}
+
+.ui-theme-red_energy .goods-view .goods-info-view-box::before,
+.ui-theme-red_energy .order-card .goods-card::before,
+.ui-theme-jade_modern .goods-view .goods-info-view-box::before,
+.ui-theme-jade_modern .order-card .goods-card::before {
+  content: "";
+  position: absolute;
+  left: 22rpx;
+  right: 22rpx;
+  top: 0;
+  height: 5rpx;
+  border-radius: 999rpx;
+  background: var(--energy-accent-bg);
+  pointer-events: none;
+}
+
+.ui-theme-red_energy .goods-view .goods-info-view .text-black,
+.ui-theme-red_energy .goods-view .goods-info-view .text-gray,
+.ui-theme-red_energy .goods-title,
+.ui-theme-red_energy .goods-spec,
+.ui-theme-red_energy .goods-qty,
+.ui-theme-red_energy .goods-meta,
+.ui-theme-red_energy .goods-amount,
+.ui-theme-jade_modern .goods-view .goods-info-view .text-black,
+.ui-theme-jade_modern .goods-view .goods-info-view .text-gray,
+.ui-theme-jade_modern .goods-title,
+.ui-theme-jade_modern .goods-spec,
+.ui-theme-jade_modern .goods-qty,
+.ui-theme-jade_modern .goods-meta,
+.ui-theme-jade_modern .goods-amount {
+  color: var(--energy-text) !important;
+}
+
+.ui-theme-red_energy .goods-view .goods-price-view .text-price,
+.ui-theme-red_energy .goods-price,
+.ui-theme-red_energy .price-view,
+.ui-theme-jade_modern .goods-view .goods-price-view .text-price,
+.ui-theme-jade_modern .goods-price,
+.ui-theme-jade_modern .price-view {
+  color: var(--energy-title) !important;
+}
+
+.ui-theme-red_energy .goods-tag,
+.ui-theme-red_energy .goods-view .zaiui-tag-view .cu-tag,
+.ui-theme-jade_modern .goods-tag,
+.ui-theme-jade_modern .goods-view .zaiui-tag-view .cu-tag {
+  background: var(--energy-ghost-bg) !important;
+  color: var(--energy-ghost-text) !important;
+  border: 1rpx solid var(--energy-border) !important;
+}
+
+.ui-theme-red_energy .zaiui-footer-fixed,
+.ui-theme-jade_modern .zaiui-footer-fixed {
+  background: var(--energy-card-bg) !important;
+  box-shadow: 0 -8rpx 26rpx var(--energy-shadow) !important;
+  border-top: 1rpx solid var(--energy-border);
+}
+
+.ui-theme-yellow_energy .order-page,
+.ui-theme-yellow_energy .zaiui-view-box {
+  position: relative;
+}
+
+.ui-theme-yellow_energy .order-page {
+  background:
+    radial-gradient(circle at top right, rgba(255, 232, 146, 0.26), transparent 24%),
+    linear-gradient(180deg, #f4c53f 0%, #f7d869 16%, #fbf2cf 18%, #fff9ea 100%) !important;
+}
+
+.ui-theme-yellow_energy .zaiui-view-box .zaiui-card,
+.ui-theme-yellow_energy .load-error-card,
+.ui-theme-yellow_energy .merchant-limit-card,
+.ui-theme-yellow_energy .agreement-card .agreement-row,
+.ui-theme-yellow_energy .zaiui-price-view,
+.ui-theme-yellow_energy .order-card,
+.ui-theme-yellow_energy .hero-card {
+  border: 1rpx solid rgba(183, 32, 18, 0.1) !important;
+}
+
+.ui-theme-yellow_energy .zaiui-view-box .zaiui-card,
+.ui-theme-yellow_energy .load-error-card,
+.ui-theme-yellow_energy .merchant-limit-card,
+.ui-theme-yellow_energy .agreement-card .agreement-row,
+.ui-theme-yellow_energy .zaiui-price-view {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24rpx !important;
+  background: linear-gradient(180deg, rgba(255, 252, 243, 0.98) 0%, rgba(255, 246, 222, 0.95) 100%) !important;
+  box-shadow: 0 18rpx 34rpx rgba(177, 100, 20, 0.12) !important;
+}
+
+.ui-theme-yellow_energy .zaiui-view-box .zaiui-card::before,
+.ui-theme-yellow_energy .load-error-card::before,
+.ui-theme-yellow_energy .merchant-limit-card::before,
+.ui-theme-yellow_energy .agreement-card .agreement-row::before,
+.ui-theme-yellow_energy .zaiui-price-view::before {
+  content: "";
+  position: absolute;
+  left: 20rpx;
+  right: 20rpx;
+  top: 0;
+  height: 6rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, rgba(183, 32, 18, 0.08) 0%, rgba(183, 32, 18, 0.68) 46%, rgba(242, 178, 50, 0.84) 100%);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .nav {
+  border-radius: 22rpx !important;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(255, 252, 244, 0.98) 0%, rgba(255, 246, 222, 0.94) 100%) !important;
+  border: 1rpx solid rgba(183, 32, 18, 0.08) !important;
+  box-shadow: 0 14rpx 28rpx rgba(177, 100, 20, 0.1) !important;
+}
+
+.ui-theme-yellow_energy .nav .cu-item {
+  position: relative;
+  color: #b16825 !important;
+  font-family: "Kaiti SC", "STKaiti", "KaiTi", serif !important;
+  font-size: 28rpx !important;
+  font-weight: 700 !important;
+}
+
+.ui-theme-yellow_energy .nav .cu-item.cur,
+.ui-theme-yellow_energy .nav .cu-item.text-red {
+  color: #a12413 !important;
+}
+
+.ui-theme-yellow_energy .nav .cu-item.cur::after,
+.ui-theme-yellow_energy .nav .cu-item.text-red::after {
+  background: linear-gradient(90deg, rgba(183, 32, 18, 0.18) 0%, rgba(183, 32, 18, 0.76) 46%, rgba(242, 178, 50, 0.92) 100%) !important;
+  height: 6rpx !important;
+  border-radius: 999rpx;
+  box-shadow: 0 0 14rpx rgba(242, 178, 50, 0.22);
+}
+
+.ui-theme-yellow_energy .cu-form-group {
+  background: linear-gradient(180deg, rgba(255, 252, 244, 0.98) 0%, rgba(255, 246, 223, 0.95) 100%) !important;
+  border-bottom-color: rgba(183, 32, 18, 0.08) !important;
+}
+
+.ui-theme-yellow_energy .cu-form-group .title,
+.ui-theme-yellow_energy .form-view .title,
+.ui-theme-yellow_energy .merchant-limit-title,
+.ui-theme-yellow_energy .load-error-title,
+.ui-theme-yellow_energy .hero-title,
+.ui-theme-yellow_energy .merchant-title {
+  color: #941f10 !important;
+}
+
+.ui-theme-yellow_energy .cu-form-group .title,
+.ui-theme-yellow_energy .form-view .title,
+.ui-theme-yellow_energy .merchant-limit-title,
+.ui-theme-yellow_energy .load-error-title {
+  font-family: "Kaiti SC", "STKaiti", "KaiTi", serif !important;
+  font-weight: 700 !important;
+  letter-spacing: 1rpx;
+}
+
+.ui-theme-yellow_energy .cu-form-group input,
+.ui-theme-yellow_energy .cu-form-group .picker,
+.ui-theme-yellow_energy .cu-form-group view:not(.title),
+.ui-theme-yellow_energy .merchant-limit-desc,
+.ui-theme-yellow_energy .merchant-limit-label,
+.ui-theme-yellow_energy .merchant-limit-value,
+.ui-theme-yellow_energy .agreement-text,
+.ui-theme-yellow_energy .agreement-link,
+.ui-theme-yellow_energy .load-error-desc,
+.ui-theme-yellow_energy .merchant-order-no,
+.ui-theme-yellow_energy .summary-time,
+.ui-theme-yellow_energy .summary-total {
+  color: #ad6a24 !important;
+}
+
+.ui-theme-yellow_energy .merchant-limit-item {
+  border: 1rpx solid rgba(183, 32, 18, 0.08) !important;
+  box-shadow: inset 0 0 0 1rpx rgba(255, 255, 255, 0.26);
+}
+
+.ui-theme-yellow_energy .agreement-card .agreement-link {
+  color: #ad2614 !important;
+  font-weight: 600;
+}
+
+.ui-theme-yellow_energy .address-view .cu-list.menu-avatar > .cu-item {
+  background: linear-gradient(180deg, rgba(255, 252, 244, 0.98) 0%, rgba(255, 246, 223, 0.95) 100%) !important;
+}
+
+.ui-theme-yellow_energy .address-view .icon-view,
+.ui-theme-yellow_energy .title-view .cu-avatar,
+.ui-theme-yellow_energy .merchant-icon {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.24), transparent 24%),
+    linear-gradient(135deg, rgba(247, 214, 106, 0.96) 0%, rgba(255, 243, 201, 0.96) 100%) !important;
+  color: #ad2614 !important;
+  box-shadow:
+    0 10rpx 18rpx rgba(173, 92, 18, 0.12),
+    inset 0 0 0 1rpx rgba(183, 32, 18, 0.08);
+}
+
+.ui-theme-yellow_energy .goods-view .title-view,
+.ui-theme-yellow_energy .goods-card,
+.ui-theme-yellow_energy .order-card .goods-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.ui-theme-yellow_energy .goods-view .goods-info-view-box,
+.ui-theme-yellow_energy .order-card .goods-card {
+  border-radius: 24rpx !important;
+  background: linear-gradient(180deg, rgba(255, 252, 244, 0.98) 0%, rgba(255, 246, 223, 0.95) 100%) !important;
+  border: 1rpx solid rgba(183, 32, 18, 0.08) !important;
+  box-shadow: 0 12rpx 24rpx rgba(177, 100, 20, 0.08) !important;
+}
+
+.ui-theme-yellow_energy .goods-view .goods-info-view-box::before,
+.ui-theme-yellow_energy .order-card .goods-card::before {
+  content: "";
+  position: absolute;
+  left: 22rpx;
+  right: 22rpx;
+  top: 0;
+  height: 5rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, rgba(183, 32, 18, 0.08) 0%, rgba(183, 32, 18, 0.64) 48%, rgba(242, 178, 50, 0.82) 100%);
+  pointer-events: none;
+}
+
+.ui-theme-yellow_energy .goods-view .goods-info-view .text-black,
+.ui-theme-yellow_energy .goods-view .goods-info-view .text-gray,
+.ui-theme-yellow_energy .goods-title,
+.ui-theme-yellow_energy .goods-spec,
+.ui-theme-yellow_energy .goods-qty {
+  color: #ad6a24 !important;
+}
+
+.ui-theme-yellow_energy .goods-view .goods-price-view .text-price,
+.ui-theme-yellow_energy .goods-price,
+.ui-theme-yellow_energy .summary-total,
+.ui-theme-yellow_energy .price-view {
+  color: #b11f13 !important;
+}
+
+.ui-theme-yellow_energy .goods-tag,
+.ui-theme-yellow_energy .goods-view .zaiui-tag-view .cu-tag {
+  background: rgba(183, 32, 18, 0.08) !important;
+  color: #ab2614 !important;
+  border: 1rpx solid rgba(183, 32, 18, 0.08) !important;
+}
+
+.ui-theme-yellow_energy .tabs-scroll {
+  margin-top: 22rpx;
+}
+
+.ui-theme-yellow_energy .tab-chip {
+  background: linear-gradient(180deg, rgba(255, 251, 239, 0.98) 0%, rgba(255, 241, 206, 0.94) 100%) !important;
+  color: #ae6c25 !important;
+  border: 1rpx solid rgba(183, 32, 18, 0.08) !important;
+  box-shadow:
+    0 8rpx 16rpx rgba(173, 92, 18, 0.08),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.26) !important;
+}
+
+.ui-theme-yellow_energy .tab-chip.active {
+  background: linear-gradient(135deg, #b82013 0%, #dc531e 55%, #f3b132 100%) !important;
+  color: #fff8ef !important;
+  box-shadow:
+    0 12rpx 24rpx rgba(183, 61, 16, 0.16),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.22) !important;
+}
+
+.ui-theme-yellow_energy .status-text {
+  color: #b11f13 !important;
+}
+
+.ui-theme-yellow_energy .action-row .action-btn.light,
+.ui-theme-yellow_energy .load-error-actions .cu-btn.line-red,
+.ui-theme-yellow_energy .cu-btn.line-black {
+  background: linear-gradient(180deg, rgba(255, 251, 239, 0.98) 0%, rgba(255, 241, 206, 0.94) 100%) !important;
+  color: #a72514 !important;
+  border: 1rpx solid rgba(183, 32, 18, 0.1) !important;
+  box-shadow:
+    0 8rpx 16rpx rgba(173, 92, 18, 0.08),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.26) !important;
+}
+
+.ui-theme-yellow_energy .action-row .action-btn.primary,
+.ui-theme-yellow_energy .zaiui-footer-fixed .cu-btn.bg-red,
+.ui-theme-yellow_energy .zaiui-btn-view .cu-btn.bg-red,
+.ui-theme-yellow_energy .load-error-actions .cu-btn.bg-red {
+  background: linear-gradient(135deg, #b82013 0%, #dc531e 55%, #f3b132 100%) !important;
+  color: #fff8ef !important;
+  box-shadow:
+    0 14rpx 28rpx rgba(183, 61, 16, 0.16),
+    inset 0 0 0 1rpx rgba(255, 255, 255, 0.24) !important;
+}
+
+.ui-theme-yellow_energy .zaiui-footer-fixed {
+  background: linear-gradient(180deg, rgba(255, 252, 244, 0.98) 0%, rgba(255, 246, 223, 0.95) 100%) !important;
+  box-shadow: 0 -8rpx 26rpx rgba(177, 100, 20, 0.12) !important;
+  border-top: 1rpx solid rgba(183, 32, 18, 0.08);
+}
+
+.ui-theme-yellow_energy .zaiui-footer-fixed .cu-bar {
+  position: relative;
+}
+
+.ui-theme-yellow_energy .zaiui-footer-fixed .cu-bar::before {
+  content: "";
+  position: absolute;
+  left: 22rpx;
+  right: 22rpx;
+  top: 10rpx;
+  height: 6rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, rgba(183, 32, 18, 0) 0%, rgba(183, 32, 18, 0.44) 30%, rgba(242, 178, 50, 0.9) 50%, rgba(183, 32, 18, 0.44) 70%, rgba(183, 32, 18, 0) 100%);
+}
+
+.ui-theme-yellow_energy .cu-timeline .cu-time {
+  color: #a72514 !important;
+  font-family: "Kaiti SC", "STKaiti", "KaiTi", serif !important;
+  font-weight: 700;
+}
+
+.ui-theme-yellow_energy .cu-timeline .cu-item::before {
+  background-color: rgba(183, 32, 18, 0.16) !important;
+}
+
+.ui-theme-yellow_energy .cu-timeline .cu-item .content {
+  background: linear-gradient(180deg, rgba(255, 252, 244, 0.98) 0%, rgba(255, 246, 223, 0.95) 100%) !important;
+  border: 1rpx solid rgba(183, 32, 18, 0.08) !important;
+  box-shadow: 0 10rpx 22rpx rgba(173, 92, 18, 0.08) !important;
+  color: #a96a25 !important;
+}
+
+.ui-theme-yellow_energy .empty-state,
+.ui-theme-yellow_energy .loading-box {
+  color: #b16825 !important;
+}
+
+.ui-theme-jade_modern .detail-page {
+  background:
+    radial-gradient(circle at top right, rgba(216, 164, 58, 0.18), transparent 24%),
+    linear-gradient(180deg, #dfe7e0 0%, #eef3ee 22%, #f7f1e7 46%, #fbf8f2 100%) !important;
+}
+
+.ui-theme-jade_modern .home-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(118deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 48%),
+    radial-gradient(circle at top right, rgba(229, 204, 143, 0.34), rgba(229, 204, 143, 0) 62%);
+  pointer-events: none;
+}
+
+.ui-theme-jade_modern .home-header::after {
+  content: "";
+  position: absolute;
+  left: 30rpx;
+  right: 30rpx;
+  bottom: 16rpx;
+  height: 8rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, rgba(216, 164, 58, 0.05) 0%, rgba(216, 164, 58, 0.52) 50%, rgba(216, 164, 58, 0.05) 100%);
+  pointer-events: none;
+}
+
+.ui-theme-jade_modern .search-box {
+  border: 1rpx solid rgba(248, 244, 234, 0.28) !important;
+  box-shadow: inset 0 0 0 1rpx rgba(255, 255, 255, 0.1) !important;
+}
+
+.ui-theme-jade_modern .tab-pill {
+  border: 1rpx solid rgba(248, 244, 234, 0.16) !important;
+}
+
+.ui-theme-jade_modern .tab-pill.active {
+  background: linear-gradient(135deg, #184b42 0%, #1d665b 54%, #d5a13b 100%) !important;
+  color: #f8f4ea !important;
+  box-shadow: 0 12rpx 24rpx rgba(21, 58, 52, 0.18) !important;
+}
+
+.ui-theme-jade_modern .banner-wrap {
+  padding: 12rpx;
+  background:
+    linear-gradient(135deg, rgba(24, 76, 67, 0.92) 0%, rgba(36, 101, 91, 0.9) 56%, rgba(245, 237, 220, 0.96) 100%) !important;
+  box-shadow: 0 20rpx 36rpx rgba(19, 52, 47, 0.14) !important;
+}
+
+.ui-theme-jade_modern .banner-wrap::after,
+.ui-theme-jade_modern .gallery-card::before {
+  content: "";
+  position: absolute;
+  inset: 10rpx;
+  border-radius: 24rpx;
+  border: 1rpx solid rgba(248, 244, 234, 0.24);
+  pointer-events: none;
+}
+
+.ui-theme-jade_modern .hero-card,
+.ui-theme-jade_modern .pending-reminder-card {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.14), transparent 24%),
+    linear-gradient(135deg, #184b42 0%, #206c60 54%, #d7a13e 100%) !important;
+}
+
+.ui-theme-jade_modern .gallery-badge {
+  background: rgba(24, 76, 67, 0.58) !important;
+  border: 1rpx solid rgba(248, 244, 234, 0.22) !important;
+  color: #f8f4ea !important;
+}
+
+.ui-theme-jade_modern .zaiui-my-box .merchant-tools-summary {
+  border: 1rpx solid rgba(24, 76, 67, 0.16) !important;
+  box-shadow: 0 18rpx 34rpx rgba(19, 52, 47, 0.14) !important;
+}
+
+.ui-theme-jade_modern .tool-badge {
+  background: linear-gradient(135deg, #184b42 0%, #d6a13d 100%) !important;
+  color: #f8f4ea !important;
+}
+
+.ui-theme-ocean_sky,
+.ui-theme-ocean_sky,
+.ui-theme-ocean_sky .detail-page {
+  background:
+    radial-gradient(circle at top right, rgba(162, 225, 255, 0.2), transparent 24%),
+    linear-gradient(180deg, #0f4473 0%, #1270a4 54%, #dff4ff 100%) !important;
+}
+
+.ui-theme-ocean_sky .home-header,
+.ui-theme-ocean_sky .zaiui-head-box,
+.ui-theme-ocean_sky .hero-card,
+.ui-theme-ocean_sky .pending-reminder-card,
+.ui-theme-ocean_sky .merchant-tools-summary,
+.ui-theme-ocean_sky .action-bar {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.18), transparent 22%),
+    linear-gradient(135deg, #0f4c81 0%, #1188c9 56%, #5fd4e7 100%) !important;
+  color: #eef8ff !important;
+}
+
+.ui-theme-ocean_sky .content-section,
+.ui-theme-ocean_sky .section-card,
+.ui-theme-ocean_sky .gallery-card,
+.ui-theme-ocean_sky .zaiui-user-info-order-box,
+.ui-theme-ocean_sky .zaiui-user-info-tools-box,
+.ui-theme-ocean_sky .zaiui-footer-fixed {
+  background: linear-gradient(180deg, rgba(246, 251, 255, 0.98) 0%, rgba(229, 245, 255, 0.96) 100%) !important;
+  border: 1rpx solid rgba(18, 112, 164, 0.12) !important;
+  box-shadow: 0 18rpx 36rpx rgba(9, 53, 84, 0.12) !important;
+}
+
+.ui-theme-ocean_sky .section-title,
+.ui-theme-ocean_sky .goods-title,
+.ui-theme-ocean_sky .merchant-title,
+.ui-theme-ocean_sky .entity-title,
+.ui-theme-ocean_sky .hero-title,
+.ui-theme-ocean_sky .text-black,
+.ui-theme-ocean_sky .text-lg,
+.ui-theme-ocean_sky .text-xl,
+.ui-theme-ocean_sky .text-xxl {
+  color: #124568 !important;
+}
+
+.ui-theme-ocean_sky .tab-pill.active,
+.ui-theme-ocean_sky .filter-chip.active,
+.ui-theme-ocean_sky .filter-btn.primary,
+.ui-theme-ocean_sky .action-btn.primary,
+.ui-theme-ocean_sky .footer-btn.primary,
+.ui-theme-ocean_sky .zaiui-footer-fixed .cu-btn.bg-red {
+  background: linear-gradient(135deg, #0d497d 0%, #1186c7 55%, #5fd4e7 100%) !important;
+  color: #eff9ff !important;
+}
+
+.ui-theme-ocean_sky .action-btn.secondary,
+.ui-theme-ocean_sky .footer-btn.secondary,
+.ui-theme-ocean_sky .footer-btn.ghost,
+.ui-theme-ocean_sky .filter-btn,
+.ui-theme-ocean_sky .tab-pill,
+.ui-theme-ocean_sky .filter-chip {
+  background: linear-gradient(180deg, #f4fbff 0%, #dff2ff 100%) !important;
+  color: #166392 !important;
+}
+
+.ui-theme-ocean_sky .goods-price,
+.ui-theme-ocean_sky .price-row,
+.ui-theme-ocean_sky .price-value,
+.ui-theme-ocean_sky .text-red {
+  color: #1186c7 !important;
+}
+
+.ui-theme-ocean_sky .uni-page-head,
+.ui-theme-ocean_sky .uni-page-head-hd,
+.ui-theme-ocean_sky .uni-page-head-btn,
+.ui-theme-ocean_sky .uni-page-head__title,
+.ui-theme-ocean_sky .uni-page-head__title text {
+  background: #0f4c81 !important;
+  color: #ffffff !important;
+}
+
+.ui-theme-ink_gold,
+.ui-theme-ink_gold,
+.ui-theme-ink_gold .detail-page {
+  background:
+    radial-gradient(circle at top right, rgba(212, 174, 91, 0.16), transparent 26%),
+    linear-gradient(180deg, #101117 0%, #1c202b 42%, #f5efe4 100%) !important;
+}
+
+.ui-theme-ink_gold .home-header,
+.ui-theme-ink_gold .zaiui-head-box,
+.ui-theme-ink_gold .hero-card,
+.ui-theme-ink_gold .pending-reminder-card,
+.ui-theme-ink_gold .merchant-tools-summary,
+.ui-theme-ink_gold .action-bar {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.1), transparent 22%),
+    linear-gradient(135deg, #171920 0%, #2e3547 58%, #c89a3b 100%) !important;
+  color: #f8f1e6 !important;
+}
+
+.ui-theme-ink_gold .content-section,
+.ui-theme-ink_gold .section-card,
+.ui-theme-ink_gold .gallery-card,
+.ui-theme-ink_gold .zaiui-user-info-order-box,
+.ui-theme-ink_gold .zaiui-user-info-tools-box,
+.ui-theme-ink_gold .zaiui-footer-fixed {
+  background: linear-gradient(180deg, rgba(252, 248, 242, 0.98) 0%, rgba(243, 234, 218, 0.96) 100%) !important;
+  border: 1rpx solid rgba(185, 136, 45, 0.14) !important;
+  box-shadow: 0 18rpx 34rpx rgba(16, 17, 23, 0.14) !important;
+}
+
+.ui-theme-ink_gold .section-title,
+.ui-theme-ink_gold .goods-title,
+.ui-theme-ink_gold .merchant-title,
+.ui-theme-ink_gold .entity-title,
+.ui-theme-ink_gold .hero-title,
+.ui-theme-ink_gold .text-black,
+.ui-theme-ink_gold .text-lg,
+.ui-theme-ink_gold .text-xl,
+.ui-theme-ink_gold .text-xxl {
+  color: #342717 !important;
+}
+
+.ui-theme-ink_gold .tab-pill.active,
+.ui-theme-ink_gold .filter-chip.active,
+.ui-theme-ink_gold .filter-btn.primary,
+.ui-theme-ink_gold .action-btn.primary,
+.ui-theme-ink_gold .footer-btn.primary,
+.ui-theme-ink_gold .zaiui-footer-fixed .cu-btn.bg-red {
+  background: linear-gradient(135deg, #1a1c23 0%, #4d566d 48%, #c89a3b 100%) !important;
+  color: #f8f1e6 !important;
+}
+
+.ui-theme-ink_gold .action-btn.secondary,
+.ui-theme-ink_gold .footer-btn.secondary,
+.ui-theme-ink_gold .footer-btn.ghost,
+.ui-theme-ink_gold .filter-btn,
+.ui-theme-ink_gold .tab-pill,
+.ui-theme-ink_gold .filter-chip {
+  background: linear-gradient(180deg, #fcf7ef 0%, #f0e5d4 100%) !important;
+  color: #6f5525 !important;
+}
+
+.ui-theme-ink_gold .goods-price,
+.ui-theme-ink_gold .price-row,
+.ui-theme-ink_gold .price-value,
+.ui-theme-ink_gold .text-red {
+  color: #b8892d !important;
+}
+
+.ui-theme-ink_gold .uni-page-head,
+.ui-theme-ink_gold .uni-page-head-hd,
+.ui-theme-ink_gold .uni-page-head-btn,
+.ui-theme-ink_gold .uni-page-head__title,
+.ui-theme-ink_gold .uni-page-head__title text {
+  background: #1b1c22 !important;
+  color: #ffffff !important;
+}
+
+.ui-theme-rose_dawn,
+.ui-theme-rose_dawn,
+.ui-theme-rose_dawn .detail-page {
+  background:
+    radial-gradient(circle at top right, rgba(255, 222, 231, 0.28), transparent 26%),
+    linear-gradient(180deg, #fff4f6 0%, #ffd9e3 48%, #fffdf6 100%) !important;
+}
+
+.ui-theme-rose_dawn .home-header,
+.ui-theme-rose_dawn .zaiui-head-box,
+.ui-theme-rose_dawn .hero-card,
+.ui-theme-rose_dawn .pending-reminder-card,
+.ui-theme-rose_dawn .merchant-tools-summary,
+.ui-theme-rose_dawn .action-bar {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.2), transparent 20%),
+    linear-gradient(135deg, #a94f6f 0%, #d56c8f 56%, #f6b88b 100%) !important;
+  color: #fff7fb !important;
+}
+
+.ui-theme-rose_dawn .content-section,
+.ui-theme-rose_dawn .section-card,
+.ui-theme-rose_dawn .gallery-card,
+.ui-theme-rose_dawn .zaiui-user-info-order-box,
+.ui-theme-rose_dawn .zaiui-user-info-tools-box,
+.ui-theme-rose_dawn .zaiui-footer-fixed {
+  background: linear-gradient(180deg, rgba(255, 249, 251, 0.98) 0%, rgba(255, 240, 244, 0.96) 100%) !important;
+  border: 1rpx solid rgba(213, 108, 143, 0.12) !important;
+  box-shadow: 0 18rpx 34rpx rgba(168, 83, 109, 0.12) !important;
+}
+
+.ui-theme-rose_dawn .section-title,
+.ui-theme-rose_dawn .goods-title,
+.ui-theme-rose_dawn .merchant-title,
+.ui-theme-rose_dawn .entity-title,
+.ui-theme-rose_dawn .hero-title,
+.ui-theme-rose_dawn .text-black,
+.ui-theme-rose_dawn .text-lg,
+.ui-theme-rose_dawn .text-xl,
+.ui-theme-rose_dawn .text-xxl {
+  color: #8f4a62 !important;
+}
+
+.ui-theme-rose_dawn .tab-pill.active,
+.ui-theme-rose_dawn .filter-chip.active,
+.ui-theme-rose_dawn .filter-btn.primary,
+.ui-theme-rose_dawn .action-btn.primary,
+.ui-theme-rose_dawn .footer-btn.primary,
+.ui-theme-rose_dawn .zaiui-footer-fixed .cu-btn.bg-red {
+  background: linear-gradient(135deg, #a94f6f 0%, #d56c8f 55%, #f6b88b 100%) !important;
+  color: #fff7fb !important;
+}
+
+.ui-theme-rose_dawn .action-btn.secondary,
+.ui-theme-rose_dawn .footer-btn.secondary,
+.ui-theme-rose_dawn .footer-btn.ghost,
+.ui-theme-rose_dawn .filter-btn,
+.ui-theme-rose_dawn .tab-pill,
+.ui-theme-rose_dawn .filter-chip {
+  background: linear-gradient(180deg, #fff6f8 0%, #ffe7ee 100%) !important;
+  color: #9c5670 !important;
+}
+
+.ui-theme-rose_dawn .goods-price,
+.ui-theme-rose_dawn .price-row,
+.ui-theme-rose_dawn .price-value,
+.ui-theme-rose_dawn .text-red {
+  color: #d56c8f !important;
+}
+
+.ui-theme-rose_dawn .uni-page-head,
+.ui-theme-rose_dawn .uni-page-head-hd,
+.ui-theme-rose_dawn .uni-page-head-btn,
+.ui-theme-rose_dawn .uni-page-head__title,
+.ui-theme-rose_dawn .uni-page-head__title text {
+  background: #a94f6f !important;
+  color: #ffffff !important;
+}
+
+.ui-theme-red_energy .zaiui-my-box .order-grid-card,
+.ui-theme-red_energy .zaiui-my-box .tool-grid-card,
+.ui-theme-red_energy .zaiui-my-box .merchant-super-tool-card,
+.ui-theme-red_energy .zaiui-my-box .merchant-super-tools__hero,
+.ui-theme-red_energy .zaiui-my-box .merchant-identity-picker {
+  background: linear-gradient(180deg, rgba(255, 249, 246, 0.98) 0%, rgba(255, 239, 232, 0.98) 100%) !important;
+  border-color: rgba(198, 36, 42, 0.16) !important;
+  box-shadow: 0 14rpx 30rpx rgba(108, 9, 16, 0.12) !important;
+}
+
+.ui-theme-red_energy .zaiui-my-box .order-grid-label,
+.ui-theme-red_energy .zaiui-my-box .merchant-super-tools__hero-title,
+.ui-theme-red_energy .zaiui-my-box .merchant-super-tool-card__title,
+.ui-theme-red_energy .zaiui-my-box .tool-grid-card .tool-card-title,
+.ui-theme-red_energy .zaiui-my-box .tool-grid-card .tool-card-title text {
+  color: #8e1712 !important;
+  text-shadow: none !important;
+}
+
+.ui-theme-red_energy .zaiui-my-box .order-grid-hint,
+.ui-theme-red_energy .zaiui-my-box .merchant-super-tools__hero-desc,
+.ui-theme-red_energy .zaiui-my-box .merchant-super-tool-card__desc,
+.ui-theme-red_energy .zaiui-my-box .merchant-identity-picker__label,
+.ui-theme-red_energy .zaiui-my-box .tools-right {
+  color: #9d5a50 !important;
+}
+
+.ui-theme-red_energy .zaiui-my-box .tool-grid-card .tool-card-icon,
+.ui-theme-red_energy .zaiui-my-box .merchant-super-tool-card__icon {
+  background: linear-gradient(135deg, #b9121d 0%, #ef7a3a 100%) !important;
+  box-shadow: 0 10rpx 20rpx rgba(185, 18, 29, 0.18) !important;
+}
+
+.ui-theme-red_energy .zaiui-my-box .tool-grid-card .tool-card-icon .text-black,
+.ui-theme-red_energy .zaiui-my-box .merchant-super-tool-card__icon,
+.ui-theme-red_energy .zaiui-my-box .merchant-super-tool-card__action,
+.ui-theme-red_energy .zaiui-my-box .merchant-identity-picker__value {
+  color: #fff8f6 !important;
+}
+
+.ui-theme-red_energy .zaiui-my-box .merchant-super-tool-card__badge,
+.ui-theme-red_energy .zaiui-my-box .merchant-super-tools__badge {
+  background: rgba(185, 18, 29, 0.12) !important;
+  color: #b9121d !important;
+}
+
+.ui-theme-yellow_energy .zaiui-my-box .order-grid-card,
+.ui-theme-yellow_energy .zaiui-my-box .tool-grid-card,
+.ui-theme-yellow_energy .zaiui-my-box .merchant-super-tool-card,
+.ui-theme-yellow_energy .zaiui-my-box .merchant-super-tools__hero,
+.ui-theme-yellow_energy .zaiui-my-box .merchant-identity-picker {
+  background: linear-gradient(180deg, rgba(255, 251, 240, 0.99) 0%, rgba(255, 244, 214, 0.98) 100%) !important;
+  border-color: rgba(195, 53, 22, 0.14) !important;
+  box-shadow: 0 14rpx 30rpx rgba(178, 88, 12, 0.1) !important;
+}
+
+.ui-theme-yellow_energy .zaiui-my-box .order-grid-label,
+.ui-theme-yellow_energy .zaiui-my-box .merchant-super-tools__hero-title,
+.ui-theme-yellow_energy .zaiui-my-box .merchant-super-tool-card__title,
+.ui-theme-yellow_energy .zaiui-my-box .tool-grid-card .tool-card-title,
+.ui-theme-yellow_energy .zaiui-my-box .tool-grid-card .tool-card-title text,
+.ui-theme-yellow_energy .zaiui-my-box .merchant-identity-picker__value {
+  color: #a82816 !important;
+  text-shadow: none !important;
+}
+
+.ui-theme-yellow_energy .zaiui-my-box .order-grid-hint,
+.ui-theme-yellow_energy .zaiui-my-box .merchant-super-tools__hero-desc,
+.ui-theme-yellow_energy .zaiui-my-box .merchant-super-tool-card__desc,
+.ui-theme-yellow_energy .zaiui-my-box .merchant-identity-picker__label,
+.ui-theme-yellow_energy .zaiui-my-box .tools-right {
+  color: #9d6a2d !important;
+}
+
+.ui-theme-yellow_energy .zaiui-my-box .tool-grid-card .tool-card-icon,
+.ui-theme-yellow_energy .zaiui-my-box .merchant-super-tool-card__icon {
+  background: linear-gradient(135deg, #c42e18 0%, #f1b43b 100%) !important;
+  box-shadow: 0 10rpx 20rpx rgba(196, 46, 24, 0.16) !important;
+}
+
+.ui-theme-yellow_energy .zaiui-my-box .tool-grid-card .tool-card-icon .text-black,
+.ui-theme-yellow_energy .zaiui-my-box .merchant-super-tool-card__icon,
+.ui-theme-yellow_energy .zaiui-my-box .merchant-super-tool-card__action {
+  color: #fff8f2 !important;
+}
+
+.ui-theme-yellow_energy .zaiui-my-box .merchant-super-tool-card__badge,
+.ui-theme-yellow_energy .zaiui-my-box .merchant-super-tools__badge {
+  background: rgba(191, 36, 20, 0.1) !important;
+  color: #b72013 !important;
+}
+
+.ui-theme-jade_modern .zaiui-my-box .order-grid-card,
+.ui-theme-jade_modern .zaiui-my-box .tool-grid-card,
+.ui-theme-jade_modern .zaiui-my-box .merchant-super-tool-card,
+.ui-theme-jade_modern .zaiui-my-box .merchant-super-tools__hero,
+.ui-theme-jade_modern .zaiui-my-box .merchant-identity-picker {
+  background: linear-gradient(180deg, rgba(252, 248, 241, 0.99) 0%, rgba(244, 236, 220, 0.98) 100%) !important;
+  border-color: rgba(24, 76, 67, 0.14) !important;
+  box-shadow: 0 14rpx 28rpx rgba(24, 76, 67, 0.1) !important;
+}
+
+.ui-theme-jade_modern .zaiui-my-box .order-grid-label,
+.ui-theme-jade_modern .zaiui-my-box .merchant-super-tools__hero-title,
+.ui-theme-jade_modern .zaiui-my-box .merchant-super-tool-card__title,
+.ui-theme-jade_modern .zaiui-my-box .tool-grid-card .tool-card-title,
+.ui-theme-jade_modern .zaiui-my-box .tool-grid-card .tool-card-title text,
+.ui-theme-jade_modern .zaiui-my-box .merchant-identity-picker__value {
+  color: #1d5b52 !important;
+  text-shadow: none !important;
+}
+
+.ui-theme-jade_modern .zaiui-my-box .order-grid-hint,
+.ui-theme-jade_modern .zaiui-my-box .merchant-super-tools__hero-desc,
+.ui-theme-jade_modern .zaiui-my-box .merchant-super-tool-card__desc,
+.ui-theme-jade_modern .zaiui-my-box .merchant-identity-picker__label,
+.ui-theme-jade_modern .zaiui-my-box .tools-right {
+  color: #7b6f60 !important;
+}
+
+.ui-theme-jade_modern .zaiui-my-box .tool-grid-card .tool-card-icon,
+.ui-theme-jade_modern .zaiui-my-box .merchant-super-tool-card__icon {
+  background: linear-gradient(135deg, #1b5c52 0%, #d4a03d 100%) !important;
+  box-shadow: 0 10rpx 20rpx rgba(24, 76, 67, 0.16) !important;
+}
+
+.ui-theme-jade_modern .zaiui-my-box .tool-grid-card .tool-card-icon .text-black,
+.ui-theme-jade_modern .zaiui-my-box .merchant-super-tool-card__icon,
+.ui-theme-jade_modern .zaiui-my-box .merchant-super-tool-card__action {
+  color: #f8f4ea !important;
+}
+
+.ui-theme-jade_modern .zaiui-my-box .merchant-super-tool-card__badge,
+.ui-theme-jade_modern .zaiui-my-box .merchant-super-tools__badge {
+  background: rgba(24, 76, 67, 0.12) !important;
+  color: #1b5c52 !important;
+}
+
+.ui-theme-red_energy .zaiui-my-box .tool-grid-card.is-accent,
+.ui-theme-red_energy .zaiui-my-box .tool-grid-card.is-merchant,
+.ui-theme-red_energy .zaiui-my-box .tool-grid-card.is-system,
+.ui-theme-red_energy .zaiui-my-box .tool-grid-card.is-admin,
+.ui-theme-red_energy .zaiui-my-box .merchant-super-tool-card.is-primary,
+.ui-theme-red_energy .zaiui-my-box .merchant-super-tool-card.is-secondary,
+.ui-theme-red_energy .zaiui-my-box .merchant-super-tool-card.is-alert {
+  background: linear-gradient(180deg, rgba(255, 249, 246, 0.98) 0%, rgba(255, 238, 230, 0.98) 100%) !important;
+  border-color: rgba(198, 36, 42, 0.18) !important;
+}
+
+.ui-theme-yellow_energy .zaiui-my-box .tool-grid-card.is-accent,
+.ui-theme-yellow_energy .zaiui-my-box .tool-grid-card.is-merchant,
+.ui-theme-yellow_energy .zaiui-my-box .tool-grid-card.is-system,
+.ui-theme-yellow_energy .zaiui-my-box .tool-grid-card.is-admin,
+.ui-theme-yellow_energy .zaiui-my-box .merchant-super-tool-card.is-primary,
+.ui-theme-yellow_energy .zaiui-my-box .merchant-super-tool-card.is-secondary,
+.ui-theme-yellow_energy .zaiui-my-box .merchant-super-tool-card.is-alert {
+  background: linear-gradient(180deg, rgba(255, 251, 240, 0.99) 0%, rgba(255, 243, 212, 0.98) 100%) !important;
+  border-color: rgba(195, 53, 22, 0.16) !important;
+}
+
+.ui-theme-jade_modern .zaiui-my-box .tool-grid-card.is-accent,
+.ui-theme-jade_modern .zaiui-my-box .tool-grid-card.is-merchant,
+.ui-theme-jade_modern .zaiui-my-box .tool-grid-card.is-system,
+.ui-theme-jade_modern .zaiui-my-box .tool-grid-card.is-admin,
+.ui-theme-jade_modern .zaiui-my-box .merchant-super-tool-card.is-primary,
+.ui-theme-jade_modern .zaiui-my-box .merchant-super-tool-card.is-secondary,
+.ui-theme-jade_modern .zaiui-my-box .merchant-super-tool-card.is-alert {
+  background: linear-gradient(180deg, rgba(252, 248, 241, 0.99) 0%, rgba(243, 235, 219, 0.98) 100%) !important;
+  border-color: rgba(24, 76, 67, 0.16) !important;
+}
+

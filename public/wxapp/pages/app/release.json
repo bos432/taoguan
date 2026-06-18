@@ -1,0 +1,8 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "xm-cascader": "/uni_modules/xm-cascader/components/xm-cascader/xm-cascader",
+    "u-number-box": "/uni_modules/uview-ui/components/u-number-box/u-number-box",
+    "bar-title": "/components/zaiui-common/basics/bar-title"
+  }
+}

@@ -1,0 +1,1 @@
+import{ae as t}from"./index.CkGVV6zw.js";function e(t){return/^(https?:|http?:|mailto:|tel:)/.test(t)}function r(t,e){var r=[];const s=t.length;for(let a=0;a<s;a++)r.push(t[a][e]);return r}function s(e,r="",s=""){try{navigator.clipboard.writeText(e),t({message:r||"复制成功",type:"success",duration:1500})}catch(a){t({message:s||"复制失败",type:"error"})}}export{r as a,s as c,e as i};

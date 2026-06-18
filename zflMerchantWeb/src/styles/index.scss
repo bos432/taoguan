@@ -1,0 +1,40 @@
+@import './transition';
+@import './sidebar';
+@import './reset';
+@import './dark';
+@import './yyladmin';
+
+.app-container {
+  padding: 15px;
+  background-color: #f5f7f9;
+}
+.app-main{
+  margin-top: 10px;
+}
+.app-main .main{
+  padding: 0px !important;
+}
+.app-main .main .tabs{
+  margin-top: 0px !important;
+}
+.app-main  .operation_btn{
+  display: flex;justify-content: space-between; align-items: center;
+}
+.app-head .el-card__body{
+  padding-bottom: 5px !important;
+}
+.head-pb20 .el-card__body{
+  padding-bottom: 20px !important;
+}
+
+.el-table th {
+  background-color: #f5f7f9 !important;
+}
+
+
+.input-with-select .el-input-group__prepend {
+  background-color: var(--el-fill-color-blank);
+}
+.el-input-number .el-input__inner {
+  text-align: left !important;
+}

@@ -1,0 +1,21 @@
+{
+    "ui_theme_style": "yellow_energy",
+    "ui_theme_options": [
+        {
+            "value": "origin",
+            "label": "默认原版"
+        },
+        {
+            "value": "red_energy",
+            "label": "红底白字五行"
+        },
+        {
+            "value": "yellow_energy",
+            "label": "黄底红字五行"
+        },
+        {
+            "value": "jade_modern",
+            "label": "高级感设计款"
+        }
+    ]
+}

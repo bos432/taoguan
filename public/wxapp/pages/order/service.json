@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "售后服务",
+  "usingComponents": {
+    "u-radio-group": "/uni_modules/uview-ui/components/u-radio-group/u-radio-group",
+    "u-radio": "/uni_modules/uview-ui/components/u-radio/u-radio",
+    "u-number-box": "/uni_modules/uview-ui/components/u-number-box/u-number-box",
+    "my-picker": "/components/zaiui-common/basics/MyPicker"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "pages": [
+    "pages/app/home",
+    "pages/app/my",
+    "pages/app/sell",
+    "pages/app/release",
+    "pages/goods/settlement",
+    "pages/goods/trace",
+    "pages/goods/list",
+    "pages/goods/my_cart",
+    "pages/goods/details",
+    "pages/help/service",
+    "pages/home/search",
+    "pages/my/login",
+    "pages/system/accord-center",
+    "pages/system/accord",
+    "pages/my/set-up",
+    "pages/news/list",
+    "pages/news/details",
+    "pages/notice/detail",
+    "pages/order/list",
+    "pages/order/mer_list",
+    "pages/order/service",
+    "pages/order/evaluate",
+    "pages/order/logistics",
+    "pages/merchant/analytics",
+    "pages/merchant/renew",
+    "pages/merchant/apply",
+    "pages/admin/merchant-audit",
+    "pages/admin/order-audit"
+  ],
+  "subPackages": [],
+  "window": {
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#505050",
+    "selectedColor": "#e54d42",
+    "borderStyle": "white",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/app/home",
+        "iconPath": "static/images/tabbar/home.png",
+        "selectedIconPath": "static/images/tabbar/home-active.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/app/sell",
+        "iconPath": "static/images/tabbar/purchase.png",
+        "selectedIconPath": "static/images/tabbar/purchase-active.png",
+        "text": "发现"
+      },
+      {
+        "pagePath": "pages/app/my",
+        "iconPath": "static/images/tabbar/my.png",
+        "selectedIconPath": "static/images/tabbar/my-active.png",
+        "text": "我的"
+      }
+    ]
+  },
+  "usingComponents": {}
+}

@@ -1,0 +1,6 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "bar-title": "/components/zaiui-common/basics/bar-title"
+  }
+}

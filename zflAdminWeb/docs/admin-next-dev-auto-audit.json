@@ -1,0 +1,451 @@
+{
+  "generatedAt": "2026-04-22T04:03:35.240Z",
+  "base": "http://127.0.0.1:807/admin-next-dev/",
+  "login": {
+    "apiStatus": 200,
+    "apiCode": 200,
+    "apiMessage": "登录成功",
+    "tokenReceived": true,
+    "originalMenuCount": 9,
+    "mockedMenuCount": 11,
+    "loggedIn": true
+  },
+  "merchant": {
+    "checks": {
+      "titleVisible": true,
+      "statusCardCount": 4,
+      "tableVisible": true,
+      "rowCount": 20,
+      "primaryActionVisible": true,
+      "detailDrawerOpened": true
+    },
+    "issues": [],
+    "requests": [
+      {
+        "url": "http://127.0.0.1:807/admin-next-dev/css/merchant.CX9HitZU.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin-next-dev/js/merchant.DrgQBfmB.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/merchant.Merchant/getParams",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/merchant.Merchant/list?page=1&limit=20&date_field=create_time",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/merchant.Merchant/info?id=4",
+        "status": 200
+      }
+    ]
+  },
+  "analytics": {
+    "checks": {
+      "titleVisible": true,
+      "summaryBannerCount": 4,
+      "metricCardCount": 12,
+      "chartCount": 4,
+      "highlightCardCount": 6,
+      "alertCardCount": 3,
+      "drawerOpenedFromHighlight": false,
+      "backRestores": true,
+      "forwardRestores": true,
+      "rememberedAfterNav": true,
+      "rememberedAfterRelogin": true
+    },
+    "issues": [],
+    "requests": [
+      {
+        "url": "http://127.0.0.1:807/admin-next-dev/js/PlatformAnalytics.BR-e9q4z.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin-next-dev/css/PlatformAnalytics.CtakKYec.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/filters",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/summary?quick_date=last7",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/trend?quick_date=last7",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/ranking?quick_date=last7",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/alerts?quick_date=last7",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/merchantDetail?quick_date=last7&merchant_id=24",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/summary?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/trend?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/ranking?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/alerts?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/summary?quick_date=last7",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/trend?quick_date=last7",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/ranking?quick_date=last7",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/alerts?quick_date=last7",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/summary?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/trend?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/ranking?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/alerts?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/filters",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/summary?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/trend?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/ranking?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/alerts?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/filters",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/summary?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/trend?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/ranking?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/alerts?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/filters",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/summary?quick_date=last7",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/ranking?quick_date=last7",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/alerts?quick_date=last7",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/filters",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/summary?quick_date=last7",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/ranking?quick_date=last7",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/alerts?quick_date=last7",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/filters",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/summary?quick_date=last7",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/ranking?quick_date=last7",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/alerts?quick_date=last7",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/summary?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/ranking?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/alerts?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/filters",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/summary?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/ranking?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/alerts?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/filters",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/summary?quick_date=last7",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/ranking?quick_date=last7",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/alerts?quick_date=last7",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/filters",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/summary?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/ranking?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/alerts?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/filters",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/summary?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/ranking?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/alerts?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/filters",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/summary?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/ranking?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/alerts?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/filters",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/summary?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/ranking?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/alerts?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/filters",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/summary?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/ranking?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/alerts?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin-next-dev/js/PlatformAnalytics.BR-e9q4z.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin-next-dev/css/PlatformAnalytics.CtakKYec.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/filters",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/summary?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/trend?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/ranking?quick_date=yesterday",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformAnalytics/alerts?quick_date=yesterday",
+        "status": 200
+      }
+    ],
+    "rememberedState": {
+      "changed": "http://127.0.0.1:807/admin-next-dev/#/analytics?quick_date=yesterday",
+      "backed": "http://127.0.0.1:807/admin-next-dev/#/analytics",
+      "forwarded": "http://127.0.0.1:807/admin-next-dev/#/analytics?quick_date=yesterday",
+      "restoredAfterNav": "http://127.0.0.1:807/admin-next-dev/#/analytics?quick_date=yesterday",
+      "restoredAfterRelogin": "http://127.0.0.1:807/admin-next-dev/#/analytics?quick_date=yesterday",
+      "persisted": "{\"quick_date\":\"yesterday\"}"
+    }
+  },
+  "exports": {
+    "checks": {
+      "titleVisible": true,
+      "summaryBannerCount": 4,
+      "exportCardCount": 4,
+      "disabledCardCount": 0,
+      "historySectionVisible": true,
+      "enabledButtonCount": 4,
+      "downloadTriggered": true,
+      "downloadSuggestedFilename": "platform_orders_20260422_120354.csv",
+      "historyIncreasedAfterExport": true,
+      "backRestores": true,
+      "forwardRestores": true,
+      "rememberedAfterNav": true,
+      "rememberedAfterRelogin": true
+    },
+    "issues": [],
+    "requests": [
+      {
+        "url": "http://127.0.0.1:807/admin-next-dev/css/PlatformExport.CLfVESpN.css",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin-next-dev/js/PlatformExport.BJrfiGCB.js",
+        "status": 200
+      },
+      {
+        "url": "http://127.0.0.1:807/admin/report.PlatformExport/orders?quick_date=last7",
+        "status": 200
+      }
+    ],
+    "rememberedState": {
+      "changed": "http://127.0.0.1:807/admin-next-dev/#/exports?quick_date=yesterday",
+      "backed": "http://127.0.0.1:807/admin-next-dev/#/exports?quick_date=last7",
+      "forwarded": "http://127.0.0.1:807/admin-next-dev/#/exports?quick_date=yesterday",
+      "restoredAfterNav": "http://127.0.0.1:807/admin-next-dev/#/exports?quick_date=yesterday",
+      "restoredAfterRelogin": "http://127.0.0.1:807/admin-next-dev/#/exports?quick_date=yesterday",
+      "persisted": "{\"quick_date\":\"yesterday\"}"
+    }
+  },
+  "resilience": {
+    "checks": {
+      "analyticsErrorToastVisible": true,
+      "analyticsShellStillVisible": true,
+      "analyticsNoCrash": true
+    },
+    "issues": []
+  },
+  "mobile": {
+    "checks": {
+      "analyticsSummarySingleColumn": true,
+      "analyticsHighlightSingleColumn": true,
+      "exportsCardsSingleColumn": true
+    },
+    "issues": []
+  },
+  "consoleErrors": [],
+  "pageErrors": [],
+  "failedRequests": []
+}

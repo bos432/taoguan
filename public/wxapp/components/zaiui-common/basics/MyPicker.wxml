@@ -1,0 +1,1 @@
+<picker mode="selector" range="{{labels}}" value="{{selectedIndex}}" disabled="{{disabled}}" data-event-opts="{{[['change',[['onPickerChange',['$event']]]]]}}" bindchange="__e" class="data-v-2e1e64fa"><view class="{{['picker','data-v-2e1e64fa',selectedIndex>-1?'text-black-ash':'text-gray']}}">{{''+selectedLabel+''}}</view></picker>

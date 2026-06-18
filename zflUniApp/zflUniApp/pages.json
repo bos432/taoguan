@@ -1,0 +1,215 @@
+{
+  "pages": [
+    {
+      "path": "pages/app/home",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/app/my",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/app/sell",
+      "style": {
+        "navigationBarTitleText": "\u53d1\u73b0\u597d\u7269"
+      }
+    },
+    {
+      "path": "pages/app/release",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/goods/settlement",
+      "style": {
+        "navigationBarTitleText": "\u786e\u8ba4\u8ba2\u5355"
+      }
+    },
+    {
+      "path": "pages/goods/trace",
+      "style": {
+        "navigationBarTitleText": "\u6eaf\u6e90\u4fe1\u606f"
+      }
+    },
+    {
+      "path": "pages/goods/list",
+      "style": {
+        "navigationBarTitleText": "\u5546\u54c1\u5217\u8868"
+      }
+    },
+    {
+      "path": "pages/goods/my_cart",
+      "style": {
+        "navigationBarTitleText": "\u8d2d\u7269\u8f66"
+      }
+    },
+    {
+      "path": "pages/goods/details",
+      "style": {
+        "navigationBarTitleText": "\u5546\u54c1\u8be6\u60c5"
+      }
+    },
+    {
+      "path": "pages/help/service",
+      "style": {
+        "navigationBarTitleText": "\u5ba2\u670d\u4e2d\u5fc3"
+      }
+    },
+    {
+      "path": "pages/home/search",
+      "style": {
+        "navigationBarTitleText": "\u641c\u7d22"
+      }
+    },
+    {
+      "path": "pages/my/login",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/system/accord-center",
+      "style": {
+        "navigationBarTitleText": "\u534f\u8bae\u4e2d\u5fc3"
+      }
+    },
+    {
+      "path": "pages/system/accord",
+      "style": {
+        "navigationBarTitleText": "\u534f\u8bae\u8be6\u60c5"
+      }
+    },
+    {
+      "path": "pages/my/set-up",
+      "style": {
+        "navigationBarTitleText": "\u8bbe\u7f6e"
+      }
+    },
+    {
+      "path": "pages/my/footmark",
+      "style": {
+        "navigationBarTitleText": "\u6700\u8fd1\u6d4f\u89c8"
+      }
+    },
+    {
+      "path": "pages/news/list",
+      "style": {
+        "navigationBarTitleText": "\u5e73\u53f0\u8d44\u8baf"
+      }
+    },
+    {
+      "path": "pages/news/details",
+      "style": {
+        "navigationBarTitleText": "\u8d44\u8baf\u8be6\u60c5"
+      }
+    },
+    {
+      "path": "pages/notice/detail",
+      "style": {
+        "navigationBarTitleText": "\u516c\u544a\u8be6\u60c5"
+      }
+    },
+    {
+      "path": "pages/order/list",
+      "style": {
+        "navigationBarTitleText": "\u6211\u7684\u8ba2\u5355"
+      }
+    },
+    {
+      "path": "pages/order/mer_list",
+      "style": {
+        "navigationBarTitleText": "\u8ba2\u5355\u6838\u9500"
+      }
+    },
+    {
+      "path": "pages/order/service",
+      "style": {
+        "navigationBarTitleText": "\u552e\u540e\u670d\u52a1"
+      }
+    },
+    {
+      "path": "pages/order/evaluate",
+      "style": {
+        "navigationBarTitleText": "\u8bc4\u4ef7\u8ba2\u5355"
+      }
+    },
+    {
+      "path": "pages/order/logistics",
+      "style": {
+        "navigationBarTitleText": "\u7269\u6d41\u4fe1\u606f"
+      }
+    },
+    {
+      "path": "pages/merchant/analytics",
+      "style": {
+        "navigationBarTitleText": "\u6570\u636e\u5206\u6790"
+      }
+    },
+    {
+      "path": "pages/merchant/renew",
+      "style": {
+        "navigationBarTitleText": "\u7eed\u8d39\u4e2d\u5fc3"
+      }
+    },
+    {
+      "path": "pages/merchant/apply",
+      "style": {
+        "navigationBarTitleText": "\u5546\u5bb6\u5165\u9a7b"
+      }
+    },
+    {
+      "path": "pages/admin/merchant-audit",
+      "style": {
+        "navigationBarTitleText": "\u5e73\u53f0\u5546\u5bb6\u5ba1\u6838"
+      }
+    },
+    {
+      "path": "pages/admin/order-audit",
+      "style": {
+        "navigationBarTitleText": "\u5546\u5bb6\u8ba2\u5355\u6838\u9500"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "navigationBarTextStyle": "black",
+    "mp-alipay": {
+      "allowsBounceVertical": "NO",
+      "transparentTitle": "always"
+    },
+    "app-plus": {
+      "bounce": "none"
+    }
+  },
+  "tabBar": {
+    "color": "#505050",
+    "selectedColor": "#e54d42",
+    "borderStyle": "white",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/app/home",
+        "iconPath": "static/images/tabbar/home.png",
+        "selectedIconPath": "static/images/tabbar/home-active.png",
+        "text": "\u9996\u9875"
+      },
+      {
+        "pagePath": "pages/app/sell",
+        "iconPath": "static/images/tabbar/purchase.png",
+        "selectedIconPath": "static/images/tabbar/purchase-active.png",
+        "text": "\u53d1\u73b0"
+      },
+      {
+        "pagePath": "pages/app/my",
+        "iconPath": "static/images/tabbar/my.png",
+        "selectedIconPath": "static/images/tabbar/my-active.png",
+        "text": "\u6211\u7684"
+      }
+    ]
+  }
+}

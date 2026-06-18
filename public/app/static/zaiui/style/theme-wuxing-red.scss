@@ -1,0 +1,193 @@
+page,
+body,
+.uni-page-body,
+.uni-page-wrapper,
+.uni-app--showtabbar,
+#app {
+  background:
+    radial-gradient(circle at top right, rgba(255, 210, 180, 0.14), transparent 22%),
+    linear-gradient(180deg, #9e0714 0%, #c50e1d 52%, #ea3d36 100%) !important;
+  color: #fff5f5 !important;
+}
+
+.bg-gradual-red,
+[class*="bg-gradual-red"] {
+  background: linear-gradient(180deg, #b00817 0%, #d31527 56%, #f03e43 100%) !important;
+}
+
+.bg-white,
+.hero-card,
+.section-card,
+.gallery-card,
+.entity-card,
+.status-card,
+.record-card,
+.card,
+.goods-card,
+.merchant-tools-summary,
+.pending-reminder-card,
+.zaiui-user-info-order-box,
+.zaiui-user-info-tools-box,
+.zaiui-user-info-tip-box {
+  background: linear-gradient(180deg, rgba(255, 251, 247, 0.98) 0%, rgba(255, 244, 238, 0.97) 100%) !important;
+  border: 1rpx solid rgba(197, 40, 34, 0.16) !important;
+  box-shadow: 0 20rpx 48rpx rgba(84, 0, 0, 0.18) !important;
+}
+
+.home-page,
+.mall-page,
+.detail-page,
+.release-page,
+.zaiui-my-box {
+  background: transparent !important;
+}
+
+.hero-card,
+.pending-reminder-card,
+.zaiui-my-box .merchant-tools-summary,
+.zaiui-my-box .zaiui-user-info-tip-box {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.18), transparent 22%),
+    linear-gradient(135deg, #8f0612 0%, #be1524 50%, #f08036 100%) !important;
+  color: #fff8f6 !important;
+}
+
+.hero-badge,
+.merchant-tools-summary__badge,
+.pending-badge,
+.tool-badge,
+.label-chip,
+.goods-tag {
+  background: rgba(255, 247, 244, 0.18) !important;
+  color: #fff7f4 !important;
+  border-color: transparent !important;
+}
+
+.section-title,
+.hero-title,
+.entity-title,
+.goods-title,
+.merchant-tools-summary__title,
+.price-value,
+.metric-value,
+.text-black,
+.text-lg,
+.text-xl,
+.text-xxl {
+  color: #7a130c !important;
+}
+
+.hero-card .section-title,
+.hero-card .hero-title,
+.hero-card .merchant-tools-summary__title,
+.hero-card .price-value,
+.hero-card .metric-value,
+.pending-reminder-card .pending-title,
+.zaiui-my-box .merchant-tools-summary__title,
+.zaiui-my-box .merchant-tools-summary__status,
+.zaiui-my-box .merchant-tools-summary__desc,
+.zaiui-my-box .zaiui-user-info-tip-box,
+.zaiui-my-box .zaiui-head-box text,
+.zaiui-my-box .zaiui-head-box view {
+  color: #fff8f6 !important;
+}
+
+.section-tip,
+.hero-desc,
+.goods-spec,
+.goods-merchant,
+.merchant-desc,
+.entity-desc,
+.info-label,
+.price-meta,
+.hero-side-tip,
+.text-gray,
+.text-sm {
+  color: #985445 !important;
+}
+
+.hero-card .section-tip,
+.hero-card .hero-desc,
+.pending-reminder-card .pending-desc,
+.zaiui-my-box .merchant-tools-summary__desc,
+.zaiui-my-box .merchant-tools-summary__badge,
+.zaiui-my-box .merchant-tools-summary__status,
+.zaiui-my-box .zaiui-user-info-tip-box .text-cut,
+.zaiui-my-box .zaiui-user-info-tip-box .icon {
+  color: rgba(255, 248, 245, 0.92) !important;
+}
+
+.keyword-input,
+.filter-input,
+.form-input,
+.form-textarea,
+.hero-search,
+.search-box,
+.upload-placeholder,
+.notice-bar,
+.u-reset-button,
+.cu-form-group {
+  background: rgba(255, 250, 246, 0.88) !important;
+  border-color: rgba(191, 38, 31, 0.14) !important;
+  color: #7a130c !important;
+}
+
+.filter-btn.primary,
+.action-btn.primary,
+.footer-btn.primary,
+.cu-btn.bg-red,
+.tab-pill.active,
+.filter-chip.active,
+.tab-chip.active {
+  background: linear-gradient(135deg, #9a0914 0%, #c91826 52%, #ef8437 100%) !important;
+  color: #fff8f6 !important;
+  box-shadow: 0 14rpx 30rpx rgba(84, 0, 0, 0.24) !important;
+}
+
+.action-btn.secondary,
+.footer-btn.secondary,
+.footer-btn.ghost,
+.filter-btn,
+.tab-pill,
+.filter-chip,
+.tab-chip {
+  background: linear-gradient(180deg, #fff8f4 0%, #ffece2 100%) !important;
+  color: #981714 !important;
+  border-color: rgba(188, 37, 31, 0.16) !important;
+}
+
+.action-btn::after,
+.footer-btn::after,
+.cu-btn::after,
+button::after {
+  border: none !important;
+}
+
+.text-red,
+.goods-price,
+.price-row {
+  color: #c81c21 !important;
+}
+
+.uni-tabbar,
+.uni-tabbar-border,
+.uni-page-head {
+  background: #fff4ee !important;
+}
+
+.uni-tabbar__label,
+.uni-tabbar-text {
+  color: #af7a73 !important;
+}
+
+.uni-tabbar__label-active,
+.uni-tabbar__icon-active + .uni-tabbar__label,
+.uni-tabbar__text-active {
+  color: #d8242a !important;
+}
+
+.input-placeholder,
+input::placeholder,
+textarea::placeholder {
+  color: rgba(158, 84, 69, 0.75) !important;
+}

@@ -1,0 +1,5 @@
+{
+    "enabled": 1,
+    "daily_quantity_limit": 100,
+    "daily_amount_limit": 50000
+}

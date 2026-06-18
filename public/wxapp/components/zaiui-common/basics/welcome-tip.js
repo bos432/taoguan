@@ -1,0 +1,10 @@
+(global["webpackJsonp"]=global["webpackJsonp"]||[]).push([["components/zaiui-common/basics/welcome-tip"],{"297f":function(t,n,i){"use strict";i.r(n);var e=i("9102"),o=i("f7ea");for(var s in o)["default"].indexOf(s)<0&&function(t){i.d(n,t,(function(){return o[t]}))}(s);i("5e26");var c=i("828b"),u=Object(c["a"])(o["default"],e["b"],e["c"],!1,null,"7197d6b6",null,!1,e["a"],void 0);n["default"]=u.exports},"5e26":function(t,n,i){"use strict";var e=i("7589"),o=i.n(e);o.a},"6a0c":function(t,n,i){"use strict";Object.defineProperty(n,"__esModule",{value:!0}),n.default=void 0;var e={name:"welcome-tip",data:function(){return{Content:"",Show:!1,C_s:5e3}},props:{content:{type:String,default:""},show:{type:Boolean,default:!1},c_s:{type:Number,default:5e3}},created:function(){this.Content=this.content,this.Show=this.show,this.C_s=this.c_s,this.iniTime()},watch:{content:function(){this.Content=this.content,this.content||(this.Show=!1),this.iniTime()},show:function(){this.Show=this.show,this.iniTime()},c_s:function(){this.C_s=this.c_s,this.iniTime()}},methods:{iniTime:function(){var t=this;this.Show&&this.C_s>0&&setTimeout((function(){t.Show=!1,t.CloseEvent()}),this.C_s)},CloseEvent:function(){this.$emit("closeFinish",this.Show)}}};n.default=e},7589:function(t,n,i){},9102:function(t,n,i){"use strict";i.d(n,"b",(function(){return e})),i.d(n,"c",(function(){return o})),i.d(n,"a",(function(){}));var e=function(){var t=this.$createElement;this._self._c},o=[]},f7ea:function(t,n,i){"use strict";i.r(n);var e=i("6a0c"),o=i.n(e);for(var s in e)["default"].indexOf(s)<0&&function(t){i.d(n,t,(function(){return e[t]}))}(s);n["default"]=o.a}}]);
+;(global["webpackJsonp"] = global["webpackJsonp"] || []).push([
+    'components/zaiui-common/basics/welcome-tip-create-component',
+    {
+        'components/zaiui-common/basics/welcome-tip-create-component':(function(module, exports, __webpack_require__){
+            __webpack_require__('df3c')['createComponent'](__webpack_require__("297f"))
+        })
+    },
+    [['components/zaiui-common/basics/welcome-tip-create-component']]
+]);

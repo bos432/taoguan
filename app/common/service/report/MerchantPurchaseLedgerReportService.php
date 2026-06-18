@@ -135,20 +135,36 @@ class MerchantPurchaseLedgerReportService
             'normal_count' => 0,
             'exception_count' => 0,
             'missing_bill_count' => 0,
+            'missing_bill_amount' => 0,
+            'ledger_mismatch_count' => 0,
+            'ledger_mismatch_amount' => 0,
+            'bill_mismatch_count' => 0,
+            'bill_mismatch_amount' => 0,
             'amount_mismatch_count' => 0,
+            'amount_mismatch_amount' => 0,
             'exception_amount' => 0,
         ];
 
         foreach ($rows as $row) {
-            if (($row['reconcile_status'] ?? '') === 'normal') {
+            $status = $row['reconcile_status'] ?? '';
+            $diffAmount = abs(floatval($row['reconcile_diff_amount'] ?? 0));
+            if ($status === 'normal') {
                 $cards['normal_count']++;
             } else {
                 $cards['exception_count']++;
-                $cards['exception_amount'] = self::toFloat($cards['exception_amount'] + abs(floatval($row['reconcile_diff_amount'] ?? 0)));
-                if (($row['reconcile_status'] ?? '') === 'missing_bill') {
+                $cards['exception_amount'] = self::toFloat($cards['exception_amount'] + $diffAmount);
+                if ($status === 'missing_bill') {
                     $cards['missing_bill_count']++;
+                    $cards['missing_bill_amount'] = self::toFloat($cards['missing_bill_amount'] + $diffAmount);
+                } elseif ($status === 'ledger_mismatch') {
+                    $cards['ledger_mismatch_count']++;
+                    $cards['ledger_mismatch_amount'] = self::toFloat($cards['ledger_mismatch_amount'] + $diffAmount);
+                } elseif ($status === 'bill_mismatch') {
+                    $cards['bill_mismatch_count']++;
+                    $cards['bill_mismatch_amount'] = self::toFloat($cards['bill_mismatch_amount'] + $diffAmount);
                 } else {
                     $cards['amount_mismatch_count']++;
+                    $cards['amount_mismatch_amount'] = self::toFloat($cards['amount_mismatch_amount'] + $diffAmount);
                 }
             }
         }

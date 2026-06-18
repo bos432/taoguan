@@ -134,6 +134,17 @@
       </article>
     </section>
 
+    <section class="reconcile-types">
+      <article v-for="item in reconcileTypeCards" :key="item.key" class="type-card">
+        <div>
+          <span>{{ item.title }}</span>
+          <strong>{{ item.count }}</strong>
+        </div>
+        <small>{{ item.desc }}</small>
+        <em>差额 ¥{{ money(item.amount) }}</em>
+      </article>
+    </section>
+
     <section class="split">
       <div class="panel">
         <div class="panel__title">买方商家拆账</div>
@@ -268,7 +279,7 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { downloadLedger, filters, list, summary } from '@/api/report/merchant-purchase-ledger'
 
 const loading = ref(false)
@@ -310,7 +321,13 @@ const summaryData = reactive({
       normal_count: 0,
       exception_count: 0,
       missing_bill_count: 0,
+      missing_bill_amount: 0,
+      ledger_mismatch_count: 0,
+      ledger_mismatch_amount: 0,
+      bill_mismatch_count: 0,
+      bill_mismatch_amount: 0,
       amount_mismatch_count: 0,
+      amount_mismatch_amount: 0,
       exception_amount: 0
     },
     exception_list: []
@@ -326,6 +343,40 @@ function buildParams() {
     source_merchant_id: query.source_merchant_id ?? -1
   }
 }
+
+const reconcileTypeCards = computed(() => {
+  const cards = summaryData.reconciliation.cards
+  return [
+    {
+      key: 'missing_bill',
+      title: '缺少账单',
+      desc: '订单已付款，但没有找到购买商品账单',
+      count: cards.missing_bill_count,
+      amount: cards.missing_bill_amount
+    },
+    {
+      key: 'ledger_mismatch',
+      title: '流水不一致',
+      desc: '采购流水金额和订单实付对不上',
+      count: cards.ledger_mismatch_count,
+      amount: cards.ledger_mismatch_amount
+    },
+    {
+      key: 'bill_mismatch',
+      title: '账单不一致',
+      desc: '购买商品账单和订单实付对不上',
+      count: cards.bill_mismatch_count,
+      amount: cards.bill_mismatch_amount
+    },
+    {
+      key: 'amount_mismatch',
+      title: '金额都不一致',
+      desc: '采购流水和账单都与订单实付不一致',
+      count: cards.amount_mismatch_count,
+      amount: cards.amount_mismatch_amount
+    }
+  ]
+})
 
 function money(value) {
   return Number(value || 0).toFixed(2)
@@ -465,6 +516,46 @@ onMounted(async () => {
   margin-top: 16px;
 }
 
+.reconcile-types {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.type-card {
+  padding: 16px;
+  border: 1px solid rgba(39, 55, 44, 0.1);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 12px 32px rgba(36, 52, 42, 0.06);
+}
+
+.type-card div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.type-card span {
+  color: #20372e;
+  font-weight: 700;
+}
+
+.type-card strong {
+  color: #a5412e;
+  font-size: 24px;
+}
+
+.type-card small,
+.type-card em {
+  display: block;
+  margin-top: 8px;
+  color: #6c766f;
+  font-style: normal;
+}
+
 .card {
   padding: 20px;
   border-radius: 22px;
@@ -545,6 +636,7 @@ onMounted(async () => {
 
 @media (max-width: 1180px) {
   .cards,
+  .reconcile-types,
   .split {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -561,6 +653,7 @@ onMounted(async () => {
   }
 
   .cards,
+  .reconcile-types,
   .split {
     grid-template-columns: 1fr;
   }

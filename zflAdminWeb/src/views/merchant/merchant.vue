@@ -105,6 +105,7 @@
           </div>
         </div>
         <div class="followup-panel__actions">
+          <el-button type="primary" plain @click="goToPlatformVoucherSetting">设置平台收款码</el-button>
           <el-button @click="goToMerchantAnalytics">去运营总览看整体波动</el-button>
           <el-button @click="goToInternalTakeover">去内部接盘对账</el-button>
           <el-button @click="goToRenewRecordsPage">去续费记录继续排查</el-button>
@@ -138,26 +139,43 @@
       >
         <el-table-column type="selection" width="44" />
         <el-table-column prop="id" label="ID" width="80" />
-        <el-table-column label="商家" min-width="280">
+        <el-table-column label="商家" min-width="360">
           <template #default="{ row }">
             <div class="merchant-cell">
-              <FileImage
-                v-if="row.receipt_image_url || row.image_url"
-                :file-url="row.receipt_image_url || row.image_url"
-                file-source="list"
-                class="thumb"
-              />
-              <div>
-                <div class="merchant-cell__title">{{ row.title || `商家 #${row.id}` }}</div>
-                <div class="muted">账号：{{ row.username || '--' }}</div>
-                <div class="muted">联系人：{{ row.name || '--' }}</div>
-                <div class="muted">
-                  会员：{{
-                    row.member?.nickname || (row.member_id ? `会员 #${row.member_id}` : '--')
-                  }}
+              <div class="merchant-cell__media">
+                <FileImage
+                  v-if="merchantReceiptUrl(row)"
+                  :file-url="merchantReceiptUrl(row)"
+                  :height="54"
+                  file-source="list"
+                  fit="cover"
+                  class="thumb"
+                />
+                <div v-else class="merchant-cell__placeholder">
+                  {{ merchantInitial(row) }}
                 </div>
-                <div class="muted">
-                  收款码：{{ row.receipt_image_url || row.image_url ? '已配置' : '未配置' }}
+              </div>
+              <div class="merchant-cell__body">
+                <div class="merchant-cell__title">{{ merchantDisplayTitle(row) }}</div>
+                <div class="merchant-cell__meta">
+                  <span>ID：{{ row.id || '--' }}</span>
+                  <span>账号：{{ row.username || '--' }}</span>
+                </div>
+                <div class="merchant-cell__meta">
+                  <span>联系人：{{ row.name || '--' }}</span>
+                  <span>手机：{{ row.phone || '--' }}</span>
+                </div>
+                <div class="merchant-cell__tags">
+                  <el-tag
+                    size="small"
+                    :type="merchantReceiptUrl(row) ? 'success' : 'warning'"
+                    effect="plain"
+                  >
+                    {{ merchantReceiptUrl(row) ? '商家收款码已配置' : '未配商家收款码' }}
+                  </el-tag>
+                  <el-tag v-if="row.member?.nickname" size="small" type="info" effect="plain">
+                    会员：{{ row.member.nickname }}
+                  </el-tag>
                 </div>
               </div>
             </div>
@@ -613,7 +631,7 @@ const runtimeModeLabel = computed(() =>
 
 const selectedSummary = computed(() => {
   return selectedRows.value
-    .map((item) => `${item.title || `商家 #${item.id}`} (${item.id})`)
+    .map((item) => `${merchantDisplayTitle(item)} (${item.id})`)
     .join('\n')
 })
 
@@ -946,6 +964,32 @@ function setRecentAction(label) {
   }
 }
 
+function firstFilled(...values) {
+  return values.map((item) => String(item || '').trim()).find(Boolean) || ''
+}
+
+function merchantDisplayTitle(row = {}) {
+  return (
+    firstFilled(
+      row.title,
+      row.merchant_title,
+      row.shop_name,
+      row.company_name,
+      row.name,
+      row.username,
+      row.phone
+    ) || `商家 #${row.id || '--'}`
+  )
+}
+
+function merchantReceiptUrl(row = {}) {
+  return firstFilled(row.receipt_image_url, row.image_url, row.file_url)
+}
+
+function merchantInitial(row = {}) {
+  return merchantDisplayTitle(row).slice(0, 1).toUpperCase()
+}
+
 function resetEditForm() {
   Object.assign(editForm, defaultEditForm())
 }
@@ -1218,6 +1262,17 @@ function goToRenewRecordsPage() {
   openRenewRecords()
 }
 
+function goToPlatformVoucherSetting() {
+  router.push({
+    path: '/system/setting',
+    query: {
+      from: 'merchant-list',
+      tab: 'systemInfo',
+      focus: 'platform_voucher'
+    }
+  })
+}
+
 function authTagType(value) {
   if (Number(value) === 1) return 'success'
   if (Number(value) === 2) return 'danger'
@@ -1475,6 +1530,33 @@ function formatAmount(value) {
   display: flex;
   align-items: flex-start;
   gap: 12px;
+  min-width: 0;
+}
+
+.merchant-cell__media {
+  flex: 0 0 auto;
+}
+
+.merchant-cell__body {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.merchant-cell__placeholder {
+  display: flex;
+  width: 54px;
+  height: 54px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #dbeafe;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #eef6ff 0%, #f8fbff 100%);
+  color: #2563eb;
+  font-size: 18px;
+  font-weight: 800;
 }
 
 .receipt-preview-card,
@@ -1506,16 +1588,36 @@ function formatAmount(value) {
 }
 
 .merchant-cell__title {
+  max-width: 230px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-weight: 700;
   color: #0f172a;
 }
 
 .thumb {
   flex: 0 0 auto;
-  width: 52px;
-  height: 52px;
+  width: 54px;
+  height: 54px;
   overflow: hidden;
   border-radius: 14px;
+  border: 1px solid #e2e8f0;
+}
+
+.merchant-cell__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.merchant-cell__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .stack {

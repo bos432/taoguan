@@ -36,6 +36,46 @@
               <span class="setting-panel-overview__label">客服信息</span>
               <strong>{{ serviceSummary }}</strong>
             </div>
+            <div class="setting-panel-overview__card">
+              <span class="setting-panel-overview__label">平台收款码</span>
+              <strong>{{ platformVoucherSummary }}</strong>
+            </div>
+          </div>
+          <div
+            class="platform-voucher-panel"
+            :class="{ 'platform-voucher-panel--focus': isPlatformVoucherFocus }"
+          >
+            <div class="platform-voucher-panel__copy">
+              <div class="platform-voucher-panel__title">平台收款码</div>
+              <div class="platform-voucher-panel__desc">
+                平台自营商品、以及还未满足“商家自有收款码”条件的商品，付款页会优先展示这里设置的收款码。
+              </div>
+            </div>
+            <div class="platform-voucher-panel__upload">
+              <FileImage
+                v-model="model.platform_voucher_image_id"
+                v-model:file-url="model.platform_voucher_image_url"
+                file-title="上传平台收款码"
+                file-tip="建议上传清晰的微信/支付宝收款二维码。"
+                :height="120"
+                upload
+              />
+              <div class="platform-voucher-panel__meta">
+                <el-tag
+                  :type="model.platform_voucher_image_id ? 'success' : 'warning'"
+                  effect="plain"
+                >
+                  {{ model.platform_voucher_image_id ? '已配置平台收款码' : '未配置平台收款码' }}
+                </el-tag>
+                <span class="platform-voucher-panel__id">
+                  {{
+                    model.platform_voucher_image_id
+                      ? `文件 ID：${model.platform_voucher_image_id}`
+                      : '上传后记得点页面底部“提交”保存'
+                  }}
+                </span>
+              </div>
+            </div>
           </div>
           <div class="setting-followup-strip">
             <div class="setting-followup-strip__copy">
@@ -213,6 +253,8 @@ export default {
         service_qq: '', //客服QQ，多个逗号隔开
         service_wechat: '', //客服微信号
         service_wechat_image_id: null, //客服微信二维码
+        platform_voucher_image_id: 0,
+        platform_voucher_image_url: '',
         wx_approved: 0 //小程序过审开关，1开启0关闭
       }
     }
@@ -224,9 +266,21 @@ export default {
       if (this.model.service_qq) return 'QQ已配置'
       return '未配置'
     },
+    platformVoucherSummary() {
+      return this.model.platform_voucher_image_id ? '已配置' : '未配置'
+    },
+    isPlatformVoucherFocus() {
+      return String(this.$route.query.focus || '') === 'platform_voucher'
+    },
     systemFocusLabel() {
+      if (this.isPlatformVoucherFocus) {
+        return '正在设置平台收款码'
+      }
       if (!this.model.system_name || !this.model.page_title) {
         return '先补品牌基础展示'
+      }
+      if (!this.model.platform_voucher_image_id) {
+        return '先补平台收款码'
       }
       if (!this.model.member_website) {
         return '先核移动端入口'
@@ -251,9 +305,9 @@ export default {
           action: this.model.member_website || '移动端域名还没配置'
         },
         {
-          title: '第三步：最后补客服触点',
-          desc: '客服电话、微信和二维码补齐后，前端用户联系链路才算闭环。',
-          action: `当前客服状态：${this.serviceSummary}`
+          title: '第三步：确认平台收款码',
+          desc: '凭证支付场景里，平台商品和部分商家商品会使用平台收款码，财务核对前要先确认这里配置正确。',
+          action: `当前平台收款码：${this.platformVoucherSummary}`
         }
       ]
     }
@@ -477,6 +531,59 @@ export default {
   background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
 }
 
+.platform-voucher-panel {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 16px;
+  padding: 18px;
+  border: 1px solid #dbeafe;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #f8fbff 0%, #ffffff 100%);
+}
+
+.platform-voucher-panel--focus {
+  border-color: #60a5fa;
+  box-shadow: 0 16px 38px rgba(37, 99, 235, 0.14);
+}
+
+.platform-voucher-panel__copy {
+  max-width: 460px;
+}
+
+.platform-voucher-panel__title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.platform-voucher-panel__desc {
+  margin-top: 8px;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.platform-voucher-panel__upload {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.platform-voucher-panel__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 180px;
+}
+
+.platform-voucher-panel__id {
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
 .setting-followup-strip__title {
   font-size: 13px;
   font-weight: 700;
@@ -514,6 +621,11 @@ export default {
   .setting-followup-strip {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .platform-voucher-panel,
+  .platform-voucher-panel__upload {
+    flex-direction: column;
   }
 
   .setting-followup-strip__actions {

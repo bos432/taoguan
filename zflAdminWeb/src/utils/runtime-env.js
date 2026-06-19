@@ -12,7 +12,7 @@ function resolveAdminRuntimeEnv() {
   let dataMode = '真实写入'
   let tone = 'danger'
 
-  if (appBase.includes('admin-next-dev')) {
+  if (appBase.includes('admin-next-dev') || baseUrl.includes('gray.')) {
     key = 'gray'
     label = '灰度环境'
     dataMode = '灰度隔离'

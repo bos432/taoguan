@@ -786,6 +786,7 @@ class MerchantPurchaseLedgerReportService
                 $direction,
                 $diffAmount
             );
+            $flowRows = self::buildGoodsTradeFlowRows($buy['order_rows'] ?? [], $sell['order_rows'] ?? []);
             $rows[] = [
                 'goods_key' => $goodsKey,
                 'goods_id' => intval($identity['goods_id'] ?? 0),
@@ -810,6 +811,8 @@ class MerchantPurchaseLedgerReportService
                 'diff_order_message' => $diffOrderResult['message'],
                 'diff_order_nos' => $diffOrderResult['order_nos'],
                 'diff_orders' => $diffOrderResult['orders'],
+                'flow_message' => self::buildGoodsTradeFlowMessage($flowRows),
+                'flow_rows' => $flowRows,
                 'order_nos' => self::joinOrderNos($direction === 'sell' ? ($sell['order_nos'] ?? []) : ($buy['order_nos'] ?? [])),
                 'pay_time' => max((string) ($buy['pay_time'] ?? ''), (string) ($sell['pay_time'] ?? '')),
                 'current_goods_count' => intval($current['goods_count'] ?? 0),
@@ -1154,6 +1157,104 @@ class MerchantPurchaseLedgerReportService
         });
 
         return $orders;
+    }
+
+    private static function buildGoodsTradeFlowRows(array $buyOrders = [], array $sellOrders = []): array
+    {
+        $rows = [];
+        foreach ($buyOrders as $order) {
+            $rows[] = self::buildGoodsTradeFlowEvent($order, 'buy');
+        }
+        foreach ($sellOrders as $order) {
+            $rows[] = self::buildGoodsTradeFlowEvent($order, 'sell');
+        }
+
+        usort($rows, function ($left, $right) {
+            $timeCompare = strcmp((string) ($left['pay_time'] ?? ''), (string) ($right['pay_time'] ?? ''));
+            if ($timeCompare !== 0) {
+                return $timeCompare;
+            }
+            return intval($left['member_order_id'] ?? 0) <=> intval($right['member_order_id'] ?? 0);
+        });
+
+        $balanceQuantity = 0;
+        $balanceAmount = 0;
+        foreach ($rows as $index => &$row) {
+            $balanceQuantity += intval($row['quantity_delta'] ?? 0);
+            $balanceAmount = self::toFloat($balanceAmount + self::toFloat($row['amount_delta'] ?? 0));
+            $row['step_no'] = $index + 1;
+            $row['balance_quantity'] = $balanceQuantity;
+            $row['balance_amount'] = $balanceAmount;
+            $row['balance_title'] = self::buildFlowBalanceTitle($balanceQuantity, $balanceAmount);
+        }
+        unset($row);
+
+        self::attachTradeDiffOrderState($rows);
+        return $rows;
+    }
+
+    private static function buildGoodsTradeFlowEvent(array $order = [], string $side = 'buy'): array
+    {
+        $sourceTitle = trim((string) ($order['source_merchant_title'] ?? ''));
+        if ($sourceTitle === '') {
+            $sourceTitle = ($order['source_type_title'] ?? '') === '平台商品' ? '平台自营' : '未知来源';
+        }
+        $buyerTitle = trim((string) ($order['buyer_merchant_title'] ?? ''));
+        if ($buyerTitle === '') {
+            $buyerTitle = '未知买方';
+        }
+        $quantity = intval($order['quantity'] ?? 0);
+        $amount = self::toFloat($order['amount'] ?? 0);
+        $isSell = $side === 'sell';
+
+        return [
+            'member_order_id' => intval($order['member_order_id'] ?? 0),
+            'order_no' => trim((string) ($order['order_no'] ?? '')),
+            'pay_time' => (string) ($order['pay_time'] ?? ''),
+            'side' => $isSell ? 'sell' : 'buy',
+            'side_title' => $isSell ? '卖出' : '买入',
+            'buyer_merchant_id' => intval($order['buyer_merchant_id'] ?? 0),
+            'buyer_merchant_title' => $buyerTitle,
+            'source_merchant_id' => intval($order['source_merchant_id'] ?? 0),
+            'source_merchant_title' => $sourceTitle,
+            'source_type_title' => (string) ($order['source_type_title'] ?? ''),
+            'pay_type' => intval($order['pay_type'] ?? 0),
+            'pay_type_title' => (string) ($order['pay_type_title'] ?? ''),
+            'quantity' => $quantity,
+            'amount' => $amount,
+            'quantity_delta' => $isSell ? -$quantity : $quantity,
+            'amount_delta' => $isSell ? -$amount : $amount,
+            'flow_direction_title' => $sourceTitle . ' -> ' . $buyerTitle,
+        ];
+    }
+
+    private static function buildFlowBalanceTitle(int $quantity = 0, float $amount = 0): string
+    {
+        if ($quantity > 0 || $amount > 0.01) {
+            return '买入结余 ' . $quantity . ' 件 / ¥' . number_format(abs($amount), 2, '.', '');
+        }
+        if ($quantity < 0 || $amount < -0.01) {
+            return '卖出超出 ' . abs($quantity) . ' 件 / ¥' . number_format(abs($amount), 2, '.', '');
+        }
+        return '已配平';
+    }
+
+    private static function buildGoodsTradeFlowMessage(array $flowRows = []): string
+    {
+        if (empty($flowRows)) {
+            return '当前商品没有可展示的流转流水。';
+        }
+
+        $last = $flowRows[count($flowRows) - 1];
+        $quantity = intval($last['balance_quantity'] ?? 0);
+        $amount = self::toFloat($last['balance_amount'] ?? 0);
+        if ($quantity === 0 && abs($amount) <= 0.01) {
+            return '从第一笔到最新一笔，该商品买入和卖出已经配平。';
+        }
+        if ($quantity > 0 || $amount > 0.01) {
+            return '从第一笔到最新一笔，该商品仍有买入结余 ' . $quantity . ' 件 / ¥' . number_format(abs($amount), 2, '.', '') . '。';
+        }
+        return '从第一笔到最新一笔，该商品卖出超出 ' . abs($quantity) . ' 件 / ¥' . number_format(abs($amount), 2, '.', '') . '。';
     }
 
     private static function buildTradeBalanceDiffOrders(array $buyOrders = [], array $sellOrders = [], string $direction = 'buy', float $diffAmount = 0): array

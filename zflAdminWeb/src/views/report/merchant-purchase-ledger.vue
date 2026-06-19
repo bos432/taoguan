@@ -384,6 +384,9 @@
                 <small v-if="row.diff_order_message" class="cell-note">
                   {{ row.diff_order_message }}
                 </small>
+                <small v-if="row.flow_message" class="cell-note">
+                  {{ row.flow_message }}
+                </small>
               </template>
             </el-table-column>
             <el-table-column label="买入订单" min-width="155">
@@ -410,6 +413,60 @@
                   卖出 {{ row.sell_order_count || 0 }} 单
                 </el-button>
                 <small class="order-nos">{{ shortOrderNos(row.sell_order_nos) }}</small>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <div class="diff-dialog__block">
+          <div class="diff-dialog__block-head">
+            <strong>商品订单流转</strong>
+            <span>买入记正，卖出记负；最后一行的结余就是这类商品当前差额来源。</span>
+          </div>
+          <el-table
+            :data="diffFlowRows"
+            border
+            max-height="360"
+            empty-text="没有找到商品订单流转"
+          >
+            <el-table-column prop="step_no" label="步骤" width="70" />
+            <el-table-column prop="pay_time" label="时间" width="165" />
+            <el-table-column prop="goods_title" label="商品" min-width="150" show-overflow-tooltip />
+            <el-table-column label="动作" width="80">
+              <template #default="{ row }">
+                <el-tag :type="flowSideTag(row.side)">{{ row.side_title }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="订单号" width="170">
+              <template #default="{ row }">
+                <el-button link type="primary" @click="goToOrder(row)">
+                  {{ row.order_no || '--' }}
+                </el-button>
+              </template>
+            </el-table-column>
+            <el-table-column prop="flow_direction_title" label="流向" min-width="190" show-overflow-tooltip />
+            <el-table-column label="数量变化" width="105">
+              <template #default="{ row }">
+                <span :class="Number(row.quantity_delta || 0) >= 0 ? 'amount-buy' : 'amount-sell'">
+                  {{ signedQuantity(row.quantity_delta) }}
+                </span>
+              </template>
+            </el-table-column>
+            <el-table-column label="金额变化" width="120">
+              <template #default="{ row }">
+                <span :class="Number(row.amount_delta || 0) >= 0 ? 'amount-buy' : 'amount-sell'">
+                  {{ signedMoney(row.amount_delta) }}
+                </span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="balance_title" label="流转后结余" min-width="160" />
+            <el-table-column label="支付状态" width="110">
+              <template #default="{ row }">
+                <el-tag :type="payStatusTag(row.pay_status)">{{ row.pay_status_title || '--' }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" width="110" fixed="right">
+              <template #default="{ row }">
+                <el-button link type="primary" @click="goToOrder(row)">核对订单</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -827,6 +884,15 @@ const diffDisplayOrders = computed(() => {
   return diffDialog.orders.length ? diffDialog.orders : diffDialog.candidate_orders
 })
 
+const diffFlowRows = computed(() => {
+  return diffDialog.goods_gaps.flatMap((goods) => {
+    return (goods.flow_rows || []).map((row) => ({
+      ...row,
+      goods_title: goods.goods_title || row.goods_title || '--'
+    }))
+  })
+})
+
 const diffOrdersTitle = computed(() => {
   return diffDialog.match_type === 'balance' ? '买卖配平结果' : '订单金额匹配'
 })
@@ -882,6 +948,16 @@ function money(value) {
   return Number(value || 0).toFixed(2)
 }
 
+function signedMoney(value) {
+  const amount = Number(value || 0)
+  return `${amount >= 0 ? '+' : '-'}¥${Math.abs(amount).toFixed(2)}`
+}
+
+function signedQuantity(value) {
+  const quantity = Number(value || 0)
+  return `${quantity >= 0 ? '+' : '-'}${Math.abs(quantity)}`
+}
+
 function statusTag(status) {
   if (status === 'normal') return 'success'
   if (status === 'missing_bill') return 'warning'
@@ -892,6 +968,10 @@ function payStatusTag(status) {
   if (Number(status) === 1) return 'success'
   if (Number(status) === 2) return 'danger'
   return 'warning'
+}
+
+function flowSideTag(side) {
+  return side === 'sell' ? 'success' : 'warning'
 }
 
 function ratioText(value) {

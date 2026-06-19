@@ -384,6 +384,16 @@
                 <small v-if="row.diff_order_message" class="cell-note">
                   {{ row.diff_order_message }}
                 </small>
+                <div v-if="diffDiagnosisTitles(row).length" class="diagnosis-tags">
+                  <el-tag
+                    v-for="title in diffDiagnosisTitles(row)"
+                    :key="title"
+                    size="small"
+                    :type="diagnosisTagType(title)"
+                  >
+                    {{ title }}
+                  </el-tag>
+                </div>
                 <small v-if="row.flow_message" class="cell-note">
                   {{ row.flow_message }}
                 </small>
@@ -529,7 +539,20 @@
             <el-table-column label="配对金额" width="115">
               <template #default="{ row }">¥{{ money(row.matched_amount) }}</template>
             </el-table-column>
-            <el-table-column prop="diagnosis_message" label="系统判断" min-width="260" show-overflow-tooltip />
+            <el-table-column label="系统判断" min-width="280" show-overflow-tooltip>
+              <template #default="{ row }">
+                <div class="diagnosis-cell">
+                  <el-tag
+                    v-if="row.diagnosis_title"
+                    size="small"
+                    :type="diagnosisTagType(row.diagnosis_type || row.diagnosis_title)"
+                  >
+                    {{ row.diagnosis_title }}
+                  </el-tag>
+                  <span>{{ row.diagnosis_message || '--' }}</span>
+                </div>
+              </template>
+            </el-table-column>
           </el-table>
         </div>
         <div class="diff-dialog__block">
@@ -632,6 +655,24 @@
               </template>
             </el-table-column>
             <el-table-column prop="order_status_title" label="订单状态" width="100" />
+            <el-table-column label="系统诊断" min-width="300" show-overflow-tooltip>
+              <template #default="{ row }">
+                <div class="diagnosis-cell">
+                  <el-tag
+                    v-if="row.diagnosis_title"
+                    size="small"
+                    :type="diagnosisTagType(row.diagnosis_type || row.diagnosis_title)"
+                  >
+                    {{ row.diagnosis_title }}
+                  </el-tag>
+                  <span>{{ row.diagnosis_message || '暂无诊断，按订单金额匹配结果核对。' }}</span>
+                  <small v-if="diagnosisStockText(row)" class="cell-note">{{ diagnosisStockText(row) }}</small>
+                  <small v-if="row.suspected_sell_order_nos" class="cell-note">
+                    疑似卖出订单：{{ row.suspected_sell_order_nos }}
+                  </small>
+                </div>
+              </template>
+            </el-table-column>
             <el-table-column label="操作" width="110" fixed="right">
               <template #default="{ row }">
                 <el-button link type="primary" @click="goToOrder(row)">核对订单</el-button>
@@ -1064,6 +1105,28 @@ function diffOrderButtonText(row) {
   if (row.diff_order_match_type === 'single') return `单笔匹配 ${count} 单`
   if (row.diff_order_match_type === 'combination') return `合计匹配 ${count} 单`
   return `接近订单 ${count} 单`
+}
+
+function diffDiagnosisTitles(row) {
+  const titles = (row.diff_orders || [])
+    .map((order) => order.diagnosis_title)
+    .filter(Boolean)
+  return [...new Set(titles)].slice(0, 3)
+}
+
+function diagnosisStockText(row) {
+  if (row.current_goods_count === undefined || row.current_goods_count === null) return ''
+  return `商品表：${row.current_goods_count || 0} 个，库存 ${row.current_stock || 0}，已售 ${row.current_sales_sum || 0}`
+}
+
+function diagnosisTagType(type) {
+  if (['still_in_stock', '未卖出/仍在库存'].includes(type)) return 'success'
+  if (['missing_sell_ledger', '已卖出但缺流水'].includes(type)) return 'danger'
+  if (['zero_stock_without_sell_ledger', '库存为0但无卖出流水'].includes(type)) return 'warning'
+  if (['goods_disabled', '商品下架/禁用'].includes(type)) return 'warning'
+  if (['missing_current_goods', '找不到当前商品记录'].includes(type)) return 'info'
+  if (['missing_buy_source', '卖出找不到买入来源'].includes(type)) return 'danger'
+  return 'info'
 }
 
 function money(value) {
@@ -1588,6 +1651,24 @@ onMounted(async () => {
   padding: 0;
   height: auto;
   line-height: 1.35;
+}
+
+.diagnosis-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 5px;
+}
+
+.diagnosis-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  line-height: 1.35;
+}
+
+.diagnosis-cell :deep(.el-tag) {
+  width: fit-content;
 }
 
 .split .panel {

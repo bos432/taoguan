@@ -786,9 +786,19 @@ class MerchantPurchaseLedgerReportService
                 $direction,
                 $diffAmount
             );
-            $flowRows = self::buildGoodsTradeFlowRows($buy['order_rows'] ?? [], $sell['order_rows'] ?? []);
-            $balancePairRows = self::buildTradeBalancePairRows($buy['order_rows'] ?? [], $sell['order_rows'] ?? []);
             $missingSellLedgerRows = self::buildMissingSellLedgerRows($params, $merchantId, $identity, $current);
+            $diffOrderResult = self::enhanceTradeBalanceDiffOrderResult(
+                $diffOrderResult,
+                $direction,
+                $current,
+                $missingSellLedgerRows
+            );
+            $flowRows = self::buildGoodsTradeFlowRows($buy['order_rows'] ?? [], $sell['order_rows'] ?? []);
+            $balancePairRows = self::enhanceTradeBalancePairRows(
+                self::buildTradeBalancePairRows($buy['order_rows'] ?? [], $sell['order_rows'] ?? []),
+                $current,
+                $missingSellLedgerRows
+            );
             $rows[] = [
                 'goods_key' => $goodsKey,
                 'goods_id' => intval($identity['goods_id'] ?? 0),
@@ -1522,6 +1532,104 @@ class MerchantPurchaseLedgerReportService
         }, 0);
 
         return '发现 ' . count($rows) . ' 笔已支付卖出订单没有写入采购流水，合计 ¥' . number_format($amount, 2, '.', '') . '。';
+    }
+
+    private static function enhanceTradeBalanceDiffOrderResult(array $result = [], string $direction = 'buy', array $current = [], array $missingSellLedgerRows = []): array
+    {
+        $matchType = (string) ($result['match_type'] ?? '');
+        if (!in_array($matchType, ['unbalanced_buy', 'unbalanced_sell'], true)) {
+            return $result;
+        }
+
+        $side = $matchType === 'unbalanced_sell' || $direction === 'sell' ? 'sell' : 'buy';
+        $result['orders'] = array_map(function ($order) use ($side, $current, $missingSellLedgerRows) {
+            return array_merge(
+                $order,
+                self::buildTradeBalanceOrderDiagnosis($order, $side, $current, $missingSellLedgerRows)
+            );
+        }, $result['orders'] ?? []);
+        $result['order_nos'] = self::joinOrderNos(array_column($result['orders'], 'order_no'));
+
+        return $result;
+    }
+
+    private static function enhanceTradeBalancePairRows(array $rows = [], array $current = [], array $missingSellLedgerRows = []): array
+    {
+        foreach ($rows as &$row) {
+            if (($row['match_status'] ?? '') === 'unmatched_buy') {
+                $diagnosis = self::buildTradeBalanceOrderDiagnosis([
+                    'order_no' => $row['buy_order_no'] ?? '',
+                    'amount' => $row['matched_amount'] ?? 0,
+                    'quantity' => $row['matched_quantity'] ?? 0,
+                    'pay_time' => $row['buy_time'] ?? '',
+                ], 'buy', $current, $missingSellLedgerRows);
+                $row = array_merge($row, $diagnosis);
+            } elseif (($row['match_status'] ?? '') === 'unmatched_sell') {
+                $diagnosis = self::buildTradeBalanceOrderDiagnosis([
+                    'order_no' => $row['sell_order_no'] ?? '',
+                    'amount' => $row['matched_amount'] ?? 0,
+                    'quantity' => $row['matched_quantity'] ?? 0,
+                    'pay_time' => $row['sell_time'] ?? '',
+                ], 'sell', $current, $missingSellLedgerRows);
+                $row = array_merge($row, $diagnosis);
+            }
+        }
+        unset($row);
+
+        return $rows;
+    }
+
+    private static function buildTradeBalanceOrderDiagnosis(array $order = [], string $side = 'buy', array $current = [], array $missingSellLedgerRows = []): array
+    {
+        $goodsCount = intval($current['goods_count'] ?? 0);
+        $stock = intval($current['stock'] ?? 0);
+        $salesSum = intval($current['sales_sum'] ?? 0);
+        $disableTitle = (string) ($current['disable_title'] ?? '未知');
+        $statusTitle = (string) ($current['status_title'] ?? '未知');
+        $missingOrderNos = self::joinOrderNos(array_column($missingSellLedgerRows, 'order_no'));
+        $missingAmount = array_reduce($missingSellLedgerRows, function ($sum, $row) {
+            return self::toFloat($sum + self::toFloat($row['total'] ?? $row['amount'] ?? 0));
+        }, 0);
+        $goodsSnapshot = '当前商品表：' . $goodsCount . ' 个，库存 ' . $stock . '，已售 ' . $salesSum . '，状态 ' . $statusTitle . '/' . $disableTitle . '。';
+
+        if ($side === 'sell') {
+            $title = '卖出找不到买入来源';
+            $message = '这笔卖出流水没有找到可抵扣的买入流水，优先核对商品来源是否登记、是否存在历史导入缺失或超卖。' . $goodsSnapshot;
+            $type = 'missing_buy_source';
+        } elseif (!empty($missingSellLedgerRows)) {
+            $title = '已卖出但缺流水';
+            $message = '系统发现同商品有 ' . count($missingSellLedgerRows) . ' 笔已支付卖出订单未写入采购流水，合计 ¥' . number_format($missingAmount, 2, '.', '') . '；优先核对这些卖出订单是否应补生成流水。' . ($missingOrderNos !== '' ? '疑似卖出订单：' . $missingOrderNos . '。' : '') . $goodsSnapshot;
+            $type = 'missing_sell_ledger';
+        } elseif ($goodsCount <= 0) {
+            $title = '找不到当前商品记录';
+            $message = '这笔买入流水存在，但当前商品表已经找不到同编码/名称/规格的商品；优先核对是否被删除、迁移、改名或历史数据未保留商品记录。' . $goodsSnapshot;
+            $type = 'missing_current_goods';
+        } elseif (strpos($disableTitle, '下架') !== false || strpos($disableTitle, '禁用') !== false) {
+            $title = '商品下架/禁用';
+            $message = '这笔买入没有匹配到卖出流水，且当前商品存在下架/禁用状态；优先核对是否下架后未展示、库存被人工处理，或卖出流水漏记。' . $goodsSnapshot;
+            $type = 'goods_disabled';
+        } elseif ($stock > 0) {
+            $title = '未卖出/仍在库存';
+            $message = '这笔买入没有匹配到卖出流水，当前商品仍有库存；通常代表还在店铺库存里，财务可先按未卖出处理。' . $goodsSnapshot;
+            $type = 'still_in_stock';
+        } else {
+            $title = '库存为0但无卖出流水';
+            $message = '这笔买入没有匹配到卖出流水，但当前商品库存为0；优先核对是否有卖出流水漏写、库存调整、下架删除或人工改库存。' . $goodsSnapshot;
+            $type = 'zero_stock_without_sell_ledger';
+        }
+
+        return [
+            'diagnosis_type' => $type,
+            'diagnosis_title' => $title,
+            'diagnosis_message' => $message,
+            'current_goods_count' => $goodsCount,
+            'current_stock' => $stock,
+            'current_sales_sum' => $salesSum,
+            'current_goods_ids' => self::joinOrderNos($current['goods_ids'] ?? []),
+            'goods_status_title' => $statusTitle,
+            'goods_disable_title' => $disableTitle,
+            'suspected_sell_order_nos' => $missingOrderNos,
+        ];
     }
 
     private static function buildTradeBalanceDiffOrders(array $buyOrders = [], array $sellOrders = [], string $direction = 'buy', float $diffAmount = 0): array

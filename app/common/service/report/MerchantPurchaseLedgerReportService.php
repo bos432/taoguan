@@ -787,6 +787,7 @@ class MerchantPurchaseLedgerReportService
                 $diffAmount
             );
             $flowRows = self::buildGoodsTradeFlowRows($buy['order_rows'] ?? [], $sell['order_rows'] ?? []);
+            $balancePairRows = self::buildTradeBalancePairRows($buy['order_rows'] ?? [], $sell['order_rows'] ?? []);
             $missingSellLedgerRows = self::buildMissingSellLedgerRows($params, $merchantId, $identity, $current);
             $rows[] = [
                 'goods_key' => $goodsKey,
@@ -814,6 +815,8 @@ class MerchantPurchaseLedgerReportService
                 'diff_orders' => $diffOrderResult['orders'],
                 'flow_message' => self::buildGoodsTradeFlowMessage($flowRows),
                 'flow_rows' => $flowRows,
+                'balance_pair_message' => self::buildTradeBalancePairMessage($balancePairRows),
+                'balance_pair_rows' => $balancePairRows,
                 'missing_sell_ledger_message' => self::buildMissingSellLedgerMessage($missingSellLedgerRows),
                 'missing_sell_ledger_orders' => $missingSellLedgerRows,
                 'order_nos' => self::joinOrderNos($direction === 'sell' ? ($sell['order_nos'] ?? []) : ($buy['order_nos'] ?? [])),
@@ -1260,6 +1263,152 @@ class MerchantPurchaseLedgerReportService
         return '从第一笔到最新一笔，该商品卖出超出 ' . abs($quantity) . ' 件 / ¥' . number_format(abs($amount), 2, '.', '') . '。';
     }
 
+    private static function buildTradeBalancePairRows(array $buyOrders = [], array $sellOrders = []): array
+    {
+        $events = array_merge(
+            self::prepareTradeBalanceOrders($buyOrders, 'buy'),
+            self::prepareTradeBalanceOrders($sellOrders, 'sell')
+        );
+        usort($events, function ($left, $right) {
+            $timeCompare = strcmp((string) ($left['pay_time'] ?? ''), (string) ($right['pay_time'] ?? ''));
+            if ($timeCompare !== 0) {
+                return $timeCompare;
+            }
+            if (($left['side'] ?? '') !== ($right['side'] ?? '')) {
+                return ($left['side'] ?? '') === 'buy' ? -1 : 1;
+            }
+            return intval($left['member_order_id'] ?? 0) <=> intval($right['member_order_id'] ?? 0);
+        });
+
+        $buyQueue = [];
+        $rows = [];
+        foreach ($events as $event) {
+            if (($event['side'] ?? '') === 'buy') {
+                $buyQueue[] = $event;
+                continue;
+            }
+
+            while (intval($event['remaining_quantity'] ?? 0) > 0 && !empty($buyQueue)) {
+                $buyOrder = &$buyQueue[0];
+                $quantity = min(
+                    intval($buyOrder['remaining_quantity'] ?? 0),
+                    intval($event['remaining_quantity'] ?? 0)
+                );
+                $buyAmountCents = self::calculateTradeBalanceConsumeCents($buyOrder, $quantity);
+                $sellAmountCents = self::calculateTradeBalanceConsumeCents($event, $quantity);
+                $rows[] = self::buildTradeBalancePairRow(
+                    $buyOrder,
+                    $event,
+                    $quantity,
+                    $buyAmountCents,
+                    $sellAmountCents
+                );
+                self::consumeTradeBalanceOrder($buyOrder, $quantity);
+                self::consumeTradeBalanceOrder($event, $quantity);
+                $buyConsumed = intval($buyOrder['remaining_quantity'] ?? 0) <= 0;
+                unset($buyOrder);
+                if ($buyConsumed) {
+                    array_shift($buyQueue);
+                }
+            }
+
+            if (intval($event['remaining_quantity'] ?? 0) > 0) {
+                $rows[] = self::buildTradeBalanceUnmatchedRow($event, 'sell');
+            }
+        }
+
+        foreach ($buyQueue as $buyOrder) {
+            if (intval($buyOrder['remaining_quantity'] ?? 0) > 0) {
+                $rows[] = self::buildTradeBalanceUnmatchedRow($buyOrder, 'buy');
+            }
+        }
+
+        foreach ($rows as $index => &$row) {
+            $row['pair_no'] = $index + 1;
+        }
+        unset($row);
+
+        return array_slice($rows, 0, 80);
+    }
+
+    private static function buildTradeBalancePairRow(array $buyOrder = [], array $sellOrder = [], int $quantity = 0, int $buyAmountCents = 0, int $sellAmountCents = 0): array
+    {
+        return [
+            'match_status' => 'matched',
+            'match_status_title' => '已配平',
+            'diagnosis_message' => '这笔买入已被右侧卖出订单抵扣。',
+            'buy_member_order_id' => intval($buyOrder['member_order_id'] ?? 0),
+            'buy_order_no' => (string) ($buyOrder['order_no'] ?? ''),
+            'buy_time' => (string) ($buyOrder['pay_time'] ?? ''),
+            'buy_source_title' => (string) ($buyOrder['source_merchant_title'] ?? ''),
+            'buy_source_type_title' => (string) ($buyOrder['source_type_title'] ?? ''),
+            'buy_amount' => self::toFloat($buyAmountCents / 100),
+            'sell_member_order_id' => intval($sellOrder['member_order_id'] ?? 0),
+            'sell_order_no' => (string) ($sellOrder['order_no'] ?? ''),
+            'sell_time' => (string) ($sellOrder['pay_time'] ?? ''),
+            'sell_buyer_title' => (string) ($sellOrder['buyer_merchant_title'] ?? ''),
+            'sell_source_title' => (string) ($sellOrder['source_merchant_title'] ?? ''),
+            'sell_amount' => self::toFloat($sellAmountCents / 100),
+            'matched_quantity' => $quantity,
+            'matched_amount' => self::toFloat($sellAmountCents / 100),
+        ];
+    }
+
+    private static function buildTradeBalanceUnmatchedRow(array $order = [], string $side = 'buy'): array
+    {
+        $isSell = $side === 'sell';
+        return [
+            'match_status' => $isSell ? 'unmatched_sell' : 'unmatched_buy',
+            'match_status_title' => $isSell ? '卖出未配平' : '买入未配平',
+            'diagnosis_message' => $isSell
+                ? '这笔卖出没有找到可抵扣的买入流水，优先核对是否超卖或来源未登记。'
+                : '这笔买入在当前筛选范围内没有找到后续卖出流水，优先核对是否仍未卖出、未展示，或卖出订单未写入流水。',
+            'buy_member_order_id' => $isSell ? 0 : intval($order['member_order_id'] ?? 0),
+            'buy_order_no' => $isSell ? '' : (string) ($order['order_no'] ?? ''),
+            'buy_time' => $isSell ? '' : (string) ($order['pay_time'] ?? ''),
+            'buy_source_title' => $isSell ? '' : (string) ($order['source_merchant_title'] ?? ''),
+            'buy_source_type_title' => $isSell ? '' : (string) ($order['source_type_title'] ?? ''),
+            'buy_amount' => $isSell ? 0 : self::toFloat($order['remaining_amount'] ?? $order['amount'] ?? 0),
+            'sell_member_order_id' => $isSell ? intval($order['member_order_id'] ?? 0) : 0,
+            'sell_order_no' => $isSell ? (string) ($order['order_no'] ?? '') : '',
+            'sell_time' => $isSell ? (string) ($order['pay_time'] ?? '') : '',
+            'sell_buyer_title' => $isSell ? (string) ($order['buyer_merchant_title'] ?? '') : '',
+            'sell_source_title' => $isSell ? (string) ($order['source_merchant_title'] ?? '') : '',
+            'sell_amount' => $isSell ? self::toFloat($order['remaining_amount'] ?? $order['amount'] ?? 0) : 0,
+            'matched_quantity' => intval($order['remaining_quantity'] ?? $order['quantity'] ?? 0),
+            'matched_amount' => self::toFloat($order['remaining_amount'] ?? $order['amount'] ?? 0),
+        ];
+    }
+
+    private static function buildTradeBalancePairMessage(array $rows = []): string
+    {
+        if (empty($rows)) {
+            return '当前商品没有可配对的买入/卖出流水。';
+        }
+
+        $matchedCount = 0;
+        $unmatchedBuyAmount = 0;
+        $unmatchedSellAmount = 0;
+        foreach ($rows as $row) {
+            $status = (string) ($row['match_status'] ?? '');
+            if ($status === 'matched') {
+                $matchedCount++;
+            } elseif ($status === 'unmatched_buy') {
+                $unmatchedBuyAmount = self::toFloat($unmatchedBuyAmount + self::toFloat($row['matched_amount'] ?? 0));
+            } elseif ($status === 'unmatched_sell') {
+                $unmatchedSellAmount = self::toFloat($unmatchedSellAmount + self::toFloat($row['matched_amount'] ?? 0));
+            }
+        }
+
+        if ($unmatchedBuyAmount > 0.01) {
+            return '已配平 ' . $matchedCount . ' 笔，剩余未配平买入 ¥' . number_format($unmatchedBuyAmount, 2, '.', '') . '。';
+        }
+        if ($unmatchedSellAmount > 0.01) {
+            return '已配平 ' . $matchedCount . ' 笔，剩余未配平卖出 ¥' . number_format($unmatchedSellAmount, 2, '.', '') . '。';
+        }
+        return '已配平 ' . $matchedCount . ' 笔，没有剩余差额。';
+    }
+
     private static function buildMissingSellLedgerRows(array $params = [], int $merchantId = 0, array $identity = [], array $current = []): array
     {
         if ($merchantId <= 0) {
@@ -1473,11 +1622,22 @@ class MerchantPurchaseLedgerReportService
 
         $consumeQuantity = min($quantity, $remainingQuantity);
         $remainingCents = self::moneyToCents($order['remaining_amount'] ?? 0);
-        $consumeCents = $consumeQuantity >= $remainingQuantity
-            ? $remainingCents
-            : intval(round($remainingCents * $consumeQuantity / $remainingQuantity));
+        $consumeCents = self::calculateTradeBalanceConsumeCents($order, $consumeQuantity);
         $order['remaining_quantity'] = $remainingQuantity - $consumeQuantity;
         $order['remaining_amount'] = self::toFloat(max(0, $remainingCents - $consumeCents) / 100);
+    }
+
+    private static function calculateTradeBalanceConsumeCents(array $order = [], int $quantity = 0): int
+    {
+        $remainingQuantity = intval($order['remaining_quantity'] ?? 0);
+        $remainingCents = self::moneyToCents($order['remaining_amount'] ?? 0);
+        if ($quantity <= 0 || $remainingQuantity <= 0 || $remainingCents <= 0) {
+            return 0;
+        }
+
+        return $quantity >= $remainingQuantity
+            ? $remainingCents
+            : intval(round($remainingCents * $quantity / $remainingQuantity));
     }
 
     private static function buildSuspectedDiffOrders(array $orders = [], float $diffAmount = 0): array

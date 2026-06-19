@@ -473,6 +473,67 @@
         </div>
         <div class="diff-dialog__block">
           <div class="diff-dialog__block-head">
+            <strong>买入卖出配对明细</strong>
+            <span>按时间顺序把卖出流水抵扣到最早未抵扣买入；未配平行就是需要重点核查的订单。</span>
+          </div>
+          <el-table
+            :data="diffBalancePairRows"
+            border
+            max-height="360"
+            empty-text="没有找到买入卖出配对明细"
+          >
+            <el-table-column prop="pair_no" label="序号" width="70" />
+            <el-table-column label="状态" width="105">
+              <template #default="{ row }">
+                <el-tag :type="balanceStatusTag(row.match_status)">
+                  {{ row.match_status_title || '--' }}
+                </el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column prop="goods_title" label="商品" min-width="140" show-overflow-tooltip />
+            <el-table-column label="买入订单" width="170">
+              <template #default="{ row }">
+                <el-button
+                  link
+                  type="primary"
+                  :disabled="!row.buy_order_no"
+                  @click="goToOrderNo(row.buy_order_no)"
+                >
+                  {{ row.buy_order_no || '--' }}
+                </el-button>
+              </template>
+            </el-table-column>
+            <el-table-column prop="buy_time" label="买入时间" width="165" />
+            <el-table-column label="买入来源" min-width="150" show-overflow-tooltip>
+              <template #default="{ row }">
+                {{ row.buy_source_title || row.buy_source_type_title || '--' }}
+              </template>
+            </el-table-column>
+            <el-table-column label="卖出订单" width="170">
+              <template #default="{ row }">
+                <el-button
+                  link
+                  type="primary"
+                  :disabled="!row.sell_order_no"
+                  @click="goToOrderNo(row.sell_order_no)"
+                >
+                  {{ row.sell_order_no || '--' }}
+                </el-button>
+              </template>
+            </el-table-column>
+            <el-table-column prop="sell_time" label="卖出时间" width="165" />
+            <el-table-column prop="sell_buyer_title" label="卖给谁" min-width="150" show-overflow-tooltip />
+            <el-table-column label="配对件数" width="95">
+              <template #default="{ row }">{{ row.matched_quantity || 0 }}</template>
+            </el-table-column>
+            <el-table-column label="配对金额" width="115">
+              <template #default="{ row }">¥{{ money(row.matched_amount) }}</template>
+            </el-table-column>
+            <el-table-column prop="diagnosis_message" label="系统判断" min-width="260" show-overflow-tooltip />
+          </el-table>
+        </div>
+        <div class="diff-dialog__block">
+          <div class="diff-dialog__block-head">
             <strong>疑似漏记流水订单</strong>
             <span>
               商品已卖出且订单已支付，但采购流水表没有对应明细；如果这里有订单，优先核对是否需要补生成流水。
@@ -945,6 +1006,15 @@ const diffMissingSellLedgerRows = computed(() => {
   })
 })
 
+const diffBalancePairRows = computed(() => {
+  return diffDialog.goods_gaps.flatMap((goods) => {
+    return (goods.balance_pair_rows || []).map((row) => ({
+      ...row,
+      goods_title: goods.goods_title || row.goods_title || '--'
+    }))
+  })
+})
+
 const diffOrdersTitle = computed(() => {
   return diffDialog.match_type === 'balance' ? '买卖配平结果' : '订单金额匹配'
 })
@@ -1024,6 +1094,12 @@ function payStatusTag(status) {
 
 function flowSideTag(side) {
   return side === 'sell' ? 'success' : 'warning'
+}
+
+function balanceStatusTag(status) {
+  if (status === 'matched') return 'success'
+  if (status === 'unmatched_buy') return 'warning'
+  return 'danger'
 }
 
 function ratioText(value) {

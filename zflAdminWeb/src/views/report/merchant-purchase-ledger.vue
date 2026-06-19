@@ -322,7 +322,7 @@
         <div class="diff-dialog__block">
           <div class="diff-dialog__block-head">
             <strong>商品差额定位</strong>
-            <span>{{ diffDialog.goods_gap_message || '先按商品特征对比买入和卖出，适合定位未卖出/未被购买的差额。' }}</span>
+            <span>{{ diffDialog.goods_gap_message || '只按采购流水对比买入和卖出，库存/商品销量不参与财务差额判断。' }}</span>
           </div>
           <el-table
             :data="diffDialog.goods_gaps"
@@ -337,16 +337,13 @@
                   <small v-if="row.goods_spec || row.goods_unit">
                     {{ row.goods_spec || '无规格' }} / {{ row.goods_unit || '无单位' }}
                   </small>
-                  <small v-if="Number(row.current_goods_count || 0) > 0">
-                    当前商品 {{ row.current_goods_count }} 个，库存 {{ row.current_stock || 0 }}，已售 {{ row.current_sales_sum || 0 }}
-                  </small>
                 </div>
               </template>
             </el-table-column>
-            <el-table-column label="买入金额" width="110">
+            <el-table-column label="流水买入" width="110">
               <template #default="{ row }">¥{{ money(row.buy_amount) }}</template>
             </el-table-column>
-            <el-table-column label="卖出金额" width="110">
+            <el-table-column label="流水卖出" width="110">
               <template #default="{ row }">¥{{ money(row.sell_amount) }}</template>
             </el-table-column>
             <el-table-column label="差额" width="110">
@@ -354,16 +351,16 @@
                 <strong class="amount-buy">¥{{ money(row.diff_amount) }}</strong>
               </template>
             </el-table-column>
-            <el-table-column label="件数差" width="120">
+            <el-table-column label="流水件数" width="120">
               <template #default="{ row }">
                 {{ row.buy_quantity || 0 }} / {{ row.sell_quantity || 0 }}
                 <small class="cell-note">差 {{ row.diff_quantity || 0 }}</small>
               </template>
             </el-table-column>
-            <el-table-column label="商品状态" width="130">
+            <el-table-column label="商品表状态" width="130">
               <template #default="{ row }">
                 <div>{{ row.goods_status_title || '未知' }}</div>
-                <small class="cell-note">{{ row.goods_disable_title || '未知' }}</small>
+                <small class="cell-note">{{ row.goods_disable_title || '未知' }}，仅参考</small>
               </template>
             </el-table-column>
             <el-table-column label="买入订单" min-width="155">

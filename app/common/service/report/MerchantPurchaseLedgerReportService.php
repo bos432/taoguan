@@ -760,8 +760,8 @@ class MerchantPurchaseLedgerReportService
                     'rows' => $matchedRows,
                     'match_type' => count($matchedRows) === 1 ? 'single' : 'combination',
                     'message' => count($matchedRows) === 1
-                        ? '按商品维度找到单个差额项，优先核对这类商品的买入/卖出订单。'
-                        : '按商品维度找到几类商品合计等于差额，优先核对这些商品的买入/卖出订单。',
+                        ? '按采购流水找到单个商品差额项，优先核对这类商品的买入/卖出订单；库存和商品销量仅作参考。'
+                        : '按采购流水找到几类商品合计等于差额，优先核对这些商品的买入/卖出订单；库存和商品销量仅作参考。',
                 ];
             }
 
@@ -770,14 +770,14 @@ class MerchantPurchaseLedgerReportService
                 'match_type' => empty($rows) ? 'none' : 'near',
                 'message' => empty($rows)
                     ? '当前筛选范围内没有找到商品维度差额。'
-                    : '没有找到刚好合计等于差额的商品，下面列出最接近差额的商品缺口。',
+                    : '没有找到刚好合计等于差额的商品，下面列出最接近差额的采购流水商品缺口；库存和商品销量仅作参考。',
             ];
         }
 
         return [
             'rows' => array_slice($rows, 0, 20),
             'match_type' => empty($rows) ? 'none' : 'list',
-            'message' => empty($rows) ? '当前筛选范围内没有找到商品维度差额。' : '已按商品维度列出主要差额。',
+            'message' => empty($rows) ? '当前筛选范围内没有找到商品维度差额。' : '已按采购流水商品维度列出主要差额；库存和商品销量仅作参考。',
         ];
     }
 

@@ -787,6 +787,7 @@ class MerchantPurchaseLedgerReportService
                 $diffAmount
             );
             $flowRows = self::buildGoodsTradeFlowRows($buy['order_rows'] ?? [], $sell['order_rows'] ?? []);
+            $missingSellLedgerRows = self::buildMissingSellLedgerRows($params, $merchantId, $identity, $current);
             $rows[] = [
                 'goods_key' => $goodsKey,
                 'goods_id' => intval($identity['goods_id'] ?? 0),
@@ -813,6 +814,8 @@ class MerchantPurchaseLedgerReportService
                 'diff_orders' => $diffOrderResult['orders'],
                 'flow_message' => self::buildGoodsTradeFlowMessage($flowRows),
                 'flow_rows' => $flowRows,
+                'missing_sell_ledger_message' => self::buildMissingSellLedgerMessage($missingSellLedgerRows),
+                'missing_sell_ledger_orders' => $missingSellLedgerRows,
                 'order_nos' => self::joinOrderNos($direction === 'sell' ? ($sell['order_nos'] ?? []) : ($buy['order_nos'] ?? [])),
                 'pay_time' => max((string) ($buy['pay_time'] ?? ''), (string) ($sell['pay_time'] ?? '')),
                 'current_goods_count' => intval($current['goods_count'] ?? 0),
@@ -1255,6 +1258,120 @@ class MerchantPurchaseLedgerReportService
             return '从第一笔到最新一笔，该商品仍有买入结余 ' . $quantity . ' 件 / ¥' . number_format(abs($amount), 2, '.', '') . '。';
         }
         return '从第一笔到最新一笔，该商品卖出超出 ' . abs($quantity) . ' 件 / ¥' . number_format(abs($amount), 2, '.', '') . '。';
+    }
+
+    private static function buildMissingSellLedgerRows(array $params = [], int $merchantId = 0, array $identity = [], array $current = []): array
+    {
+        if ($merchantId <= 0) {
+            return [];
+        }
+
+        $goodsIds = self::normalizeIdList($current['goods_ids'] ?? $identity['goods_ids'] ?? []);
+        $normalized = self::normalizeParams($params);
+        $query = Db::name('member_order_detailed')
+            ->alias('d')
+            ->leftJoin('member_order o', 'o.id = d.member_order_id')
+            ->leftJoin('goods g', 'g.id = d.goods_id')
+            ->leftJoin('merchant bm', 'bm.member_id = o.member_id and bm.is_delete = 0')
+            ->leftJoin('merchant_purchase_ledger l', 'l.member_order_detailed_id = d.id and l.is_delete = 0')
+            ->where('o.is_delete', 0)
+            ->where('o.pay_status', 1)
+            ->where('g.is_delete', 0)
+            ->where('g.merchant_id', $merchantId)
+            ->whereNull('l.id');
+
+        if (!empty($goodsIds)) {
+            $query->whereIn('d.goods_id', $goodsIds);
+        } else {
+            self::applyGoodsIdentityFilter($query, $identity);
+        }
+        if ($normalized['start_time'] !== '') {
+            $query->where('o.pay_time', '>=', $normalized['start_time']);
+        }
+        if ($normalized['end_time'] !== '') {
+            $query->where('o.pay_time', '<=', $normalized['end_time']);
+        }
+        if ($normalized['order_no'] !== '') {
+            $query->whereLike('o.order_no', '%' . $normalized['order_no'] . '%');
+        }
+
+        $rows = $query
+            ->field('o.id as member_order_id,o.order_no,o.member_id,o.pay_time,o.pay_type,o.pay_status,o.status as order_status,bm.id as buyer_merchant_id,bm.title as buyer_merchant_title,d.id as member_order_detailed_id,d.goods_id,d.quantity,d.price,d.total,g.title as goods_title,g.code as goods_code,g.spec as goods_spec,g.unit as goods_unit')
+            ->order('o.pay_time', 'desc')
+            ->limit(20)
+            ->select()
+            ->toArray();
+
+        foreach ($rows as &$row) {
+            $row['member_order_id'] = intval($row['member_order_id'] ?? 0);
+            $row['member_order_detailed_id'] = intval($row['member_order_detailed_id'] ?? 0);
+            $row['goods_id'] = intval($row['goods_id'] ?? 0);
+            $row['buyer_merchant_id'] = intval($row['buyer_merchant_id'] ?? 0);
+            $row['buyer_merchant_title'] = trim((string) ($row['buyer_merchant_title'] ?? '')) ?: '普通用户/未知买方';
+            $row['source_merchant_id'] = $merchantId;
+            $row['source_merchant_title'] = (string) ($identity['source_merchant_title'] ?? '');
+            $row['source_type_title'] = '商家商品';
+            $row['quantity'] = intval($row['quantity'] ?? 0);
+            $row['price'] = self::toFloat($row['price'] ?? 0);
+            $row['total'] = self::toFloat($row['total'] ?? 0);
+            $row['amount'] = $row['total'];
+            $row['pay_type'] = intval($row['pay_type'] ?? 0);
+            $row['pay_type_title'] = self::buildPayTypeTitle($row['pay_type']);
+            $row['pay_status'] = intval($row['pay_status'] ?? -1);
+            $row['pay_status_title'] = self::buildPayStatusTitle($row['pay_status']);
+            $row['order_status'] = intval($row['order_status'] ?? -1);
+            $row['order_status_title'] = self::buildOrderStatusTitle($row['order_status']);
+            $row['diagnosis_title'] = '已支付订单未写入采购流水';
+            $row['diagnosis_message'] = '订单明细已卖出该商品，但采购流水表没有对应明细记录，优先核对是否需要补生成流水。';
+        }
+        unset($row);
+
+        return $rows;
+    }
+
+    private static function applyGoodsIdentityFilter($query, array $identity = []): void
+    {
+        $code = trim((string) ($identity['goods_code'] ?? ''));
+        $title = trim((string) ($identity['goods_title'] ?? ''));
+        $spec = trim((string) ($identity['goods_spec'] ?? ''));
+        $unit = trim((string) ($identity['goods_unit'] ?? ''));
+
+        if ($code !== '') {
+            $query->where('g.code', $code);
+        } elseif ($title !== '') {
+            $query->where('g.title', $title);
+        }
+        if ($spec !== '') {
+            $query->where('g.spec', $spec);
+        }
+        if ($unit !== '') {
+            $query->where('g.unit', $unit);
+        }
+    }
+
+    private static function normalizeIdList($value): array
+    {
+        if (is_string($value)) {
+            $value = preg_split('/[、,，\s]+/u', $value) ?: [];
+        }
+        if (!is_array($value)) {
+            return [];
+        }
+
+        return array_values(array_unique(array_filter(array_map('intval', $value))));
+    }
+
+    private static function buildMissingSellLedgerMessage(array $rows = []): string
+    {
+        if (empty($rows)) {
+            return '没有发现已支付但漏写采购流水的卖出订单。';
+        }
+
+        $amount = array_reduce($rows, function ($sum, $row) {
+            return self::toFloat($sum + self::toFloat($row['total'] ?? 0));
+        }, 0);
+
+        return '发现 ' . count($rows) . ' 笔已支付卖出订单没有写入采购流水，合计 ¥' . number_format($amount, 2, '.', '') . '。';
     }
 
     private static function buildTradeBalanceDiffOrders(array $buyOrders = [], array $sellOrders = [], string $direction = 'buy', float $diffAmount = 0): array

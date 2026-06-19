@@ -473,6 +473,49 @@
         </div>
         <div class="diff-dialog__block">
           <div class="diff-dialog__block-head">
+            <strong>疑似漏记流水订单</strong>
+            <span>
+              商品已卖出且订单已支付，但采购流水表没有对应明细；如果这里有订单，优先核对是否需要补生成流水。
+            </span>
+          </div>
+          <el-table
+            :data="diffMissingSellLedgerRows"
+            border
+            max-height="280"
+            empty-text="没有发现已支付但漏写采购流水的卖出订单"
+          >
+            <el-table-column prop="pay_time" label="支付时间" width="165" />
+            <el-table-column label="订单号" width="170">
+              <template #default="{ row }">
+                <el-button link type="primary" @click="goToOrder(row)">
+                  {{ row.order_no || '--' }}
+                </el-button>
+              </template>
+            </el-table-column>
+            <el-table-column prop="goods_title" label="商品" min-width="160" show-overflow-tooltip />
+            <el-table-column prop="buyer_merchant_title" label="买方" min-width="130" />
+            <el-table-column label="数量" width="80">
+              <template #default="{ row }">{{ row.quantity || 0 }}</template>
+            </el-table-column>
+            <el-table-column label="金额" width="115">
+              <template #default="{ row }">¥{{ money(row.total) }}</template>
+            </el-table-column>
+            <el-table-column label="支付状态" width="110">
+              <template #default="{ row }">
+                <el-tag :type="payStatusTag(row.pay_status)">{{ row.pay_status_title || '--' }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column prop="order_status_title" label="订单状态" width="100" />
+            <el-table-column prop="diagnosis_message" label="系统判断" min-width="230" show-overflow-tooltip />
+            <el-table-column label="操作" width="110" fixed="right">
+              <template #default="{ row }">
+                <el-button link type="primary" @click="goToOrder(row)">核对订单</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <div class="diff-dialog__block">
+          <div class="diff-dialog__block-head">
             <strong>{{ diffOrdersTitle }}</strong>
             <span>{{ diffOrdersHint }}</span>
           </div>
@@ -889,6 +932,15 @@ const diffFlowRows = computed(() => {
     return (goods.flow_rows || []).map((row) => ({
       ...row,
       goods_title: goods.goods_title || row.goods_title || '--'
+    }))
+  })
+})
+
+const diffMissingSellLedgerRows = computed(() => {
+  return diffDialog.goods_gaps.flatMap((goods) => {
+    return (goods.missing_sell_ledger_orders || []).map((row) => ({
+      ...row,
+      goods_title: row.goods_title || goods.goods_title || '--'
     }))
   })
 })

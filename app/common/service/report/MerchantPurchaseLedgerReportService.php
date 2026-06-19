@@ -1289,7 +1289,8 @@ class MerchantPurchaseLedgerReportService
             }
 
             while (intval($event['remaining_quantity'] ?? 0) > 0 && !empty($buyQueue)) {
-                $buyOrder = &$buyQueue[0];
+                $lastIndex = count($buyQueue) - 1;
+                $buyOrder = &$buyQueue[$lastIndex];
                 $quantity = min(
                     intval($buyOrder['remaining_quantity'] ?? 0),
                     intval($event['remaining_quantity'] ?? 0)
@@ -1308,7 +1309,7 @@ class MerchantPurchaseLedgerReportService
                 $buyConsumed = intval($buyOrder['remaining_quantity'] ?? 0) <= 0;
                 unset($buyOrder);
                 if ($buyConsumed) {
-                    array_shift($buyQueue);
+                    array_pop($buyQueue);
                 }
             }
 
@@ -1545,30 +1546,45 @@ class MerchantPurchaseLedgerReportService
     {
         $buyOrders = self::prepareTradeBalanceOrders($buyOrders, 'buy');
         $sellOrders = self::prepareTradeBalanceOrders($sellOrders, 'sell');
-        $buyIndex = 0;
-        $sellIndex = 0;
-        $buyCount = count($buyOrders);
-        $sellCount = count($sellOrders);
+        $events = array_merge($buyOrders, $sellOrders);
+        usort($events, function ($left, $right) {
+            $timeCompare = strcmp((string) ($left['pay_time'] ?? ''), (string) ($right['pay_time'] ?? ''));
+            if ($timeCompare !== 0) {
+                return $timeCompare;
+            }
+            if (($left['side'] ?? '') !== ($right['side'] ?? '')) {
+                return ($left['side'] ?? '') === 'buy' ? -1 : 1;
+            }
+            return intval($left['member_order_id'] ?? 0) <=> intval($right['member_order_id'] ?? 0);
+        });
 
-        while ($buyIndex < $buyCount && $sellIndex < $sellCount) {
-            if (intval($buyOrders[$buyIndex]['remaining_quantity'] ?? 0) <= 0) {
-                $buyIndex++;
+        $buyStack = [];
+        $unmatchedSells = [];
+        foreach ($events as $event) {
+            if (($event['side'] ?? '') === 'buy') {
+                $buyStack[] = $event;
                 continue;
             }
-            if (intval($sellOrders[$sellIndex]['remaining_quantity'] ?? 0) <= 0) {
-                $sellIndex++;
-                continue;
+
+            while (intval($event['remaining_quantity'] ?? 0) > 0 && !empty($buyStack)) {
+                $lastIndex = count($buyStack) - 1;
+                $quantity = min(
+                    intval($buyStack[$lastIndex]['remaining_quantity'] ?? 0),
+                    intval($event['remaining_quantity'] ?? 0)
+                );
+                self::consumeTradeBalanceOrder($buyStack[$lastIndex], $quantity);
+                self::consumeTradeBalanceOrder($event, $quantity);
+                if (intval($buyStack[$lastIndex]['remaining_quantity'] ?? 0) <= 0) {
+                    array_pop($buyStack);
+                }
             }
 
-            $quantity = min(
-                intval($buyOrders[$buyIndex]['remaining_quantity'] ?? 0),
-                intval($sellOrders[$sellIndex]['remaining_quantity'] ?? 0)
-            );
-            self::consumeTradeBalanceOrder($buyOrders[$buyIndex], $quantity);
-            self::consumeTradeBalanceOrder($sellOrders[$sellIndex], $quantity);
+            if (intval($event['remaining_quantity'] ?? 0) > 0) {
+                $unmatchedSells[] = $event;
+            }
         }
 
-        $orders = $side === 'sell' ? $sellOrders : $buyOrders;
+        $orders = $side === 'sell' ? $unmatchedSells : $buyStack;
         $orders = array_values(array_filter($orders, function ($order) {
             return intval($order['remaining_quantity'] ?? 0) > 0;
         }));

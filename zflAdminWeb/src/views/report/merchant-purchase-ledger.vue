@@ -474,7 +474,7 @@
         <div class="diff-dialog__block">
           <div class="diff-dialog__block-head">
             <strong>买入卖出配对明细</strong>
-            <span>按时间顺序把卖出流水抵扣到最早未抵扣买入；未配平行就是需要重点核查的订单。</span>
+            <span>按时间顺序把卖出流水抵扣到最近未抵扣买入；未配平行就是需要重点核查的订单。</span>
           </div>
           <el-table
             :data="diffBalancePairRows"

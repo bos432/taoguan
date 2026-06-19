@@ -339,6 +339,10 @@ class MemberOrderService
 
         $status_nums = array();
         $status_nums['all'] = (clone $baseQuery)->count();
+        $status_nums['pending_voucher_verify'] = (clone $baseQuery)
+            ->where('pay_type', MemberOrderModel::getPayType('voucher', 1))
+            ->where('pay_status', 0)
+            ->count();
 
         foreach (MemberOrderModel::STATUS as $k => $v) {
             $status_nums[$v['code']] = 0;

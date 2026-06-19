@@ -134,6 +134,31 @@
           <span class="recent-action-strip__text">{{ recentActionSummary }}</span>
         </div>
       </div>
+      <div class="quick-filter-bar">
+        <el-button
+          type="warning"
+          plain
+          size="small"
+          :class="{ 'quick-filter-bar__button--active': isPendingVoucherVerifyFilter }"
+          @click="showPendingVoucherVerifyOrders"
+        >
+          待核销/待支付审核
+          <span v-if="pendingVoucherVerifyCount > 0" class="quick-filter-bar__count">
+            {{ pendingVoucherVerifyCount }}
+          </span>
+        </el-button>
+        <el-button
+          v-if="isPendingVoucherVerifyFilter"
+          size="small"
+          text
+          @click="clearPendingVoucherVerifyFilter"
+        >
+          取消待核销筛选
+        </el-button>
+        <span class="quick-filter-bar__hint">
+          只看支付凭证且尚未审核通过的订单，方便先处理核销/支付审核。
+        </span>
+      </div>
     </el-card>
 
     <el-dialog
@@ -650,6 +675,22 @@ export default {
       const current = this.params.pay_types?.find((item) => item.value === this.query.pay_type)
       return current ? current.label : '全部支付方式'
     },
+    currentPayStatusLabel() {
+      if (this.query.pay_status === undefined || this.query.pay_status === '') {
+        return ''
+      }
+      return Number(this.query.pay_status) === 1 ? '已核销/已支付' : '待核销/待支付审核'
+    },
+    pendingVoucherVerifyCount() {
+      return Number(this.status_nums?.pending_voucher_verify || 0)
+    },
+    isPendingVoucherVerifyFilter() {
+      return (
+        Number(this.query.status) === 0 &&
+        Number(this.query.pay_type) === 2 &&
+        Number(this.query.pay_status) === 0
+      )
+    },
     servicePayTypeText() {
       return this.serviceInfo?.pay_type_title || '未识别支付方式'
     },
@@ -765,6 +806,9 @@ export default {
         this.query.pay_type !== ''
       ) {
         tags.push(`支付方式：${this.currentPayTypeLabel}`)
+      }
+      if (this.currentPayStatusLabel) {
+        tags.push(`支付状态：${this.currentPayStatusLabel}`)
       }
       if (this.query.is_disable !== undefined && this.query.is_disable !== '') {
         tags.push(`禁用状态：${Number(this.query.is_disable) === 1 ? '禁用' : '启用'}`)
@@ -994,6 +1038,7 @@ export default {
         is_disable: undefined,
         status: undefined,
         pay_type: undefined,
+        pay_status: undefined,
         merchant_id: undefined
       },
       data: [],
@@ -1091,6 +1136,10 @@ export default {
         const payType = Number(routeQuery.pay_type)
         this.query.pay_type = Number.isNaN(payType) ? undefined : payType
       }
+      if (routeQuery.pay_status !== undefined) {
+        const payStatus = Number(routeQuery.pay_status)
+        this.query.pay_status = Number.isNaN(payStatus) ? undefined : payStatus
+      }
       if (routeQuery.order_status !== undefined) {
         const status = Number(routeQuery.order_status)
         this.query.status = Number.isNaN(status) ? undefined : status
@@ -1113,6 +1162,10 @@ export default {
       }
       if (routeQuery.focus === 'offline-pay') {
         this.query.pay_type = 2
+        this.query.pay_status = 0
+        this.query.status = 0
+        this.activeName = 0
+        this.activeNameId = 0
       }
       if (routeQuery.focus === 'delivery' && this.query.status === undefined) {
         this.query.status = 1
@@ -1138,6 +1191,11 @@ export default {
         nextQuery.pay_type = String(this.query.pay_type)
       } else {
         delete nextQuery.pay_type
+      }
+      if (this.query.pay_status !== undefined && this.query.pay_status !== '') {
+        nextQuery.pay_status = String(this.query.pay_status)
+      } else {
+        delete nextQuery.pay_status
       }
       if (this.query.status !== undefined && this.query.status !== '') {
         nextQuery.order_status = String(this.query.status)
@@ -1178,10 +1236,7 @@ export default {
     },
     handleEntryContextPrimary() {
       if (this.entryContextFocus === 'alerts' || this.entryContextFocus === 'offline-pay') {
-        this.query.pay_type = 2
-        this.query.page = 1
-        this.setRecentAction('已切换为待支付审核视角')
-        this.list()
+        this.showPendingVoucherVerifyOrders()
         return
       }
       if (this.entryContextFocus === 'delivery') {
@@ -1269,6 +1324,22 @@ export default {
       this.query.page = 1
       this.query.status = parseInt(e.paneName)
       this.activeNameId = parseInt(e.paneName)
+      this.list()
+    },
+    showPendingVoucherVerifyOrders() {
+      this.query.status = 0
+      this.query.pay_type = 2
+      this.query.pay_status = 0
+      this.query.page = 1
+      this.activeName = 0
+      this.activeNameId = 0
+      this.setRecentAction('已切换为待核销/待支付审核视角')
+      this.list()
+    },
+    clearPendingVoucherVerifyFilter() {
+      this.query.pay_status = undefined
+      this.query.page = 1
+      this.setRecentAction('已取消待核销筛选')
       this.list()
     },
     // 详情
@@ -1813,6 +1884,42 @@ export default {
   margin-top: 4px;
   padding-top: 6px;
   border-top: 1px dashed #e2e8f0;
+}
+
+.quick-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 1px solid #fed7aa;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #fff7ed 0%, #ffffff 72%);
+}
+
+.quick-filter-bar__button--active {
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.18);
+}
+
+.quick-filter-bar__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  margin-left: 6px;
+  padding: 0 5px;
+  border-radius: 999px;
+  color: #ffffff;
+  background: #f97316;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.quick-filter-bar__hint {
+  color: #92400e;
+  font-size: 12px;
 }
 
 .order-plain-guide {

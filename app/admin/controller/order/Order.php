@@ -34,7 +34,8 @@ class Order extends BaseController
     {
         $where = $this->buildWhere([
             'status',
-            'pay_type'
+            'pay_type',
+            'pay_status'
         ]);
         $where = $this->where(where_delete($where));
         $where[]=['is_disable','=',0];

@@ -297,6 +297,24 @@ class MerchantPurchaseLedgerReportService
         $orders = self::buildTradeDiffOrderRows($queryParams);
         $goodsGapResult = self::buildTradeDiffGoodsGaps($params, $merchantId, $direction, $targetAmount);
         $goodsGaps = $goodsGapResult['rows'] ?? [];
+        $balanceOrders = self::buildGoodsGapDiffOrderRows($goodsGaps);
+        if (!empty($balanceOrders)) {
+            self::attachTradeDiffOrderState($balanceOrders);
+            return [
+                'merchant_id' => $merchantId,
+                'direction' => $direction,
+                'target_amount' => $targetAmount,
+                'match_type' => 'balance',
+                'message' => $direction === 'sell'
+                    ? '系统按商品买入/卖出流水配平后，找到未配平卖出订单，优先核对是否超卖或来源未登记。'
+                    : '系统按商品买入/卖出流水配平后，找到未配平买入订单，优先核对是否还未卖出或未核销。',
+                'orders' => $balanceOrders,
+                'candidate_orders' => [],
+                'goods_gaps' => $goodsGaps,
+                'goods_gap_match_type' => $goodsGapResult['match_type'] ?? 'none',
+                'goods_gap_message' => $goodsGapResult['message'] ?? '',
+            ];
+        }
         if (empty($orders)) {
             return self::emptyDiffOrdersResult($merchantId, $direction, $targetAmount, '当前筛选范围内没有找到可匹配的订单', $goodsGaps, $goodsGapResult);
         }
@@ -351,6 +369,53 @@ class MerchantPurchaseLedgerReportService
             'goods_gap_match_type' => $goodsGapResult['match_type'] ?? 'none',
             'goods_gap_message' => $goodsGapResult['message'] ?? '',
         ];
+    }
+
+    private static function buildGoodsGapDiffOrderRows(array $goodsGaps = []): array
+    {
+        $orderMap = [];
+        foreach ($goodsGaps as $goodsGap) {
+            if (!in_array($goodsGap['diff_order_match_type'] ?? '', ['unbalanced_buy', 'unbalanced_sell'], true)) {
+                continue;
+            }
+            foreach (($goodsGap['diff_orders'] ?? []) as $order) {
+                $orderNo = trim((string) ($order['order_no'] ?? ''));
+                if ($orderNo === '') {
+                    continue;
+                }
+                $orderKey = intval($order['member_order_id'] ?? 0) > 0
+                    ? 'id:' . intval($order['member_order_id'] ?? 0)
+                    : 'no:' . $orderNo;
+                if (!isset($orderMap[$orderKey])) {
+                    $orderMap[$orderKey] = $order;
+                    $orderMap[$orderKey]['amount'] = 0;
+                    $orderMap[$orderKey]['quantity'] = 0;
+                    $orderMap[$orderKey]['goods_titles'] = [];
+                }
+                $orderMap[$orderKey]['amount'] = self::toFloat($orderMap[$orderKey]['amount'] + self::toFloat($order['amount'] ?? 0));
+                $orderMap[$orderKey]['quantity'] += intval($order['quantity'] ?? 0);
+                if (!empty($goodsGap['goods_title'])) {
+                    $orderMap[$orderKey]['goods_titles'][(string) $goodsGap['goods_title']] = (string) $goodsGap['goods_title'];
+                }
+                $orderMap[$orderKey]['pay_time'] = max(
+                    (string) ($orderMap[$orderKey]['pay_time'] ?? ''),
+                    (string) ($order['pay_time'] ?? '')
+                );
+            }
+        }
+
+        $orders = array_values($orderMap);
+        foreach ($orders as &$order) {
+            $order['goods_title'] = self::joinOrderNos(array_values($order['goods_titles'] ?? []));
+            unset($order['goods_titles']);
+        }
+        unset($order);
+
+        usort($orders, function ($left, $right) {
+            return strcmp((string) ($right['pay_time'] ?? ''), (string) ($left['pay_time'] ?? ''));
+        });
+
+        return array_slice($orders, 0, 20);
     }
 
     private static function baseQuery(array $params = [])
@@ -715,8 +780,10 @@ class MerchantPurchaseLedgerReportService
             }
 
             $identity = self::mergeGoodsIdentity($buy, $sell, $current);
-            $diffOrderResult = self::buildSuspectedDiffOrders(
-                $direction === 'sell' ? ($sell['order_rows'] ?? []) : ($buy['order_rows'] ?? []),
+            $diffOrderResult = self::buildTradeBalanceDiffOrders(
+                $buy['order_rows'] ?? [],
+                $sell['order_rows'] ?? [],
+                $direction,
                 $diffAmount
             );
             $rows[] = [
@@ -792,7 +859,7 @@ class MerchantPurchaseLedgerReportService
     private static function buildTradeSideGoodsRows(array $params = [], string $side = 'buy'): array
     {
         $rows = (clone self::baseQuery($params))
-            ->field('member_order_id,order_no,goods_id,goods_title,goods_code,goods_spec,goods_unit,quantity,price,total,pay_time')
+            ->field('member_order_id,order_no,buyer_merchant_id,buyer_merchant_title,source_type,source_merchant_id,source_merchant_title,goods_id,goods_title,goods_code,goods_spec,goods_unit,quantity,price,total,pay_type,pay_time')
             ->order('pay_time', 'desc')
             ->select()
             ->toArray();
@@ -824,10 +891,24 @@ class MerchantPurchaseLedgerReportService
                     $map[$goodsKey]['order_rows'][$orderKey] = [
                         'member_order_id' => $orderId,
                         'order_no' => $orderNo,
+                        'buyer_merchant_id' => intval($row['buyer_merchant_id'] ?? 0),
+                        'buyer_merchant_title' => (string) ($row['buyer_merchant_title'] ?? ''),
+                        'source_type' => (string) ($row['source_type'] ?? ''),
+                        'source_types' => [],
+                        'source_merchant_id' => intval($row['source_merchant_id'] ?? 0),
+                        'source_merchant_title' => (string) ($row['source_merchant_title'] ?? ''),
+                        'source_titles' => [],
+                        'pay_type' => intval($row['pay_type'] ?? 0),
                         'amount' => 0,
                         'quantity' => 0,
                         'pay_time' => (string) ($row['pay_time'] ?? ''),
                     ];
+                }
+                if (!empty($row['source_type'])) {
+                    $map[$goodsKey]['order_rows'][$orderKey]['source_types'][(string) $row['source_type']] = (string) $row['source_type'];
+                }
+                if (!empty($row['source_merchant_title'])) {
+                    $map[$goodsKey]['order_rows'][$orderKey]['source_titles'][(string) $row['source_merchant_title']] = (string) $row['source_merchant_title'];
                 }
                 $map[$goodsKey]['order_rows'][$orderKey]['amount'] = self::toFloat(
                     $map[$goodsKey]['order_rows'][$orderKey]['amount'] + self::toFloat($row['total'] ?? 0)
@@ -1053,9 +1134,18 @@ class MerchantPurchaseLedgerReportService
         }));
         foreach ($orders as &$order) {
             $order['member_order_id'] = intval($order['member_order_id'] ?? 0);
+            $order['buyer_merchant_id'] = intval($order['buyer_merchant_id'] ?? 0);
+            $order['source_merchant_id'] = intval($order['source_merchant_id'] ?? 0);
+            $order['pay_type'] = intval($order['pay_type'] ?? 0);
             $order['amount'] = self::toFloat($order['amount'] ?? 0);
             $order['quantity'] = intval($order['quantity'] ?? 0);
             $order['pay_time'] = (string) ($order['pay_time'] ?? '');
+            $sourceTypes = array_values(array_filter($order['source_types'] ?? []));
+            $sourceTitles = array_values(array_filter($order['source_titles'] ?? []));
+            $order['source_type_title'] = self::buildSourceTypeTitle(implode(',', $sourceTypes));
+            $order['source_merchant_title'] = self::buildSourceTitle(implode(',', $sourceTitles));
+            $order['pay_type_title'] = self::buildPayTypeTitle($order['pay_type']);
+            unset($order['source_types'], $order['source_titles']);
         }
         unset($order);
 
@@ -1064,6 +1154,112 @@ class MerchantPurchaseLedgerReportService
         });
 
         return $orders;
+    }
+
+    private static function buildTradeBalanceDiffOrders(array $buyOrders = [], array $sellOrders = [], string $direction = 'buy', float $diffAmount = 0): array
+    {
+        $side = $direction === 'sell' ? 'sell' : 'buy';
+        $unbalancedOrders = self::findUnbalancedTradeOrders($buyOrders, $sellOrders, $side);
+        if (!empty($unbalancedOrders)) {
+            return [
+                'match_type' => $side === 'sell' ? 'unbalanced_sell' : 'unbalanced_buy',
+                'message' => $side === 'sell'
+                    ? '按该商品买入/卖出流水配平后，剩余这些卖出订单未被买入流水抵扣，优先核对是否超卖或来源未登记。'
+                    : '按该商品买入/卖出流水配平后，剩余这些买入订单未被卖出流水抵扣，优先核对是否还未卖出或未核销。',
+                'orders' => $unbalancedOrders,
+                'order_nos' => self::joinOrderNos(array_column($unbalancedOrders, 'order_no')),
+            ];
+        }
+
+        return self::buildSuspectedDiffOrders($side === 'sell' ? $sellOrders : $buyOrders, $diffAmount);
+    }
+
+    private static function findUnbalancedTradeOrders(array $buyOrders = [], array $sellOrders = [], string $side = 'buy'): array
+    {
+        $buyOrders = self::prepareTradeBalanceOrders($buyOrders, 'buy');
+        $sellOrders = self::prepareTradeBalanceOrders($sellOrders, 'sell');
+        $buyIndex = 0;
+        $sellIndex = 0;
+        $buyCount = count($buyOrders);
+        $sellCount = count($sellOrders);
+
+        while ($buyIndex < $buyCount && $sellIndex < $sellCount) {
+            if (intval($buyOrders[$buyIndex]['remaining_quantity'] ?? 0) <= 0) {
+                $buyIndex++;
+                continue;
+            }
+            if (intval($sellOrders[$sellIndex]['remaining_quantity'] ?? 0) <= 0) {
+                $sellIndex++;
+                continue;
+            }
+
+            $quantity = min(
+                intval($buyOrders[$buyIndex]['remaining_quantity'] ?? 0),
+                intval($sellOrders[$sellIndex]['remaining_quantity'] ?? 0)
+            );
+            self::consumeTradeBalanceOrder($buyOrders[$buyIndex], $quantity);
+            self::consumeTradeBalanceOrder($sellOrders[$sellIndex], $quantity);
+        }
+
+        $orders = $side === 'sell' ? $sellOrders : $buyOrders;
+        $orders = array_values(array_filter($orders, function ($order) {
+            return intval($order['remaining_quantity'] ?? 0) > 0;
+        }));
+        foreach ($orders as &$order) {
+            $order['original_amount'] = self::toFloat($order['amount'] ?? 0);
+            $order['original_quantity'] = intval($order['quantity'] ?? 0);
+            $order['amount'] = self::toFloat($order['remaining_amount'] ?? $order['amount'] ?? 0);
+            $order['quantity'] = intval($order['remaining_quantity'] ?? $order['quantity'] ?? 0);
+        }
+        unset($order);
+
+        usort($orders, function ($left, $right) {
+            return strcmp((string) ($right['pay_time'] ?? ''), (string) ($left['pay_time'] ?? ''));
+        });
+
+        return array_slice($orders, 0, 12);
+    }
+
+    private static function prepareTradeBalanceOrders(array $orders = [], string $side = 'buy'): array
+    {
+        $orders = array_values(array_filter($orders, function ($order) {
+            return trim((string) ($order['order_no'] ?? '')) !== ''
+                && intval($order['quantity'] ?? 0) > 0
+                && self::moneyToCents($order['amount'] ?? 0) > 0;
+        }));
+        foreach ($orders as &$order) {
+            $order['side'] = $side;
+            $order['side_title'] = $side === 'sell' ? '未配平卖出' : '未配平买入';
+            $order['remaining_quantity'] = intval($order['quantity'] ?? 0);
+            $order['remaining_amount'] = self::toFloat($order['amount'] ?? 0);
+        }
+        unset($order);
+
+        usort($orders, function ($left, $right) {
+            $timeCompare = strcmp((string) ($left['pay_time'] ?? ''), (string) ($right['pay_time'] ?? ''));
+            if ($timeCompare !== 0) {
+                return $timeCompare;
+            }
+            return intval($left['member_order_id'] ?? 0) <=> intval($right['member_order_id'] ?? 0);
+        });
+
+        return $orders;
+    }
+
+    private static function consumeTradeBalanceOrder(array &$order, int $quantity = 0): void
+    {
+        $remainingQuantity = intval($order['remaining_quantity'] ?? 0);
+        if ($quantity <= 0 || $remainingQuantity <= 0) {
+            return;
+        }
+
+        $consumeQuantity = min($quantity, $remainingQuantity);
+        $remainingCents = self::moneyToCents($order['remaining_amount'] ?? 0);
+        $consumeCents = $consumeQuantity >= $remainingQuantity
+            ? $remainingCents
+            : intval(round($remainingCents * $consumeQuantity / $remainingQuantity));
+        $order['remaining_quantity'] = $remainingQuantity - $consumeQuantity;
+        $order['remaining_amount'] = self::toFloat(max(0, $remainingCents - $consumeCents) / 100);
     }
 
     private static function buildSuspectedDiffOrders(array $orders = [], float $diffAmount = 0): array

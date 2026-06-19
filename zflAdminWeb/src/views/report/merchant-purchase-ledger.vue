@@ -363,7 +363,7 @@
                 <small class="cell-note">{{ row.goods_disable_title || '未知' }}，仅参考</small>
               </template>
             </el-table-column>
-            <el-table-column label="疑似差额订单" min-width="175">
+            <el-table-column label="未配平订单" min-width="175">
               <template #default="{ row }">
                 <small class="cell-note">{{ diffOrderButtonText(row) }}</small>
                 <div v-if="orderNoList(row.diff_order_nos).length" class="order-no-list">
@@ -416,15 +416,21 @@
         </div>
         <div class="diff-dialog__block">
           <div class="diff-dialog__block-head">
-            <strong>订单金额匹配</strong>
-            <span>如果差额刚好等于一笔或几笔订单金额，这里会直接列出来。</span>
+            <strong>{{ diffOrdersTitle }}</strong>
+            <span>{{ diffOrdersHint }}</span>
           </div>
           <el-table
             :data="diffDisplayOrders"
             border
-            empty-text="没有找到疑似差额订单"
+            empty-text="没有找到未配平订单"
           >
             <el-table-column prop="pay_time" label="支付时间" width="165" />
+            <el-table-column
+              v-if="diffDialog.match_type === 'balance'"
+              prop="side_title"
+              label="类型"
+              width="105"
+            />
             <el-table-column label="订单号" width="170">
               <template #default="{ row }">
                 <el-button link type="primary" @click="goToOrder(row)">
@@ -432,8 +438,21 @@
                 </el-button>
               </template>
             </el-table-column>
-            <el-table-column label="匹配金额" width="120">
+            <el-table-column
+              v-if="diffDialog.match_type === 'balance'"
+              prop="goods_title"
+              label="商品"
+              min-width="140"
+            />
+            <el-table-column :label="diffAmountColumnLabel" width="120">
               <template #default="{ row }">¥{{ money(row.amount) }}</template>
+            </el-table-column>
+            <el-table-column
+              v-if="diffDialog.match_type === 'balance'"
+              label="未配平件数"
+              width="105"
+            >
+              <template #default="{ row }">{{ row.quantity || 0 }}</template>
             </el-table-column>
             <el-table-column
               v-if="diffDialog.match_type === 'near'"
@@ -808,6 +827,20 @@ const diffDisplayOrders = computed(() => {
   return diffDialog.orders.length ? diffDialog.orders : diffDialog.candidate_orders
 })
 
+const diffOrdersTitle = computed(() => {
+  return diffDialog.match_type === 'balance' ? '买卖配平结果' : '订单金额匹配'
+})
+
+const diffOrdersHint = computed(() => {
+  return diffDialog.match_type === 'balance'
+    ? '按商品买入/卖出流水抵扣后，剩余未配平订单会直接列出来。'
+    : '如果差额刚好等于一笔或几笔订单金额，这里会直接列出来。'
+})
+
+const diffAmountColumnLabel = computed(() => {
+  return diffDialog.match_type === 'balance' ? '未配平金额' : '匹配金额'
+})
+
 function firstOrderNo(value) {
   return orderNoList(value)[0] || ''
 }
@@ -838,6 +871,8 @@ function diffOrderButtonText(row) {
     .split(/[、,，\s]+/)
     .filter(Boolean).length
   if (!count) return '暂无匹配'
+  if (row.diff_order_match_type === 'unbalanced_buy') return `未配平买入 ${count} 单`
+  if (row.diff_order_match_type === 'unbalanced_sell') return `未配平卖出 ${count} 单`
   if (row.diff_order_match_type === 'single') return `单笔匹配 ${count} 单`
   if (row.diff_order_match_type === 'combination') return `合计匹配 ${count} 单`
   return `接近订单 ${count} 单`

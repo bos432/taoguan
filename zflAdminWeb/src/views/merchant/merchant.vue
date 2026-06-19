@@ -531,6 +531,8 @@ const pagination = reactive({
   count: 0
 })
 
+const searchFields = ['title', 'username', 'phone', 'name', 'remark']
+
 const defaultQuery = () => ({
   page: 1,
   limit: getPageLimit(),
@@ -778,6 +780,11 @@ function parseRouteDateRange(value, startDate, endDate) {
   return []
 }
 
+function normalizeSearchField(value) {
+  const field = String(value || '')
+  return searchFields.includes(field) ? field : 'title'
+}
+
 onMounted(async () => {
   await loadParams()
   applyRouteQuery()
@@ -836,9 +843,16 @@ function applyRouteQuery() {
   nextQuery.date_field = routeQuery.date_field ? String(routeQuery.date_field) : nextQuery.date_field
   nextQuery.auth_state = parseRouteNumber(routeQuery.auth_state, -1)
   nextQuery.expire_status = routeQuery.expire_status ? String(routeQuery.expire_status) : ''
-  nextQuery.search_field = routeQuery.search_field ? String(routeQuery.search_field) : nextQuery.search_field
-  nextQuery.search_exp = routeQuery.search_exp ? String(routeQuery.search_exp) : nextQuery.search_exp
-  nextQuery.search_value = routeQuery.search_value ? String(routeQuery.search_value) : ''
+  const hasValidSearchField = !routeQuery.search_field || searchFields.includes(String(routeQuery.search_field))
+  nextQuery.search_field = routeQuery.search_field
+    ? normalizeSearchField(routeQuery.search_field)
+    : nextQuery.search_field
+  nextQuery.search_exp = hasValidSearchField && routeQuery.search_exp
+    ? String(routeQuery.search_exp)
+    : nextQuery.search_exp
+  nextQuery.search_value = hasValidSearchField && routeQuery.search_value
+    ? String(routeQuery.search_value)
+    : ''
   nextQuery.date_value = parseRouteDateRange(
     routeQuery.date_value,
     routeQuery.start_date,

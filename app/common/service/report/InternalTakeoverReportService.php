@@ -702,14 +702,12 @@ class InternalTakeoverReportService
             ->whereIn('file_id', $ids)
             ->where('is_delete', 0)
             ->where('is_disable', 0)
-            ->field('file_id,file_name,file_path,file_url')
+            ->field('file_id,file_name,file_path')
             ->select()
             ->toArray();
 
         foreach ($rows as &$row) {
-            if (empty($row['file_url']) && !empty($row['file_path'])) {
-                $row['file_url'] = file_url($row['file_path']);
-            }
+            $row['file_url'] = !empty($row['file_path']) ? file_url($row['file_path']) : '';
         }
 
         return $rows;

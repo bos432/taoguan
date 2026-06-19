@@ -1,6 +1,7 @@
 <?php
 namespace app\common\service\report;
 
+use app\common\model\goods\GoodsModel;
 use app\common\model\member\MemberOrderModel;
 use think\facade\Db;
 
@@ -294,8 +295,10 @@ class MerchantPurchaseLedgerReportService
         }
 
         $orders = self::buildTradeDiffOrderRows($queryParams);
+        $goodsGapResult = self::buildTradeDiffGoodsGaps($params, $merchantId, $direction, $targetAmount);
+        $goodsGaps = $goodsGapResult['rows'] ?? [];
         if (empty($orders)) {
-            return self::emptyDiffOrdersResult($merchantId, $direction, $targetAmount, '当前筛选范围内没有找到可匹配的订单');
+            return self::emptyDiffOrdersResult($merchantId, $direction, $targetAmount, '当前筛选范围内没有找到可匹配的订单', $goodsGaps, $goodsGapResult);
         }
 
         $exactSingle = [];
@@ -314,6 +317,9 @@ class MerchantPurchaseLedgerReportService
                 'message' => '系统找到单笔金额刚好等于差额的订单，优先核对这些订单。',
                 'orders' => array_slice($exactSingle, 0, 20),
                 'candidate_orders' => [],
+                'goods_gaps' => $goodsGaps,
+                'goods_gap_match_type' => $goodsGapResult['match_type'] ?? 'none',
+                'goods_gap_message' => $goodsGapResult['message'] ?? '',
             ];
         }
 
@@ -327,6 +333,9 @@ class MerchantPurchaseLedgerReportService
                 'message' => '系统找到几笔订单合计刚好等于差额，建议按这组订单逐笔核对。',
                 'orders' => $combination,
                 'candidate_orders' => [],
+                'goods_gaps' => $goodsGaps,
+                'goods_gap_match_type' => $goodsGapResult['match_type'] ?? 'none',
+                'goods_gap_message' => $goodsGapResult['message'] ?? '',
             ];
         }
 
@@ -338,6 +347,9 @@ class MerchantPurchaseLedgerReportService
             'message' => '没有找到完全相等的订单，下面先列出最接近差额的订单，方便缩小范围。',
             'orders' => [],
             'candidate_orders' => array_slice(self::buildNearAmountCandidates($orders, $targetAmount), 0, 20),
+            'goods_gaps' => $goodsGaps,
+            'goods_gap_match_type' => $goodsGapResult['match_type'] ?? 'none',
+            'goods_gap_message' => $goodsGapResult['message'] ?? '',
         ];
     }
 
@@ -664,7 +676,372 @@ class MerchantPurchaseLedgerReportService
         return $orders;
     }
 
-    private static function emptyDiffOrdersResult(int $merchantId = 0, string $direction = '', float $targetAmount = 0, string $message = ''): array
+    private static function buildTradeDiffGoodsGaps(array $params = [], int $merchantId = 0, string $direction = 'buy', float $targetAmount = 0): array
+    {
+        $buyMap = [];
+        if ($merchantId > 0) {
+            $buyParams = $params;
+            unset($buyParams['merchant_id'], $buyParams['direction'], $buyParams['target_amount']);
+            $buyParams['buyer_merchant_id'] = $merchantId;
+            $buyParams['source_merchant_id'] = -1;
+            $buyMap = self::buildTradeSideGoodsRows($buyParams, 'buy');
+        }
+
+        $sellParams = $params;
+        unset($sellParams['merchant_id'], $sellParams['direction'], $sellParams['target_amount']);
+        $sellParams['buyer_merchant_id'] = 0;
+        $sellParams['source_merchant_id'] = $merchantId;
+        if ($merchantId === 0) {
+            $sellParams['source_type'] = 'platform';
+        }
+
+        $sellMap = self::buildTradeSideGoodsRows($sellParams, 'sell');
+        $currentGoodsMap = self::buildCurrentMerchantGoodsMap($merchantId);
+        $goodsKeys = array_values(array_unique(array_merge(array_keys($buyMap), array_keys($sellMap), array_keys($currentGoodsMap))));
+        $rows = [];
+
+        foreach ($goodsKeys as $goodsKey) {
+            $buy = $buyMap[$goodsKey] ?? self::emptyGoodsSideRow($goodsKey);
+            $sell = $sellMap[$goodsKey] ?? self::emptyGoodsSideRow($goodsKey);
+            $current = $currentGoodsMap[$goodsKey] ?? self::emptyCurrentGoodsRow($goodsKey);
+            $diffAmount = $direction === 'sell'
+                ? self::toFloat($sell['amount'] - $buy['amount'])
+                : self::toFloat($buy['amount'] - $sell['amount']);
+            $diffQuantity = $direction === 'sell'
+                ? intval($sell['quantity'] - $buy['quantity'])
+                : intval($buy['quantity'] - $sell['quantity']);
+            if ($diffAmount <= 0.01 && $diffQuantity <= 0) {
+                continue;
+            }
+
+            $identity = self::mergeGoodsIdentity($buy, $sell, $current);
+            $rows[] = [
+                'goods_key' => $goodsKey,
+                'goods_id' => intval($identity['goods_id'] ?? 0),
+                'goods_ids' => $identity['goods_ids'] ?? '',
+                'goods_title' => $identity['goods_title'] ?? '',
+                'goods_code' => $identity['goods_code'] ?? '',
+                'goods_spec' => $identity['goods_spec'] ?? '',
+                'goods_unit' => $identity['goods_unit'] ?? '',
+                'buy_amount' => self::toFloat($buy['amount']),
+                'sell_amount' => self::toFloat($sell['amount']),
+                'diff_amount' => $diffAmount,
+                'buy_quantity' => intval($buy['quantity']),
+                'sell_quantity' => intval($sell['quantity']),
+                'diff_quantity' => $diffQuantity,
+                'buy_avg_price' => intval($buy['quantity']) > 0 ? self::toFloat($buy['amount'] / intval($buy['quantity'])) : 0,
+                'sell_avg_price' => intval($sell['quantity']) > 0 ? self::toFloat($sell['amount'] / intval($sell['quantity'])) : 0,
+                'buy_order_count' => intval($buy['order_count']),
+                'sell_order_count' => intval($sell['order_count']),
+                'buy_order_nos' => self::joinOrderNos($buy['order_nos'] ?? []),
+                'sell_order_nos' => self::joinOrderNos($sell['order_nos'] ?? []),
+                'order_nos' => self::joinOrderNos($direction === 'sell' ? ($sell['order_nos'] ?? []) : ($buy['order_nos'] ?? [])),
+                'pay_time' => max((string) ($buy['pay_time'] ?? ''), (string) ($sell['pay_time'] ?? '')),
+                'current_goods_count' => intval($current['goods_count'] ?? 0),
+                'current_stock' => intval($current['stock'] ?? 0),
+                'current_sales_sum' => intval($current['sales_sum'] ?? 0),
+                'current_goods_ids' => self::joinOrderNos($current['goods_ids'] ?? []),
+                'goods_status_title' => $current['status_title'] ?? '未知',
+                'goods_disable_title' => $current['disable_title'] ?? '未知',
+            ];
+        }
+
+        usort($rows, function ($left, $right) {
+            if ($left['diff_amount'] === $right['diff_amount']) {
+                return strcmp((string) ($right['pay_time'] ?? ''), (string) ($left['pay_time'] ?? ''));
+            }
+            return $right['diff_amount'] <=> $left['diff_amount'];
+        });
+
+        if ($targetAmount > 0) {
+            $matchedRows = self::findGoodsGapCombination($rows, $targetAmount, 10);
+            if (!empty($matchedRows)) {
+                return [
+                    'rows' => $matchedRows,
+                    'match_type' => count($matchedRows) === 1 ? 'single' : 'combination',
+                    'message' => count($matchedRows) === 1
+                        ? '按商品维度找到单个差额项，优先核对这类商品的买入/卖出订单。'
+                        : '按商品维度找到几类商品合计等于差额，优先核对这些商品的买入/卖出订单。',
+                ];
+            }
+
+            return [
+                'rows' => array_slice(self::buildNearGoodsGapCandidates($rows, $targetAmount), 0, 20),
+                'match_type' => empty($rows) ? 'none' : 'near',
+                'message' => empty($rows)
+                    ? '当前筛选范围内没有找到商品维度差额。'
+                    : '没有找到刚好合计等于差额的商品，下面列出最接近差额的商品缺口。',
+            ];
+        }
+
+        return [
+            'rows' => array_slice($rows, 0, 20),
+            'match_type' => empty($rows) ? 'none' : 'list',
+            'message' => empty($rows) ? '当前筛选范围内没有找到商品维度差额。' : '已按商品维度列出主要差额。',
+        ];
+    }
+
+    private static function buildTradeSideGoodsRows(array $params = [], string $side = 'buy'): array
+    {
+        $rows = (clone self::baseQuery($params))
+            ->field('member_order_id,order_no,goods_id,goods_title,goods_code,goods_spec,goods_unit,quantity,price,total,pay_time')
+            ->order('pay_time', 'desc')
+            ->select()
+            ->toArray();
+
+        $map = [];
+        foreach ($rows as $row) {
+            $goodsKey = self::buildGoodsTradeKey($row);
+            if (!isset($map[$goodsKey])) {
+                $map[$goodsKey] = self::emptyGoodsSideRow($goodsKey);
+            }
+
+            self::fillGoodsIdentity($map[$goodsKey], $row);
+            $map[$goodsKey]['amount'] = self::toFloat($map[$goodsKey]['amount'] + self::toFloat($row['total'] ?? 0));
+            $map[$goodsKey]['quantity'] += intval($row['quantity'] ?? 0);
+            $map[$goodsKey]['pay_time'] = max((string) ($map[$goodsKey]['pay_time'] ?? ''), (string) ($row['pay_time'] ?? ''));
+            $map[$goodsKey]['side'] = $side;
+            $map[$goodsKey]['goods_ids'][intval($row['goods_id'] ?? 0)] = intval($row['goods_id'] ?? 0);
+            $orderId = intval($row['member_order_id'] ?? 0);
+            if ($orderId > 0) {
+                $map[$goodsKey]['order_ids'][$orderId] = $orderId;
+            }
+            $orderNo = trim((string) ($row['order_no'] ?? ''));
+            if ($orderNo !== '') {
+                $map[$goodsKey]['order_nos'][$orderNo] = $orderNo;
+            }
+        }
+
+        foreach ($map as &$item) {
+            $item['order_count'] = count($item['order_ids']);
+            $item['order_nos'] = array_slice(array_values($item['order_nos']), 0, 12);
+            $item['goods_ids'] = array_values(array_filter(array_map('intval', $item['goods_ids'])));
+            unset($item['order_ids']);
+        }
+        unset($item);
+
+        return $map;
+    }
+
+    private static function buildCurrentMerchantGoodsMap(int $merchantId = 0): array
+    {
+        $query = Db::name('goods')->where('is_delete', 0);
+        if ($merchantId > 0) {
+            $query->where('merchant_id', $merchantId);
+        } else {
+            $query->where(function ($q) {
+                $q->whereNull('merchant_id')->whereOr('merchant_id', 0);
+            });
+        }
+
+        $rows = $query
+            ->field('id,title,code,spec,unit,price,status,is_disable,stock,sales_sum')
+            ->select()
+            ->toArray();
+
+        $map = [];
+        foreach ($rows as $row) {
+            $goodsKey = self::buildGoodsTradeKey($row);
+            if (!isset($map[$goodsKey])) {
+                $map[$goodsKey] = self::emptyCurrentGoodsRow($goodsKey);
+            }
+            self::fillGoodsIdentity($map[$goodsKey], $row);
+            $map[$goodsKey]['goods_count']++;
+            $map[$goodsKey]['stock'] += intval($row['stock'] ?? 0);
+            $map[$goodsKey]['sales_sum'] += intval($row['sales_sum'] ?? 0);
+            $map[$goodsKey]['goods_ids'][intval($row['id'] ?? 0)] = intval($row['id'] ?? 0);
+            $map[$goodsKey]['statuses'][intval($row['status'] ?? -1)] = intval($row['status'] ?? -1);
+            if (intval($row['is_disable'] ?? 0) === 1) {
+                $map[$goodsKey]['disabled_count']++;
+            }
+        }
+
+        foreach ($map as &$item) {
+            $item['goods_ids'] = array_values(array_filter(array_map('intval', $item['goods_ids'])));
+            $statuses = array_values(array_filter($item['statuses'], function ($status) {
+                return intval($status) >= 0;
+            }));
+            $item['status_title'] = count($statuses) === 1
+                ? (GoodsModel::getStatus(intval($statuses[0]), 2) ?: '未知')
+                : (count($statuses) > 1 ? '多状态' : '未知');
+            if ($item['goods_count'] <= 0) {
+                $item['disable_title'] = '未知';
+            } elseif ($item['disabled_count'] <= 0) {
+                $item['disable_title'] = '正常';
+            } elseif ($item['disabled_count'] >= $item['goods_count']) {
+                $item['disable_title'] = '已禁用/下架';
+            } else {
+                $item['disable_title'] = '部分下架';
+            }
+            unset($item['statuses']);
+        }
+        unset($item);
+
+        return $map;
+    }
+
+    private static function buildGoodsTradeKey(array $row = []): string
+    {
+        $code = self::normalizeGoodsKeyPart($row['goods_code'] ?? $row['code'] ?? '');
+        $title = self::normalizeGoodsKeyPart($row['goods_title'] ?? $row['title'] ?? '');
+        $spec = self::normalizeGoodsKeyPart($row['goods_spec'] ?? $row['spec'] ?? '');
+        $unit = self::normalizeGoodsKeyPart($row['goods_unit'] ?? $row['unit'] ?? '');
+
+        if ($code !== '') {
+            return 'code:' . $code . '|spec:' . $spec . '|unit:' . $unit;
+        }
+        if ($title !== '' || $spec !== '' || $unit !== '') {
+            return 'title:' . $title . '|spec:' . $spec . '|unit:' . $unit;
+        }
+        return 'goods:' . intval($row['goods_id'] ?? $row['id'] ?? 0);
+    }
+
+    private static function normalizeGoodsKeyPart($value): string
+    {
+        $value = preg_replace('/\s+/u', ' ', trim((string) $value));
+        return strtolower((string) $value);
+    }
+
+    private static function fillGoodsIdentity(array &$target, array $row = []): void
+    {
+        $target['goods_id'] = intval($target['goods_id'] ?: ($row['goods_id'] ?? $row['id'] ?? 0));
+        foreach ([
+            'goods_title' => ['goods_title', 'title'],
+            'goods_code' => ['goods_code', 'code'],
+            'goods_spec' => ['goods_spec', 'spec'],
+            'goods_unit' => ['goods_unit', 'unit'],
+        ] as $targetKey => $sourceKeys) {
+            if ($target[$targetKey] !== '') {
+                continue;
+            }
+            foreach ($sourceKeys as $sourceKey) {
+                if (!empty($row[$sourceKey])) {
+                    $target[$targetKey] = (string) $row[$sourceKey];
+                    break;
+                }
+            }
+        }
+    }
+
+    private static function mergeGoodsIdentity(array $buy = [], array $sell = [], array $current = []): array
+    {
+        $identity = self::emptyGoodsSideRow((string) ($buy['goods_key'] ?? $sell['goods_key'] ?? $current['goods_key'] ?? ''));
+        foreach ([$current, $sell, $buy] as $row) {
+            self::fillGoodsIdentity($identity, $row);
+            foreach (($row['goods_ids'] ?? []) as $goodsId) {
+                $identity['goods_ids'][intval($goodsId)] = intval($goodsId);
+            }
+        }
+        $identity['goods_ids'] = self::joinOrderNos(array_values(array_filter(array_map('intval', $identity['goods_ids']))));
+        return $identity;
+    }
+
+    private static function emptyGoodsSideRow(string $goodsKey = ''): array
+    {
+        return [
+            'goods_key' => $goodsKey,
+            'goods_id' => 0,
+            'goods_ids' => [],
+            'goods_title' => '',
+            'goods_code' => '',
+            'goods_spec' => '',
+            'goods_unit' => '',
+            'amount' => 0,
+            'quantity' => 0,
+            'order_count' => 0,
+            'order_ids' => [],
+            'order_nos' => [],
+            'pay_time' => '',
+        ];
+    }
+
+    private static function emptyCurrentGoodsRow(string $goodsKey = ''): array
+    {
+        return [
+            'goods_key' => $goodsKey,
+            'goods_id' => 0,
+            'goods_ids' => [],
+            'goods_title' => '',
+            'goods_code' => '',
+            'goods_spec' => '',
+            'goods_unit' => '',
+            'goods_count' => 0,
+            'stock' => 0,
+            'sales_sum' => 0,
+            'statuses' => [],
+            'disabled_count' => 0,
+            'status_title' => '未知',
+            'disable_title' => '未知',
+        ];
+    }
+
+    private static function findGoodsGapCombination(array $rows = [], float $targetAmount = 0, int $maxItems = 8): array
+    {
+        $targetCents = self::moneyToCents($targetAmount);
+        if ($targetCents <= 0) {
+            return [];
+        }
+
+        $candidates = array_values(array_filter($rows, function ($row) use ($targetCents) {
+            $amountCents = self::moneyToCents($row['diff_amount'] ?? 0);
+            return $amountCents > 0 && $amountCents <= $targetCents;
+        }));
+        usort($candidates, function ($left, $right) use ($targetAmount) {
+            $leftDiff = abs(floatval($left['diff_amount'] ?? 0) - $targetAmount);
+            $rightDiff = abs(floatval($right['diff_amount'] ?? 0) - $targetAmount);
+            return $leftDiff === $rightDiff ? 0 : ($leftDiff <=> $rightDiff);
+        });
+
+        $sums = [0 => []];
+        foreach ($candidates as $row) {
+            $amountCents = self::moneyToCents($row['diff_amount'] ?? 0);
+            $snapshot = $sums;
+            foreach ($snapshot as $sumCents => $pickedRows) {
+                if (count($pickedRows) >= $maxItems) {
+                    continue;
+                }
+                $nextCents = intval($sumCents) + $amountCents;
+                if ($nextCents > $targetCents || isset($sums[$nextCents])) {
+                    continue;
+                }
+                $nextRows = $pickedRows;
+                $nextRows[] = $row;
+                if ($nextCents === $targetCents) {
+                    return $nextRows;
+                }
+                $sums[$nextCents] = $nextRows;
+            }
+        }
+
+        return [];
+    }
+
+    private static function buildNearGoodsGapCandidates(array $rows = [], float $targetAmount = 0): array
+    {
+        foreach ($rows as &$row) {
+            $row['diff_to_target'] = self::toFloat(abs(floatval($row['diff_amount'] ?? 0) - $targetAmount));
+        }
+        unset($row);
+
+        usort($rows, function ($left, $right) {
+            if ($left['diff_to_target'] === $right['diff_to_target']) {
+                return strcmp((string) ($right['pay_time'] ?? ''), (string) ($left['pay_time'] ?? ''));
+            }
+            return $left['diff_to_target'] <=> $right['diff_to_target'];
+        });
+
+        return $rows;
+    }
+
+    private static function joinOrderNos(array $values = []): string
+    {
+        $values = array_values(array_unique(array_filter(array_map('strval', $values), function ($value) {
+            return trim($value) !== '';
+        })));
+        return implode('、', $values);
+    }
+
+    private static function emptyDiffOrdersResult(int $merchantId = 0, string $direction = '', float $targetAmount = 0, string $message = '', array $goodsGaps = [], array $goodsGapResult = []): array
     {
         return [
             'merchant_id' => $merchantId,
@@ -674,6 +1051,9 @@ class MerchantPurchaseLedgerReportService
             'message' => $message,
             'orders' => [],
             'candidate_orders' => [],
+            'goods_gaps' => $goodsGaps,
+            'goods_gap_match_type' => $goodsGapResult['match_type'] ?? 'none',
+            'goods_gap_message' => $goodsGapResult['message'] ?? '',
         ];
     }
 

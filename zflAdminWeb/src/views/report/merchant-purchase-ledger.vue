@@ -308,7 +308,7 @@
     <el-dialog
       v-model="diffDialog.visible"
       :title="diffDialog.title"
-      width="980px"
+      width="1180px"
       destroy-on-close
     >
       <div v-loading="diffDialog.loading" class="diff-dialog">
@@ -319,45 +319,126 @@
           </div>
           <p>{{ diffDialog.message }}</p>
         </div>
-        <el-table
-          :data="diffDisplayOrders"
-          border
-          empty-text="没有找到疑似差额订单"
-        >
-          <el-table-column prop="pay_time" label="支付时间" width="165" />
-          <el-table-column label="订单号" width="170">
-            <template #default="{ row }">
-              <el-button link type="primary" @click="goToOrder(row)">
-                {{ row.order_no || '--' }}
-              </el-button>
-            </template>
-          </el-table-column>
-          <el-table-column label="匹配金额" width="120">
-            <template #default="{ row }">¥{{ money(row.amount) }}</template>
-          </el-table-column>
-          <el-table-column
-            v-if="diffDialog.match_type === 'near'"
-            label="距差额"
-            width="110"
+        <div class="diff-dialog__block">
+          <div class="diff-dialog__block-head">
+            <strong>商品差额定位</strong>
+            <span>{{ diffDialog.goods_gap_message || '先按商品特征对比买入和卖出，适合定位未卖出/未被购买的差额。' }}</span>
+          </div>
+          <el-table
+            :data="diffDialog.goods_gaps"
+            border
+            empty-text="没有找到商品维度差额"
           >
-            <template #default="{ row }">¥{{ money(row.diff_to_target) }}</template>
-          </el-table-column>
-          <el-table-column prop="buyer_merchant_title" label="买方商家" min-width="140" />
-          <el-table-column prop="source_type_title" label="来源类型" width="120" />
-          <el-table-column prop="source_merchant_title" label="来源名称" min-width="140" />
-          <el-table-column prop="pay_type_title" label="支付方式" width="100" />
-          <el-table-column label="支付状态" width="110">
-            <template #default="{ row }">
-              <el-tag :type="payStatusTag(row.pay_status)">{{ row.pay_status_title }}</el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column prop="order_status_title" label="订单状态" width="100" />
-          <el-table-column label="操作" width="110" fixed="right">
-            <template #default="{ row }">
-              <el-button link type="primary" @click="goToOrder(row)">核对订单</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+            <el-table-column label="商品" min-width="220">
+              <template #default="{ row }">
+                <div class="goods-cell">
+                  <strong>{{ row.goods_title || '--' }}</strong>
+                  <small v-if="row.goods_code">编码：{{ row.goods_code }}</small>
+                  <small v-if="row.goods_spec || row.goods_unit">
+                    {{ row.goods_spec || '无规格' }} / {{ row.goods_unit || '无单位' }}
+                  </small>
+                  <small v-if="Number(row.current_goods_count || 0) > 0">
+                    当前商品 {{ row.current_goods_count }} 个，库存 {{ row.current_stock || 0 }}，已售 {{ row.current_sales_sum || 0 }}
+                  </small>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column label="买入金额" width="110">
+              <template #default="{ row }">¥{{ money(row.buy_amount) }}</template>
+            </el-table-column>
+            <el-table-column label="卖出金额" width="110">
+              <template #default="{ row }">¥{{ money(row.sell_amount) }}</template>
+            </el-table-column>
+            <el-table-column label="差额" width="110">
+              <template #default="{ row }">
+                <strong class="amount-buy">¥{{ money(row.diff_amount) }}</strong>
+              </template>
+            </el-table-column>
+            <el-table-column label="件数差" width="120">
+              <template #default="{ row }">
+                {{ row.buy_quantity || 0 }} / {{ row.sell_quantity || 0 }}
+                <small class="cell-note">差 {{ row.diff_quantity || 0 }}</small>
+              </template>
+            </el-table-column>
+            <el-table-column label="商品状态" width="130">
+              <template #default="{ row }">
+                <div>{{ row.goods_status_title || '未知' }}</div>
+                <small class="cell-note">{{ row.goods_disable_title || '未知' }}</small>
+              </template>
+            </el-table-column>
+            <el-table-column label="买入订单" min-width="155">
+              <template #default="{ row }">
+                <el-button
+                  link
+                  type="primary"
+                  :disabled="!firstOrderNo(row.buy_order_nos)"
+                  @click="goToOrderNo(firstOrderNo(row.buy_order_nos))"
+                >
+                  买入 {{ row.buy_order_count || 0 }} 单
+                </el-button>
+                <small class="order-nos">{{ shortOrderNos(row.buy_order_nos) }}</small>
+              </template>
+            </el-table-column>
+            <el-table-column label="卖出订单" min-width="155">
+              <template #default="{ row }">
+                <el-button
+                  link
+                  type="primary"
+                  :disabled="!firstOrderNo(row.sell_order_nos)"
+                  @click="goToOrderNo(firstOrderNo(row.sell_order_nos))"
+                >
+                  卖出 {{ row.sell_order_count || 0 }} 单
+                </el-button>
+                <small class="order-nos">{{ shortOrderNos(row.sell_order_nos) }}</small>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <div class="diff-dialog__block">
+          <div class="diff-dialog__block-head">
+            <strong>订单金额匹配</strong>
+            <span>如果差额刚好等于一笔或几笔订单金额，这里会直接列出来。</span>
+          </div>
+          <el-table
+            :data="diffDisplayOrders"
+            border
+            empty-text="没有找到疑似差额订单"
+          >
+            <el-table-column prop="pay_time" label="支付时间" width="165" />
+            <el-table-column label="订单号" width="170">
+              <template #default="{ row }">
+                <el-button link type="primary" @click="goToOrder(row)">
+                  {{ row.order_no || '--' }}
+                </el-button>
+              </template>
+            </el-table-column>
+            <el-table-column label="匹配金额" width="120">
+              <template #default="{ row }">¥{{ money(row.amount) }}</template>
+            </el-table-column>
+            <el-table-column
+              v-if="diffDialog.match_type === 'near'"
+              label="距差额"
+              width="110"
+            >
+              <template #default="{ row }">¥{{ money(row.diff_to_target) }}</template>
+            </el-table-column>
+            <el-table-column prop="buyer_merchant_title" label="买方商家" min-width="140" />
+            <el-table-column prop="source_type_title" label="来源类型" width="120" />
+            <el-table-column prop="source_merchant_title" label="来源名称" min-width="140" />
+            <el-table-column prop="pay_type_title" label="支付方式" width="100" />
+            <el-table-column label="支付状态" width="110">
+              <template #default="{ row }">
+                <el-tag :type="payStatusTag(row.pay_status)">{{ row.pay_status_title }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column prop="order_status_title" label="订单状态" width="100" />
+            <el-table-column label="操作" width="110" fixed="right">
+              <template #default="{ row }">
+                <el-button link type="primary" @click="goToOrder(row)">核对订单</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
       </div>
       <template #footer>
         <el-button @click="diffDialog.visible = false">关闭</el-button>
@@ -597,6 +678,9 @@ const diffDialog = reactive({
   target_amount: 0,
   orders: [],
   candidate_orders: [],
+  goods_gaps: [],
+  goods_gap_match_type: 'none',
+  goods_gap_message: '',
   row: null
 })
 
@@ -704,6 +788,19 @@ const diffDisplayOrders = computed(() => {
   return diffDialog.orders.length ? diffDialog.orders : diffDialog.candidate_orders
 })
 
+function firstOrderNo(value) {
+  return String(value || '')
+    .split(/[、,，\s]+/)
+    .map((item) => item.trim())
+    .find(Boolean) || ''
+}
+
+function shortOrderNos(value) {
+  const text = String(value || '')
+  if (!text) return '暂无订单号'
+  return text.length > 34 ? `${text.slice(0, 34)}...` : text
+}
+
 function money(value) {
   return Number(value || 0).toFixed(2)
 }
@@ -810,6 +907,9 @@ async function openDiffOrders(row) {
   diffDialog.message = '正在按差额金额匹配订单...'
   diffDialog.orders = []
   diffDialog.candidate_orders = []
+  diffDialog.goods_gaps = []
+  diffDialog.goods_gap_match_type = 'none'
+  diffDialog.goods_gap_message = ''
 
   try {
     const res = await tradeDiffOrders({
@@ -824,6 +924,9 @@ async function openDiffOrders(row) {
     diffDialog.target_amount = data.target_amount || Math.abs(netAmount)
     diffDialog.orders = data.orders || []
     diffDialog.candidate_orders = data.candidate_orders || []
+    diffDialog.goods_gaps = data.goods_gaps || []
+    diffDialog.goods_gap_match_type = data.goods_gap_match_type || 'none'
+    diffDialog.goods_gap_message = data.goods_gap_message || ''
   } finally {
     diffDialog.loading = false
   }
@@ -853,6 +956,11 @@ function goToOrder(row) {
       search_value: row.order_no || ''
     }
   })
+}
+
+function goToOrderNo(orderNo) {
+  if (!orderNo) return
+  goToOrder({ order_no: orderNo })
 }
 
 async function loadFilters() {
@@ -1143,6 +1251,45 @@ onMounted(async () => {
 .diff-dialog__summary p {
   margin: 0;
   color: #20372e;
+}
+
+.diff-dialog__block {
+  margin-top: 14px;
+}
+
+.diff-dialog__block-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.diff-dialog__block-head strong {
+  color: #20372e;
+}
+
+.diff-dialog__block-head span {
+  color: #6c766f;
+  font-size: 13px;
+}
+
+.goods-cell strong,
+.goods-cell small,
+.order-nos {
+  display: block;
+}
+
+.goods-cell strong {
+  color: #20372e;
+}
+
+.goods-cell small,
+.order-nos {
+  margin-top: 3px;
+  color: #84928a;
+  font-size: 12px;
+  line-height: 1.35;
 }
 
 .split .panel {

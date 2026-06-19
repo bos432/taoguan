@@ -32,11 +32,36 @@ class Merchant extends BaseController
         $where = $this->buildWhere([
             'auth_state',
         ]);
-        $where = $this->where(where_delete($where));
+        $where = $this->filterListWhere($this->where(where_delete($where)));
         $data = MerchantService::list($where, $this->page(), $this->limit(), $this->order(), '', [
             'expire_status' => $param['expire_status'],
         ]);
         return success($data);
+    }
+
+    private function filterListWhere(array $where): array
+    {
+        $allowedFields = [
+            'id',
+            'title',
+            'username',
+            'phone',
+            'name',
+            'remark',
+            'auth_state',
+            'create_time',
+            'expire_time',
+            'is_disable',
+            'is_delete',
+            'member_id',
+        ];
+
+        return array_values(array_filter($where, function ($item) use ($allowedFields) {
+            if (!is_array($item) || empty($item[0])) {
+                return false;
+            }
+            return in_array((string) $item[0], $allowedFields, true);
+        }));
     }
 
     /**

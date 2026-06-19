@@ -715,6 +715,10 @@ class MerchantPurchaseLedgerReportService
             }
 
             $identity = self::mergeGoodsIdentity($buy, $sell, $current);
+            $diffOrderResult = self::buildSuspectedDiffOrders(
+                $direction === 'sell' ? ($sell['order_rows'] ?? []) : ($buy['order_rows'] ?? []),
+                $diffAmount
+            );
             $rows[] = [
                 'goods_key' => $goodsKey,
                 'goods_id' => intval($identity['goods_id'] ?? 0),
@@ -735,6 +739,10 @@ class MerchantPurchaseLedgerReportService
                 'sell_order_count' => intval($sell['order_count']),
                 'buy_order_nos' => self::joinOrderNos($buy['order_nos'] ?? []),
                 'sell_order_nos' => self::joinOrderNos($sell['order_nos'] ?? []),
+                'diff_order_match_type' => $diffOrderResult['match_type'],
+                'diff_order_message' => $diffOrderResult['message'],
+                'diff_order_nos' => $diffOrderResult['order_nos'],
+                'diff_orders' => $diffOrderResult['orders'],
                 'order_nos' => self::joinOrderNos($direction === 'sell' ? ($sell['order_nos'] ?? []) : ($buy['order_nos'] ?? [])),
                 'pay_time' => max((string) ($buy['pay_time'] ?? ''), (string) ($sell['pay_time'] ?? '')),
                 'current_goods_count' => intval($current['goods_count'] ?? 0),
@@ -810,12 +818,33 @@ class MerchantPurchaseLedgerReportService
             if ($orderNo !== '') {
                 $map[$goodsKey]['order_nos'][$orderNo] = $orderNo;
             }
+            $orderKey = $orderId > 0 ? (string) $orderId : $orderNo;
+            if ($orderKey !== '') {
+                if (!isset($map[$goodsKey]['order_rows'][$orderKey])) {
+                    $map[$goodsKey]['order_rows'][$orderKey] = [
+                        'member_order_id' => $orderId,
+                        'order_no' => $orderNo,
+                        'amount' => 0,
+                        'quantity' => 0,
+                        'pay_time' => (string) ($row['pay_time'] ?? ''),
+                    ];
+                }
+                $map[$goodsKey]['order_rows'][$orderKey]['amount'] = self::toFloat(
+                    $map[$goodsKey]['order_rows'][$orderKey]['amount'] + self::toFloat($row['total'] ?? 0)
+                );
+                $map[$goodsKey]['order_rows'][$orderKey]['quantity'] += intval($row['quantity'] ?? 0);
+                $map[$goodsKey]['order_rows'][$orderKey]['pay_time'] = max(
+                    (string) ($map[$goodsKey]['order_rows'][$orderKey]['pay_time'] ?? ''),
+                    (string) ($row['pay_time'] ?? '')
+                );
+            }
         }
 
         foreach ($map as &$item) {
             $item['order_count'] = count($item['order_ids']);
             $item['order_nos'] = array_slice(array_values($item['order_nos']), 0, 12);
             $item['goods_ids'] = array_values(array_filter(array_map('intval', $item['goods_ids'])));
+            $item['order_rows'] = self::normalizeSideOrderRows($item['order_rows'] ?? []);
             unset($item['order_ids']);
         }
         unset($item);
@@ -951,6 +980,7 @@ class MerchantPurchaseLedgerReportService
             'order_count' => 0,
             'order_ids' => [],
             'order_nos' => [],
+            'order_rows' => [],
             'pay_time' => '',
         ];
     }
@@ -1014,6 +1044,75 @@ class MerchantPurchaseLedgerReportService
         }
 
         return [];
+    }
+
+    private static function normalizeSideOrderRows(array $orders = []): array
+    {
+        $orders = array_values(array_filter($orders, function ($order) {
+            return trim((string) ($order['order_no'] ?? '')) !== '' && self::moneyToCents($order['amount'] ?? 0) > 0;
+        }));
+        foreach ($orders as &$order) {
+            $order['member_order_id'] = intval($order['member_order_id'] ?? 0);
+            $order['amount'] = self::toFloat($order['amount'] ?? 0);
+            $order['quantity'] = intval($order['quantity'] ?? 0);
+            $order['pay_time'] = (string) ($order['pay_time'] ?? '');
+        }
+        unset($order);
+
+        usort($orders, function ($left, $right) {
+            return strcmp((string) ($right['pay_time'] ?? ''), (string) ($left['pay_time'] ?? ''));
+        });
+
+        return $orders;
+    }
+
+    private static function buildSuspectedDiffOrders(array $orders = [], float $diffAmount = 0): array
+    {
+        $targetCents = self::moneyToCents($diffAmount);
+        if ($targetCents <= 0 || empty($orders)) {
+            return self::emptySuspectedDiffOrders('当前差额方向没有可定位的订单');
+        }
+
+        $exactOrders = array_values(array_filter($orders, function ($order) use ($targetCents) {
+            return self::moneyToCents($order['amount'] ?? 0) === $targetCents;
+        }));
+        if (!empty($exactOrders)) {
+            $exactOrders = array_slice($exactOrders, 0, 8);
+            return [
+                'match_type' => 'single',
+                'message' => '找到单笔金额等于该商品差额的订单，优先核对。',
+                'orders' => $exactOrders,
+                'order_nos' => self::joinOrderNos(array_column($exactOrders, 'order_no')),
+            ];
+        }
+
+        $combination = self::findAmountCombination($orders, $diffAmount, 4);
+        if (!empty($combination)) {
+            return [
+                'match_type' => 'combination',
+                'message' => '找到几笔订单合计等于该商品差额，优先核对。',
+                'orders' => $combination,
+                'order_nos' => self::joinOrderNos(array_column($combination, 'order_no')),
+            ];
+        }
+
+        $nearOrders = array_slice(self::buildNearAmountCandidates($orders, $diffAmount), 0, 5);
+        return [
+            'match_type' => empty($nearOrders) ? 'none' : 'near',
+            'message' => empty($nearOrders) ? '没有找到疑似差额订单' : '没有完全匹配的订单，先列最接近的订单。',
+            'orders' => $nearOrders,
+            'order_nos' => self::joinOrderNos(array_column($nearOrders, 'order_no')),
+        ];
+    }
+
+    private static function emptySuspectedDiffOrders(string $message = ''): array
+    {
+        return [
+            'match_type' => 'none',
+            'message' => $message,
+            'orders' => [],
+            'order_nos' => '',
+        ];
     }
 
     private static function buildNearGoodsGapCandidates(array $rows = [], float $targetAmount = 0): array

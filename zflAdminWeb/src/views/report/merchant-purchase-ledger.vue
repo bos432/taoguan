@@ -363,6 +363,29 @@
                 <small class="cell-note">{{ row.goods_disable_title || '未知' }}，仅参考</small>
               </template>
             </el-table-column>
+            <el-table-column label="疑似差额订单" min-width="175">
+              <template #default="{ row }">
+                <small class="cell-note">{{ diffOrderButtonText(row) }}</small>
+                <div v-if="orderNoList(row.diff_order_nos).length" class="order-no-list">
+                  <el-button
+                    v-for="orderNo in visibleOrderNos(row.diff_order_nos)"
+                    :key="orderNo"
+                    link
+                    type="primary"
+                    @click="goToOrderNo(orderNo)"
+                  >
+                    {{ orderNo }}
+                  </el-button>
+                </div>
+                <small v-if="extraOrderNoCount(row.diff_order_nos) > 0" class="order-nos">
+                  还有 {{ extraOrderNoCount(row.diff_order_nos) }} 单未展开
+                </small>
+                <small v-if="!orderNoList(row.diff_order_nos).length" class="order-nos">暂无订单号</small>
+                <small v-if="row.diff_order_message" class="cell-note">
+                  {{ row.diff_order_message }}
+                </small>
+              </template>
+            </el-table-column>
             <el-table-column label="买入订单" min-width="155">
               <template #default="{ row }">
                 <el-button
@@ -786,16 +809,38 @@ const diffDisplayOrders = computed(() => {
 })
 
 function firstOrderNo(value) {
+  return orderNoList(value)[0] || ''
+}
+
+function orderNoList(value) {
   return String(value || '')
     .split(/[、,，\s]+/)
     .map((item) => item.trim())
-    .find(Boolean) || ''
+    .filter(Boolean)
+}
+
+function visibleOrderNos(value) {
+  return orderNoList(value).slice(0, 3)
+}
+
+function extraOrderNoCount(value) {
+  return Math.max(orderNoList(value).length - 3, 0)
 }
 
 function shortOrderNos(value) {
   const text = String(value || '')
   if (!text) return '暂无订单号'
   return text.length > 34 ? `${text.slice(0, 34)}...` : text
+}
+
+function diffOrderButtonText(row) {
+  const count = String(row.diff_order_nos || '')
+    .split(/[、,，\s]+/)
+    .filter(Boolean).length
+  if (!count) return '暂无匹配'
+  if (row.diff_order_match_type === 'single') return `单笔匹配 ${count} 单`
+  if (row.diff_order_match_type === 'combination') return `合计匹配 ${count} 单`
+  return `接近订单 ${count} 单`
 }
 
 function money(value) {
@@ -1286,6 +1331,19 @@ onMounted(async () => {
   margin-top: 3px;
   color: #84928a;
   font-size: 12px;
+  line-height: 1.35;
+}
+
+.order-no-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+}
+
+.order-no-list :deep(.el-button) {
+  margin-left: 0;
+  padding: 0;
+  height: auto;
   line-height: 1.35;
 }
 

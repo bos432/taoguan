@@ -64,7 +64,15 @@ class Upload extends BaseController
         }
         $param['tag_ids'] = $tag_ids;
 
-        $data = FileService::add($param);
+        try {
+            $data = FileService::add($param);
+        } catch (\Throwable $e) {
+            $message = $e->getMessage() ?: '文件上传失败，请稍后重试';
+            if (stripos($message, 'mkdir') !== false || stripos($message, 'permission') !== false || stripos($message, 'permitted') !== false) {
+                $message = '文件上传目录权限异常，请联系管理员检查 public/storage 权限';
+            }
+            return error($message);
+        }
 
         return success($data, '上传成功');
     }

@@ -198,7 +198,11 @@ class FileService
             $storage_subdir = 'file/' . date('Ymd');
             $storage_dir = root_path() . 'public/storage/' . $storage_subdir;
             if (!is_dir($storage_dir)) {
-                mkdir($storage_dir, 0777, true);
+                @mkdir($storage_dir, 0777, true);
+                clearstatcache(true, $storage_dir);
+            }
+            if (!is_dir($storage_dir) || !is_writable($storage_dir)) {
+                exception('文件上传目录权限异常，请联系管理员检查 public/storage 权限');
             }
             $saved_name = $file_hash . ($file_ext ? '.' . $file_ext : '');
             $saved_file = $file->move($storage_dir, $saved_name, true);

@@ -103,6 +103,18 @@ export function auth(data) {
 }
 
 /**
+ * 设置绑定会员是否为商家超管
+ * @param {array} data 请求数据
+ */
+export function memberSuper(data) {
+  return request({
+    url: url + 'memberSuper',
+    method: 'post',
+    data
+  })
+}
+
+/**
  * 商家续费
  * @param {array} data 请求数据
  */

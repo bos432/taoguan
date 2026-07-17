@@ -335,3 +335,12 @@
 - 运行或测试结果：`php -l app/common/service/file/FileService.php` 通过；`php -l app/api/controller/setting/Upload.php` 通过；`node --check zflUniApp/zflUniApp/utils/util.js` 通过；`npm run runtime:agreement-audit` 通过，PASS 7 / WARN 0 / FAIL 0；`npm run runtime:readiness` 通过，PASS 24 / WARN 0 / FAIL 0。
 - 遗留问题：代码已避免前端直接显示底层错误，但真正上传成功仍需要服务器 `public/storage` 目录对 PHP-FPM 运行用户可写；正式/灰度服务器需同步修复目录归属和权限后重新测试上传支付凭证。
 - 下一阶段应继续处理的事项：将修复同步到灰度/正式对应代码包，并在服务器执行 `mkdir -p public/storage/file && chown -R www:www public/storage && chmod -R 755 public/storage` 后，用小程序或 H5 重新上传支付凭证验证。
+
+## 2026-07-17 后台商家超管设置入口
+
+- 阶段名称：后台商家超管设置入口
+- 本阶段完成内容：在 `admin-next -> 商家管理` 列表新增“商家超管”状态列和开关，支持对单个商家开启或取消超管权限；开启前校验商家已绑定小程序会员、审核通过且未禁用；操作前明确提示超管将获得平台商家审核和跨商家订单核销权限。商家详情抽屉同步展示超管状态。前端接入后端已有的 `merchant.Merchant/memberSuper` 接口。
+- 修改/新增的主要文件：`zflAdminWeb/src/api/merchant/merchant.js`、`zflAdminWeb/src/views/merchant/merchant.vue`、`DEVELOPMENT_LOG.md`
+- 运行或测试结果：`npx eslint src/views/merchant/merchant.vue src/api/merchant/merchant.js` 通过；`npm run build:admin-next-online` 通过，正式产物已生成到 `zflAdminWeb/dist-admin-next-online`；构建产物检查确认包含 `memberSuper` 接口和“跨商家订单核销”确认文案。
+- 遗留问题：本地未直接对正式数据库执行超管开启/取消写操作；部署正式包后应选择一个已绑定会员的测试商家验证开关、列表回显、小程序重新登录后的超管入口和取消权限回收。
+- 下一阶段应继续处理的事项：将最新 `dist-admin-next-online` 部署到正式站 `public/admin-next`，在商家管理页完成一次实际开启/取消回归；确认无误后再为目标商家正式开启。

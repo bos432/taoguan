@@ -84,13 +84,24 @@
           <span class="summary-chip">已选 {{ selectedRows.length }} 家</span>
           <span v-for="item in activeFilterTags" :key="item" class="summary-chip">{{ item }}</span>
           <span v-if="!activeFilterTags.length" class="summary-chip">未设置筛选条件</span>
-          <span v-if="recentActionSummary" class="summary-chip summary-chip--muted">{{ recentActionSummary }}</span>
+          <span v-if="recentActionSummary" class="summary-chip summary-chip--muted">{{
+            recentActionSummary
+          }}</span>
         </div>
         <div class="merchant-summary-bar__hint" :class="merchantSummaryHintClass">
           <span class="merchant-summary-bar__hint-title">{{ merchantSummaryHintTitle }}</span>
           <span class="merchant-summary-bar__hint-text">{{ merchantSummaryHintText }}</span>
         </div>
       </div>
+      <el-alert
+        v-if="merchantRuntimeErrorText"
+        class="merchant-runtime-alert"
+        type="warning"
+        show-icon
+        :closable="false"
+        title="商家管理数据加载异常"
+        :description="merchantRuntimeErrorText"
+      />
 
       <div class="followup-panel">
         <div class="followup-panel__header">
@@ -105,7 +116,9 @@
           </div>
         </div>
         <div class="followup-panel__actions">
-          <el-button type="primary" plain @click="goToPlatformVoucherSetting">设置平台收款码</el-button>
+          <el-button type="primary" plain @click="goToPlatformVoucherSetting"
+            >设置平台收款码</el-button
+          >
           <el-button @click="goToMerchantAnalytics">去运营总览看整体波动</el-button>
           <el-button @click="goToInternalTakeover">去内部接盘对账</el-button>
           <el-button @click="goToRenewRecordsPage">去续费记录继续排查</el-button>
@@ -135,6 +148,7 @@
         row-key="id"
         size="small"
         class="merchant-table"
+        :empty-text="merchantTableEmptyText"
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="44" />
@@ -212,6 +226,22 @@
             </div>
           </template>
         </el-table-column>
+        <el-table-column label="商家超管" width="125">
+          <template #default="{ row }">
+            <div class="stack">
+              <el-switch
+                :model-value="Number(row.member_is_super || 0)"
+                :active-value="1"
+                :inactive-value="0"
+                :loading="memberSuperLoadingId === Number(row.id)"
+                @change="handleMemberSuperChange(row, $event)"
+              />
+              <span class="muted">
+                {{ Number(row.member_id || 0) > 0 ? '已绑定会员' : '未绑定会员' }}
+              </span>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column prop="expire_time" label="到期时间" width="170" />
         <el-table-column label="禁用" width="100">
           <template #default="{ row }">
@@ -280,6 +310,11 @@
           <el-descriptions-item label="到期时间">
             {{ detailRow.expire_time || '--' }}
           </el-descriptions-item>
+          <el-descriptions-item label="商家超管">
+            <el-tag :type="Number(detailRow.member_is_super || 0) === 1 ? 'success' : 'info'">
+              {{ Number(detailRow.member_is_super || 0) === 1 ? '已启用' : '未启用' }}
+            </el-tag>
+          </el-descriptions-item>
           <el-descriptions-item label="提醒天数">
             {{ detailRow.renew_remind_days || '--' }}
           </el-descriptions-item>
@@ -293,7 +328,10 @@
             {{ detailRow.remark || '--' }}
           </el-descriptions-item>
           <el-descriptions-item label="商家收款码" :span="2">
-            <div v-if="detailRow.receipt_image_url || detailRow.image_url" class="receipt-preview-card">
+            <div
+              v-if="detailRow.receipt_image_url || detailRow.image_url"
+              class="receipt-preview-card"
+            >
               <FileImage
                 :file-url="detailRow.receipt_image_url || detailRow.image_url"
                 file-source="list"
@@ -363,12 +401,7 @@
                 <span class="muted">
                   {{ editForm.image_id ? `当前文件 ID：${editForm.image_id}` : '暂未上传收款码' }}
                 </span>
-                <el-button
-                  v-if="editForm.image_id"
-                  link
-                  type="danger"
-                  @click="clearReceiptImage"
-                >
+                <el-button v-if="editForm.image_id" link type="danger" @click="clearReceiptImage">
                   删除当前收款码
                 </el-button>
               </div>
@@ -465,7 +498,7 @@
 
     <el-drawer v-model="recordVisible" title="续费记录" size="760px">
       <div v-loading="recordLoading" class="detail-wrap">
-        <el-table :data="renewRecords" row-key="id">
+        <el-table :data="renewRecords" row-key="id" :empty-text="renewRecordEmptyText">
           <el-table-column prop="merchant_title" label="商家" min-width="180" />
           <el-table-column prop="renew_source_title" label="来源" width="120" />
           <el-table-column prop="adjust_title" label="调整" width="120" />
@@ -497,6 +530,7 @@ import {
   disable as disableApi,
   getParams as getParamsApi,
   auth as authApi,
+  memberSuper as memberSuperApi,
   renew as renewApi,
   renewRecordList
 } from '@/api/merchant/merchant'
@@ -517,6 +551,10 @@ const detailRow = ref(null)
 const renewRecords = ref([])
 const recentAction = ref(null)
 const lastHandledFocusKey = ref('')
+const paramsError = ref('')
+const listError = ref('')
+const recordError = ref('')
+const memberSuperLoadingId = ref(0)
 
 const detailVisible = ref(false)
 const editVisible = ref(false)
@@ -625,16 +663,26 @@ const expireOptions = computed(() => {
   ]
 })
 
-const currentStatusNums = computed(() => params.value.status_nums || {})
+const currentStatusNums = computed(() => {
+  return params.value.status_nums && typeof params.value.status_nums === 'object'
+    ? params.value.status_nums
+    : {}
+})
+
+const merchantRuntimeErrorText = computed(() => {
+  return [paramsError.value, listError.value].filter(Boolean).join('；')
+})
+
+const merchantTableEmptyText = computed(() => listError.value || '暂无商家数据')
+
+const renewRecordEmptyText = computed(() => recordError.value || '暂无续费记录')
 
 const runtimeModeLabel = computed(() =>
   process.env.NODE_ENV === 'production' ? '生产构建' : '开发构建'
 )
 
 const selectedSummary = computed(() => {
-  return selectedRows.value
-    .map((item) => `${merchantDisplayTitle(item)} (${item.id})`)
-    .join('\n')
+  return selectedRows.value.map((item) => `${merchantDisplayTitle(item)} (${item.id})`).join('\n')
 })
 
 const activeFilterTags = computed(() => {
@@ -802,10 +850,12 @@ watch(
 )
 
 async function loadParams() {
+  paramsError.value = ''
   try {
     const res = await getParamsApi({})
-    params.value = res.data || {}
+    params.value = res.data && typeof res.data === 'object' ? res.data : {}
   } catch (error) {
+    paramsError.value = '商家筛选参数加载失败，审核状态和期限状态选项可能暂不可用'
     ElMessage.error('加载商家参数失败')
   }
 }
@@ -840,19 +890,22 @@ function applyRouteQuery() {
   const nextQuery = defaultQuery()
   nextQuery.limit = query.limit
   nextQuery.page = parseRouteNumber(routeQuery.page, 1)
-  nextQuery.date_field = routeQuery.date_field ? String(routeQuery.date_field) : nextQuery.date_field
+  nextQuery.date_field = routeQuery.date_field
+    ? String(routeQuery.date_field)
+    : nextQuery.date_field
   nextQuery.auth_state = parseRouteNumber(routeQuery.auth_state, -1)
   nextQuery.expire_status = routeQuery.expire_status ? String(routeQuery.expire_status) : ''
-  const hasValidSearchField = !routeQuery.search_field || searchFields.includes(String(routeQuery.search_field))
+  const hasValidSearchField =
+    !routeQuery.search_field || searchFields.includes(String(routeQuery.search_field))
   nextQuery.search_field = routeQuery.search_field
     ? normalizeSearchField(routeQuery.search_field)
     : nextQuery.search_field
-  nextQuery.search_exp = hasValidSearchField && routeQuery.search_exp
-    ? String(routeQuery.search_exp)
-    : nextQuery.search_exp
-  nextQuery.search_value = hasValidSearchField && routeQuery.search_value
-    ? String(routeQuery.search_value)
-    : ''
+  nextQuery.search_exp =
+    hasValidSearchField && routeQuery.search_exp
+      ? String(routeQuery.search_exp)
+      : nextQuery.search_exp
+  nextQuery.search_value =
+    hasValidSearchField && routeQuery.search_value ? String(routeQuery.search_value) : ''
   nextQuery.date_value = parseRouteDateRange(
     routeQuery.date_value,
     routeQuery.start_date,
@@ -907,15 +960,20 @@ function buildContinuityQuery(extraQuery = {}) {
 
 async function fetchList() {
   loading.value = true
+  listError.value = ''
   try {
     const res = await listApi(buildQueryParams())
-    rows.value = res.data?.list || []
-    pagination.count = Number(res.data?.count || 0)
+    const payload = res.data || {}
+    rows.value = Array.isArray(payload.list) ? payload.list : []
+    pagination.count = Number(payload.count || 0)
     params.value = {
       ...params.value,
-      ...(res.data || {})
+      ...payload
     }
   } catch (error) {
+    rows.value = []
+    pagination.count = 0
+    listError.value = '商家列表加载失败，请刷新或调整筛选后重试'
     ElMessage.error('加载商家列表失败')
   } finally {
     loading.value = false
@@ -1088,6 +1146,7 @@ async function submitEdit() {
 async function openDetail(row) {
   detailVisible.value = true
   detailLoading.value = true
+  detailRow.value = row || null
   try {
     const res = await infoApi({ id: row.id })
     detailRow.value = res.data || row
@@ -1214,7 +1273,9 @@ async function submitAction() {
 async function handleDisableSwitch(row) {
   try {
     await ElMessageBox.confirm(
-      `确认要${Number(row.is_disable) === 1 ? '启用' : '停用'}商家「${row.title || `#${row.id}` }」吗？`,
+      `确认要${Number(row.is_disable) === 1 ? '启用' : '停用'}商家「${merchantDisplayTitle(
+        row
+      )}」吗？`,
       '操作确认',
       {
         type: 'warning',
@@ -1228,18 +1289,69 @@ async function handleDisableSwitch(row) {
   }
 }
 
+async function handleMemberSuperChange(row, value) {
+  const nextValue = Number(value) === 1 ? 1 : 0
+  if (nextValue === 1) {
+    if (Number(row.member_id || 0) <= 0) {
+      ElMessage.warning('该商家尚未绑定小程序会员，不能设置为商家超管')
+      return
+    }
+    if (Number(row.auth_state || 0) !== 1) {
+      ElMessage.warning('请先将该商家审核通过，再设置商家超管')
+      return
+    }
+    if (Number(row.is_disable || 0) === 1) {
+      ElMessage.warning('该商家已被禁用，请先启用商家')
+      return
+    }
+  }
+
+  const merchantName = merchantDisplayTitle(row)
+  const content = nextValue
+    ? `确认将“${merchantName}”设为商家超管吗？开启后，绑定会员将在小程序获得平台商家审核和跨商家订单核销权限。`
+    : `确认取消“${merchantName}”的商家超管权限吗？取消后，绑定会员将失去平台商家审核和跨商家订单核销权限。`
+
+  try {
+    await ElMessageBox.confirm(content, nextValue ? '开启商家超管' : '取消商家超管', {
+      type: 'warning',
+      confirmButtonText: '确认',
+      cancelButtonText: '取消'
+    })
+  } catch (error) {
+    return
+  }
+
+  memberSuperLoadingId.value = Number(row.id)
+  try {
+    const res = await memberSuperApi({
+      ids: [row.id],
+      member_is_super: nextValue
+    })
+    ElMessage.success(res.msg || (nextValue ? '商家超管已开启' : '商家超管已取消'))
+    setRecentAction(`${nextValue ? '开启' : '取消'}商家超管：${merchantName}`)
+    await fetchList()
+  } catch (error) {
+    ElMessage.error(nextValue ? '开启商家超管失败' : '取消商家超管失败')
+  } finally {
+    memberSuperLoadingId.value = 0
+  }
+}
+
 async function openRenewRecords(singleRows = []) {
   if (!ensureSelection(singleRows)) return
   recordVisible.value = true
   recordLoading.value = true
+  recordError.value = ''
   try {
     const paramsValue =
       selectedRows.value.length === 1
         ? { merchant_id: selectedRows.value[0].id, page: 1, limit: 20 }
         : { ids: selectedRows.value.map((item) => item.id), page: 1, limit: 20 }
     const res = await renewRecordList(paramsValue)
-    renewRecords.value = res.data?.list || []
+    renewRecords.value = Array.isArray(res.data?.list) ? res.data.list : []
   } catch (error) {
+    renewRecords.value = []
+    recordError.value = '续费记录加载失败，请关闭后重试'
     ElMessage.error('加载续费记录失败')
   } finally {
     recordLoading.value = false
@@ -1474,6 +1586,11 @@ function formatAmount(value) {
   font-size: 12px;
   line-height: 1.6;
   color: #5f6b7a;
+}
+
+.merchant-runtime-alert {
+  margin-top: 12px;
+  border-radius: 12px;
 }
 
 .followup-panel {

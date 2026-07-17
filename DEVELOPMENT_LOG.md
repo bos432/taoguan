@@ -344,3 +344,12 @@
 - 运行或测试结果：`npx eslint src/views/merchant/merchant.vue src/api/merchant/merchant.js` 通过；`npm run build:admin-next-online` 通过，正式产物已生成到 `zflAdminWeb/dist-admin-next-online`；构建产物检查确认包含 `memberSuper` 接口和“跨商家订单核销”确认文案。
 - 遗留问题：本地未直接对正式数据库执行超管开启/取消写操作；部署正式包后应选择一个已绑定会员的测试商家验证开关、列表回显、小程序重新登录后的超管入口和取消权限回收。
 - 下一阶段应继续处理的事项：将最新 `dist-admin-next-online` 部署到正式站 `public/admin-next`，在商家管理页完成一次实际开启/取消回归；确认无误后再为目标商家正式开启。
+
+## 2026-07-17 商家会员绑定防误清空修复
+
+- 阶段名称：商家会员绑定防误清空修复
+- 本阶段完成内容：排查正式后台“商家超管”提示未绑定会员的问题。确认商家列表以 `ya_merchant.member_id` 作为唯一绑定依据，后台账号或联系电话相同不会自动建立绑定；同时发现普通商家新增/编辑参数包含 `member_id` 和 `member_is_super` 的缺省值，后台保存未提交这两个字段时仍可能把既有绑定和超管状态覆盖为空/0。现已将两个权限关联字段移出普通编辑字段集，后续只能通过专门的绑定/超管操作修改，避免编辑商家名称、电话、收款码等资料时误清空权限关系。历史数据库快照显示商家 `顺源家电`（商家 ID `4`）原绑定会员 ID 为 `13`，正式库需核对后恢复该关联。
+- 修改/新增的主要文件：`app/common/service/merchant/MerchantService.php`、`DEVELOPMENT_LOG.md`
+- 运行或测试结果：`php -l app/common/service/merchant/MerchantService.php` 通过；通过 Composer 自动加载读取 `MerchantService::$edit_field`，确认 `member_id`、`member_is_super` 已不在普通编辑字段中；保留专用 `setMemberSuper()` 方法不变。
+- 遗留问题：本地不能直接写正式数据库；正式服务器需先查询商家 ID `4` 和会员 ID `13` 当前状态，确认无冲突后恢复 `ya_merchant.member_id=13`，再清缓存并在后台验证商家超管开关。若目标商家实际需要绑定其他小程序会员，不应直接使用历史 ID，应以正式库查询和运营确认结果为准。
+- 下一阶段应继续处理的事项：提交并推送本次后端修复；服务器同步本次目标文件 `app/common/service/merchant/MerchantService.php`，执行正式库只读核对、恢复绑定、清缓存，然后验证商家列表显示“已绑定会员”并实际开启商家超管。

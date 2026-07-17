@@ -40,8 +40,6 @@ class MerchantService
         'remark' => '',
         'name' => '',
         'image_id' => '',
-        'member_id' => '',
-        'member_is_super' => 0,
         'expire_time' => '',
         'renew_remind_days' => 7,
         'merchant_purchase_daily_quantity_limit' => '',

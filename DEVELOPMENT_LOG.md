@@ -488,3 +488,12 @@
 - 运行或测试结果：凭证支付订单创建数据库集成测试通过 16 项断言，覆盖订单、明细、库存扣减、旧日志、事件、操作结果及重复请求；完整 `tests/refactor` 20 个脚本共 279 项断言通过。相关 PHP 语法、移动 API `node --check` 和目标差异检查通过；测试全部回滚，结束后订单 1732、订单明细 1733、采购流水 1477、操作请求/事件/网关记录均为 0。自动测试没有调用真实微信统一下单。
 - 遗留问题：微信统一下单外部调用仍位于数据库事务中，可能延长订单和库存锁持有时间；真实微信结果契约尚未在灰度验证。HBuilderX 未登录阻塞仍存在，因此本阶段未重跑 H5 发布。
 - 下一阶段应继续处理的事项：重新读取计划和日志后，抽象微信统一下单网关并把外部调用移出数据库事务，采用可恢复 Saga 记录预下单结果；自动测试必须使用假网关，不调用真实微信。
+
+## 2026-08-25 渐进式重构阶段二：微信预下单网关边界
+
+- 阶段名称：渐进式重构阶段二：微信预下单网关边界
+- 本阶段完成内容：新增 `PrepaymentGatewayInterface` 和 `WechatPrepaymentGateway`，将微信配置读取、openid 查询、统一下单和 bridgeConfig 生成从订单服务中隔离。`confirmOrder` 支持注入预下单网关，生产默认使用微信实现，旧接口成功/失败提示和 bridgeConfig 返回结构保持不变；凭证支付不再因为无关的微信配置预检查而被阻断。相同下单请求命中已完成幂等记录时直接重放 bridgeConfig，不再次调用网关。
+- 修改/新增的主要文件：`app/common/gateway/payment/PrepaymentGatewayInterface.php`、`app/common/gateway/payment/WechatPrepaymentGateway.php`、`app/common/service/member/MemberOrderService.php`、`tests/refactor/wechat-prepayment-gateway-database-integration.php`、`DEVELOPMENT_LOG.md`
+- 运行或测试结果：假预下单网关数据库集成测试通过 14 项断言，覆盖微信订单、创建事件、bridgeConfig 持久化、重复请求重放和网关仅调用一次；完整 `tests/refactor` 21 个脚本共 293 项断言通过。相关 PHP 语法和目标差异检查通过；测试全部回滚，结束后订单 1732、订单明细 1733、采购流水 1477、操作请求/事件/网关记录均为 0。测试未调用真实微信。
+- 遗留问题：预下单网关调用目前仍位于订单数据库事务内，本阶段只建立了可测试边界；外部失败仍采用原事务回滚行为，尚未形成独立网关尝试记录和可恢复补偿。
+- 下一阶段应继续处理的事项：重新读取计划和日志后，将微信订单数据库准备先提交并写 `business_type=prepayment` 网关尝试记录，再在事务外调用网关；失败时补偿订单、明细关联状态、商品库存/销量和购物车，结果未知时禁止自动重试并进入人工核对。

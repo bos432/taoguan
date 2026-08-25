@@ -28,6 +28,8 @@ use app\common\service\order\OrderBusinessEventService;
 use app\common\service\order\OrderRefundService;
 use app\common\service\order\OrderCancellationService;
 use app\common\service\order\OrderFulfillmentService;
+use app\common\gateway\payment\PrepaymentGatewayInterface;
+use app\common\gateway\payment\WechatPrepaymentGateway;
 use EasyWeChat\Factory;
 use think\facade\Config;
 use think\facade\Db;
@@ -717,6 +719,10 @@ class MemberOrderService
         $operationContext = $param['_operation_context'] ?? BusinessOperationContextFactory::fromRequest(
             'legacy', 'member', intval($param['member_id'] ?? 0), '会员确认下单'
         );
+        $prepaymentGateway = $param['_prepayment_gateway'] ?? new WechatPrepaymentGateway();
+        if (!$prepaymentGateway instanceof PrepaymentGatewayInterface) {
+            throw new \InvalidArgumentException('Invalid prepayment gateway');
+        }
         $source = trim(strval($param['source'] ?? ''));
         $orderedGoodsIds = [];
         $pendingQuantity = 0;
@@ -734,11 +740,6 @@ class MemberOrderService
             $pendingQuantity,
             $pendingAmount
         );
-        //组装支付
-        $member_setting = MemberSettingService::info('wx_miniapp_appid,wx_miniapp_mch_id,wx_miniapp_mch_key');
-        if(!isset($member_setting['wx_miniapp_appid']) || !isset($member_setting['wx_miniapp_mch_id']) || !isset($member_setting['wx_miniapp_mch_key'])){
-            exception("请联系客服开启微信支付");
-        }
         $model = new MemberOrderModel();
         // 启动事务
         $model::startTrans();
@@ -870,28 +871,15 @@ class MemberOrderService
             switch ($data['pay_type']){
                 case 1:
                     /*************************************组装微信支付************************************/
-                    $log_level = Config::get('app.app_debug') ? 'debug' : 'error';
-                    $config = [
-                        'app_id' => $member_setting['wx_miniapp_appid'],
-                        'mch_id' => $member_setting['wx_miniapp_mch_id'],
-                        'key'    => $member_setting['wx_miniapp_mch_key'],   // API v2 密钥 (注意: 是v2密钥 是v2密钥 是v2密钥)
-                        'response_type' => 'array',
-                        'log' => [
-                            'level' => $log_level,
-                            'file' => runtime_path() . '/easywechat/' . date('Ym') . '/miniProgram.log',
-                        ],
-                    ];
-                    $app = Factory::payment($config);
-                    $result = $app->order->unify([
-                        'body' => '购买'.$total_goods_num."件商品",
-                        'out_trade_no' =>$pay_common_on,
-                        'total_fee' => $total_fee*100,
-                        'notify_url' => 'https://' . $_SERVER['HTTP_HOST'] . '/api/member.MemberOrder/orderNotify', // 支付结果通知网址，如果不设置则会使用配置里的默认地址
-                        'trade_type' => 'JSAPI', // 请对应换成你的支付方式对应的值类型
-                        'openid' => ThirdModel::where('member_id',$param['member_id'])->value('openid'),
+                    $result = $prepaymentGateway->prepay([
+                        'description' => '购买' . $total_goods_num . '件商品',
+                        'out_trade_no' => $pay_common_on,
+                        'amount' => floatval($total_fee),
+                        'notify_url' => 'https://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . '/api/member.MemberOrder/orderNotify',
+                        'member_id' => intval($param['member_id']),
                     ]);
-                    if ($result['return_code']  === 'SUCCESS' && $result['return_msg'] === 'OK') {
-                        $bridgeConfig = $app->jssdk->bridgeConfig($result['prepay_id'], false);
+                    if (!empty($result['success'])) {
+                        $bridgeConfig = $result['bridge_config'];
                         BusinessOperationRequestService::complete(intval($operation['id']), $bridgeConfig);
                         // 提交事务
                         $model::commit();
@@ -899,7 +887,7 @@ class MemberOrderService
                         // 小程序处理
                         return $bridgeConfig; // 返回数组
                     }else{
-                        exception($result['return_msg']);
+                        exception(strval($result['error'] ?? '微信预下单失败'));
                     }
                     break;
                 case 2:

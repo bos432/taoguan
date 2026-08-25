@@ -398,3 +398,12 @@
 - 运行或测试结果：`php tests/refactor/order-transition-characterization.php` 通过 13 项断言；核心状态 34 项、权限 19 项、SQL 快照 6 项回归断言继续通过；新增 PHP 文件语法检查和目标文件 `git diff --check` 通过。
 - 遗留问题：现有写方法尚未统一调用状态策略；微信支付回调仍直接在控制器写订单且共享支付单的循环存在提前返回风险。需要事件流水和幂等基础设施落地后优先迁移该入口。
 - 下一阶段应继续处理的事项：新增版本化订单业务事件表、幂等请求表及对应模型/记录服务，先完成无业务接入的迁移检查和单元测试。
+
+## 2026-08-25 渐进式重构阶段二：事件流水与幂等基础设施
+
+- 阶段名称：渐进式重构阶段二：事件流水与幂等基础设施
+- 本阶段完成内容：新增业务操作请求表和订单事件流水表的版本化迁移，分别提供批量操作级幂等和逐订单事件唯一性；字段覆盖订单号、前后订单/支付/售后状态、金额、数量、会员、商家、操作人、来源端、请求编号、时间、原因和扩展数据。新增操作上下文、幂等请求服务、事件记录服务及模型，迁移附存在性验证和空表回滚说明。
+- 修改/新增的主要文件：`private/migrations/20260825_add_business_operation_and_order_event.sql`、`app/common/domain/operation/BusinessOperationContext.php`、`app/common/model/order/BusinessOperationRequestModel.php`、`app/common/model/order/OrderBusinessEventModel.php`、`app/common/service/operation/BusinessOperationRequestService.php`、`app/common/service/order/OrderBusinessEventService.php`、`tests/refactor/order-event-infrastructure.php`、`DEVELOPMENT_LOG.md`
+- 运行或测试结果：`php tests/refactor/order-event-infrastructure.php` 通过 25 项断言；订单转换 13 项、核心状态 34 项、权限 19 项、SQL 快照 6 项回归断言全部通过；新增 PHP 文件语法检查通过。
+- 遗留问题：迁移尚未在隔离测试库执行；幂等和事件服务尚未接入现有业务写入口，因此当前线上行为不变。业务接入前必须先部署迁移，不允许通过捕获“表不存在”静默跳过事件。
+- 下一阶段应继续处理的事项：在隔离测试库执行迁移并验证索引；改造凭证支付审核和自提核销，要求状态变化、账单/库存和事件在同一事务内提交，并为旧接口生成兼容请求上下文。

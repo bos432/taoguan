@@ -126,30 +126,37 @@ export default {
   },
   methods: {
     open(orderId) {
-      this.visible = true
-      this.loading = true
-      this.error = ''
-      this.activeTab = 'events'
-      this.timeline = emptyTimeline()
+      this.reset()
       timeline({ id: orderId })
-        .then((res) => {
-          const payload = res.data || {}
-          this.timeline = {
-            order: payload.order || null,
-            coverage: payload.coverage || 'legacy_only',
-            events: Array.isArray(payload.events) ? payload.events : [],
-            legacy_logs: Array.isArray(payload.legacy_logs) ? payload.legacy_logs : []
-          }
-          if (!this.timeline.events.length && this.timeline.legacy_logs.length) {
-            this.activeTab = 'legacy'
-          }
-        })
+        .then((res) => this.openPayload(res.data || {}))
         .catch((error) => {
           this.error = error?.message || '订单流转加载失败，请稍后重试'
         })
         .finally(() => {
           this.loading = false
         })
+    },
+    openPayload(payload) {
+      this.visible = true
+      this.loading = false
+      this.error = ''
+      this.activeTab = 'events'
+      this.timeline = {
+        order: payload.order || null,
+        coverage: payload.coverage || 'legacy_only',
+        events: Array.isArray(payload.events) ? payload.events : [],
+        legacy_logs: Array.isArray(payload.legacy_logs) ? payload.legacy_logs : []
+      }
+      if (!this.timeline.events.length && this.timeline.legacy_logs.length) {
+        this.activeTab = 'legacy'
+      }
+    },
+    reset() {
+      this.visible = true
+      this.loading = true
+      this.error = ''
+      this.activeTab = 'events'
+      this.timeline = emptyTimeline()
     },
     eventLabel(eventType) {
       return (

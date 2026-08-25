@@ -2,6 +2,7 @@
 namespace app\admin\controller\report;
 
 use app\common\controller\BaseController;
+use app\common\service\report\MerchantPurchaseLedgerDiffEvidenceService;
 use app\common\service\report\MerchantPurchaseLedgerReportService;
 use think\Response;
 
@@ -33,7 +34,8 @@ class MerchantPurchaseLedger extends BaseController
             'direction/s' => '',
             'target_amount/f' => 0,
         ]));
-        return success(MerchantPurchaseLedgerReportService::tradeDiffOrders($params));
+        $result = MerchantPurchaseLedgerReportService::tradeDiffOrders($params);
+        return success(MerchantPurchaseLedgerDiffEvidenceService::enrich($result));
     }
 
     public function export()

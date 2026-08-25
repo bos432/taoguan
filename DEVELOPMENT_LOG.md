@@ -524,3 +524,12 @@
 - 运行或测试结果：每日对账数据库集成测试通过 14 项断言，覆盖凭证金额双口径、采购流水、会员账单、核销事件、事件覆盖、缺账单告警、无效日期和事务回滚；完整 `tests/refactor` 23 个脚本共 331 项断言通过。真实命令对本地快照 `2026-06-13` 生成报告成功：支付订单 23 笔，原始实付/账单 6,624.00 元，台账兼容金额/采购流水 55,639.00 元，历史调整差额 49,015.00 元，报告明确保留两个口径。`refactor:baseline --database` 5 项检查通过、0 失败；PHP 语法和 `git diff --check` 通过；测试结束后订单 1732、明细 1733、采购流水 1477，操作请求/事件/网关记录均为 0。
 - 遗留问题：代码已具备每日自动执行入口，但灰度/正式服务器尚未配置系统 cron；部署时需在每日业务低峰执行 `php think refactor:reconcile` 并监控命令退出状态。历史快照没有 `order.picked_up` 事件且没有可识别的自提 `delivery_time` 候选，因此历史核销数显示 0，不代表历史从未核销；只能在新事件上线后精确统计。
 - 下一阶段应继续处理的事项：重新读取计划和日志后，完善差额订单诊断，将采购台账差额订单与统一订单时间线/业务事件关联，返回明确的匹配关系、未配平原因和完整流转证据，并保持旧算法并行输出。
+
+## 2026-08-25 渐进式重构阶段二：差额订单流转证据
+
+- 阶段名称：渐进式重构阶段二：差额订单流转证据
+- 本阶段完成内容：保持采购台账原 `tradeDiffOrders` URL、配平算法和旧返回字段不变，在管理员控制器出口通过独立证据服务兼容新增 `match_evidence`、`timeline` 和 `evidence_summary`。每笔主差额订单现在同时返回匹配类型、匹配/剩余金额、匹配/剩余数量、原因编码、中文原因、订单当前状态、新版业务事件和旧操作日志；找不到订单证据时只返回明确错误，不中断整个差额查询。证据预加载限制为页面主表最多 20 笔，避免递归装配商品嵌套行造成大量查询。`admin-next` 差额弹窗新增“流转证据”入口并复用订单时间线抽屉，抽屉支持直接加载接口已返回的数据，仍保留跳转订单页复核路径。
+- 修改/新增的主要文件：`app/common/service/report/MerchantPurchaseLedgerDiffEvidenceService.php`、`app/admin/controller/report/MerchantPurchaseLedger.php`、`tests/refactor/merchant-purchase-ledger-diff-evidence-database-integration.php`、`zflAdminWeb/src/views/order/components/OrderTimelineDrawer.vue`、`zflAdminWeb/src/views/report/merchant-purchase-ledger.vue`、`zflAdminWeb/tests/merchant-purchase-ledger-diff-evidence.spec.js`、`DEVELOPMENT_LOG.md`
+- 运行或测试结果：差额证据数据库集成测试通过 10 项断言，覆盖 2998 元匹配金额、未配平数量、原因、订单时间线、业务事件、汇总和回滚；完整 `tests/refactor` 24 个脚本共 341 项断言通过。`npm run build:admin-next-local` 通过；Playwright 2998 差额弹窗到时间线抽屉交互 1/1 通过；目标 ESLint、Prettier、PHP 语法和 `git diff --check` 通过。真实本地快照按商家 4、买入方向、目标 2998 元运行原配平算法返回 `balance`，主表 20 笔订单均附带证据，合计 40 条旧日志；测试结束后订单 1732、明细 1733、采购流水 1477，操作请求/事件/网关记录均为 0。
+- 遗留问题：本地历史快照在新版事件表启用前形成，真实差额订单当前均显示 `legacy_only`，完整新事件分支由数据库集成测试和 Playwright 契约验证；灰度产生新订单后需再验证 `hybrid/event`。旧配平算法仍作为主计算结果，本阶段只补证据，没有切换到事件事实算法，也没有修改任何历史金额或订单状态。
+- 下一阶段应继续处理的事项：重新读取计划和日志后，进入阶段三统一权限的首个小阶段，先定义统一权限上下文响应与 403 契约，并为平台管理员、财务、审核员、客服、商家负责人、员工、超管、巡检员和会员建立可自动验证的权限码基线。

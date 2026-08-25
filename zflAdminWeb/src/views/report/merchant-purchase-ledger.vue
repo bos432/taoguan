@@ -318,17 +318,19 @@
             <strong>¥{{ money(diffDialog.target_amount) }}</strong>
           </div>
           <p>{{ diffDialog.message }}</p>
+          <el-tag v-if="diffDialog.evidence_summary.order_count" effect="plain">
+            已关联 {{ diffDialog.evidence_summary.order_count }} 笔订单流转
+          </el-tag>
         </div>
         <div class="diff-dialog__block">
           <div class="diff-dialog__block-head">
             <strong>商品差额定位</strong>
-            <span>{{ diffDialog.goods_gap_message || '只按采购流水对比买入和卖出，库存/商品销量不参与财务差额判断。' }}</span>
+            <span>{{
+              diffDialog.goods_gap_message ||
+              '只按采购流水对比买入和卖出，库存/商品销量不参与财务差额判断。'
+            }}</span>
           </div>
-          <el-table
-            :data="diffDialog.goods_gaps"
-            border
-            empty-text="没有找到商品维度差额"
-          >
+          <el-table :data="diffDialog.goods_gaps" border empty-text="没有找到商品维度差额">
             <el-table-column label="商品" min-width="220">
               <template #default="{ row }">
                 <div class="goods-cell">
@@ -380,7 +382,9 @@
                 <small v-if="extraOrderNoCount(row.diff_order_nos) > 0" class="order-nos">
                   还有 {{ extraOrderNoCount(row.diff_order_nos) }} 单未展开
                 </small>
-                <small v-if="!orderNoList(row.diff_order_nos).length" class="order-nos">暂无订单号</small>
+                <small v-if="!orderNoList(row.diff_order_nos).length" class="order-nos"
+                  >暂无订单号</small
+                >
                 <small v-if="row.diff_order_message" class="cell-note">
                   {{ row.diff_order_message }}
                 </small>
@@ -432,15 +436,15 @@
             <strong>商品订单流转</strong>
             <span>买入记正，卖出记负；最后一行的结余就是这类商品当前差额来源。</span>
           </div>
-          <el-table
-            :data="diffFlowRows"
-            border
-            max-height="360"
-            empty-text="没有找到商品订单流转"
-          >
+          <el-table :data="diffFlowRows" border max-height="360" empty-text="没有找到商品订单流转">
             <el-table-column prop="step_no" label="步骤" width="70" />
             <el-table-column prop="pay_time" label="时间" width="165" />
-            <el-table-column prop="goods_title" label="商品" min-width="150" show-overflow-tooltip />
+            <el-table-column
+              prop="goods_title"
+              label="商品"
+              min-width="150"
+              show-overflow-tooltip
+            />
             <el-table-column label="动作" width="80">
               <template #default="{ row }">
                 <el-tag :type="flowSideTag(row.side)">{{ row.side_title }}</el-tag>
@@ -453,7 +457,12 @@
                 </el-button>
               </template>
             </el-table-column>
-            <el-table-column prop="flow_direction_title" label="流向" min-width="190" show-overflow-tooltip />
+            <el-table-column
+              prop="flow_direction_title"
+              label="流向"
+              min-width="190"
+              show-overflow-tooltip
+            />
             <el-table-column label="数量变化" width="105">
               <template #default="{ row }">
                 <span :class="Number(row.quantity_delta || 0) >= 0 ? 'amount-buy' : 'amount-sell'">
@@ -471,11 +480,14 @@
             <el-table-column prop="balance_title" label="流转后结余" min-width="160" />
             <el-table-column label="支付状态" width="110">
               <template #default="{ row }">
-                <el-tag :type="payStatusTag(row.pay_status)">{{ row.pay_status_title || '--' }}</el-tag>
+                <el-tag :type="payStatusTag(row.pay_status)">{{
+                  row.pay_status_title || '--'
+                }}</el-tag>
               </template>
             </el-table-column>
-            <el-table-column label="操作" width="110" fixed="right">
+            <el-table-column label="操作" width="180" fixed="right">
               <template #default="{ row }">
+                <el-button link type="primary" @click="openDiffTimeline(row)">流转证据</el-button>
                 <el-button link type="primary" @click="goToOrder(row)">核对订单</el-button>
               </template>
             </el-table-column>
@@ -500,7 +512,12 @@
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="goods_title" label="商品" min-width="140" show-overflow-tooltip />
+            <el-table-column
+              prop="goods_title"
+              label="商品"
+              min-width="140"
+              show-overflow-tooltip
+            />
             <el-table-column label="买入订单" width="170">
               <template #default="{ row }">
                 <el-button
@@ -532,7 +549,12 @@
               </template>
             </el-table-column>
             <el-table-column prop="sell_time" label="卖出时间" width="165" />
-            <el-table-column prop="sell_buyer_title" label="卖给谁" min-width="150" show-overflow-tooltip />
+            <el-table-column
+              prop="sell_buyer_title"
+              label="卖给谁"
+              min-width="150"
+              show-overflow-tooltip
+            />
             <el-table-column label="配对件数" width="95">
               <template #default="{ row }">{{ row.matched_quantity || 0 }}</template>
             </el-table-column>
@@ -576,7 +598,12 @@
                 </el-button>
               </template>
             </el-table-column>
-            <el-table-column prop="goods_title" label="商品" min-width="160" show-overflow-tooltip />
+            <el-table-column
+              prop="goods_title"
+              label="商品"
+              min-width="160"
+              show-overflow-tooltip
+            />
             <el-table-column prop="buyer_merchant_title" label="买方" min-width="130" />
             <el-table-column label="数量" width="80">
               <template #default="{ row }">{{ row.quantity || 0 }}</template>
@@ -586,13 +613,21 @@
             </el-table-column>
             <el-table-column label="支付状态" width="110">
               <template #default="{ row }">
-                <el-tag :type="payStatusTag(row.pay_status)">{{ row.pay_status_title || '--' }}</el-tag>
+                <el-tag :type="payStatusTag(row.pay_status)">{{
+                  row.pay_status_title || '--'
+                }}</el-tag>
               </template>
             </el-table-column>
             <el-table-column prop="order_status_title" label="订单状态" width="100" />
-            <el-table-column prop="diagnosis_message" label="系统判断" min-width="230" show-overflow-tooltip />
-            <el-table-column label="操作" width="110" fixed="right">
+            <el-table-column
+              prop="diagnosis_message"
+              label="系统判断"
+              min-width="230"
+              show-overflow-tooltip
+            />
+            <el-table-column label="操作" width="180" fixed="right">
               <template #default="{ row }">
+                <el-button link type="primary" @click="openDiffTimeline(row)">流转证据</el-button>
                 <el-button link type="primary" @click="goToOrder(row)">核对订单</el-button>
               </template>
             </el-table-column>
@@ -603,11 +638,7 @@
             <strong>{{ diffOrdersTitle }}</strong>
             <span>{{ diffOrdersHint }}</span>
           </div>
-          <el-table
-            :data="diffDisplayOrders"
-            border
-            empty-text="没有找到未配平订单"
-          >
+          <el-table :data="diffDisplayOrders" border empty-text="没有找到未配平订单">
             <el-table-column prop="pay_time" label="支付时间" width="165" />
             <el-table-column
               v-if="diffDialog.match_type === 'balance'"
@@ -638,11 +669,7 @@
             >
               <template #default="{ row }">{{ row.quantity || 0 }}</template>
             </el-table-column>
-            <el-table-column
-              v-if="diffDialog.match_type === 'near'"
-              label="距差额"
-              width="110"
-            >
+            <el-table-column v-if="diffDialog.match_type === 'near'" label="距差额" width="110">
               <template #default="{ row }">¥{{ money(row.diff_to_target) }}</template>
             </el-table-column>
             <el-table-column prop="buyer_merchant_title" label="买方商家" min-width="140" />
@@ -666,15 +693,18 @@
                     {{ row.diagnosis_title }}
                   </el-tag>
                   <span>{{ row.diagnosis_message || '暂无诊断，按订单金额匹配结果核对。' }}</span>
-                  <small v-if="diagnosisStockText(row)" class="cell-note">{{ diagnosisStockText(row) }}</small>
+                  <small v-if="diagnosisStockText(row)" class="cell-note">{{
+                    diagnosisStockText(row)
+                  }}</small>
                   <small v-if="row.suspected_sell_order_nos" class="cell-note">
                     疑似卖出订单：{{ row.suspected_sell_order_nos }}
                   </small>
                 </div>
               </template>
             </el-table-column>
-            <el-table-column label="操作" width="110" fixed="right">
+            <el-table-column label="操作" width="180" fixed="right">
               <template #default="{ row }">
+                <el-button link type="primary" @click="openDiffTimeline(row)">流转证据</el-button>
                 <el-button link type="primary" @click="goToOrder(row)">核对订单</el-button>
               </template>
             </el-table-column>
@@ -686,6 +716,7 @@
         <el-button type="primary" @click="applyDiffToLedger">在明细流水中查看</el-button>
       </template>
     </el-dialog>
+    <OrderTimelineDrawer ref="diffTimelineRef" />
 
     <section ref="detailPanelRef" class="panel">
       <div class="panel__heading">
@@ -892,6 +923,7 @@
 <script setup>
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import OrderTimelineDrawer from '@/views/order/components/OrderTimelineDrawer.vue'
 import {
   downloadLedger,
   filters,
@@ -910,6 +942,7 @@ const rows = ref([])
 const detailPanelRef = ref(null)
 const ledgerPanelRef = ref(null)
 const activeCompareDrill = ref(null)
+const diffTimelineRef = ref(null)
 const diffDialog = reactive({
   visible: false,
   loading: false,
@@ -922,6 +955,7 @@ const diffDialog = reactive({
   goods_gaps: [],
   goods_gap_match_type: 'none',
   goods_gap_message: '',
+  evidence_summary: { order_count: 0, event_count: 0, legacy_log_count: 0 },
   row: null
 })
 
@@ -1108,15 +1142,15 @@ function diffOrderButtonText(row) {
 }
 
 function diffDiagnosisTitles(row) {
-  const titles = (row.diff_orders || [])
-    .map((order) => order.diagnosis_title)
-    .filter(Boolean)
+  const titles = (row.diff_orders || []).map((order) => order.diagnosis_title).filter(Boolean)
   return [...new Set(titles)].slice(0, 3)
 }
 
 function diagnosisStockText(row) {
   if (row.current_goods_count === undefined || row.current_goods_count === null) return ''
-  return `商品表：${row.current_goods_count || 0} 个，库存 ${row.current_stock || 0}，已售 ${row.current_sales_sum || 0}`
+  return `商品表：${row.current_goods_count || 0} 个，库存 ${row.current_stock || 0}，已售 ${
+    row.current_sales_sum || 0
+  }`
 }
 
 function diagnosisTagType(type) {
@@ -1258,6 +1292,7 @@ async function openDiffOrders(row) {
   diffDialog.goods_gaps = []
   diffDialog.goods_gap_match_type = 'none'
   diffDialog.goods_gap_message = ''
+  diffDialog.evidence_summary = { order_count: 0, event_count: 0, legacy_log_count: 0 }
 
   try {
     const res = await tradeDiffOrders({
@@ -1275,8 +1310,23 @@ async function openDiffOrders(row) {
     diffDialog.goods_gaps = data.goods_gaps || []
     diffDialog.goods_gap_match_type = data.goods_gap_match_type || 'none'
     diffDialog.goods_gap_message = data.goods_gap_message || ''
+    diffDialog.evidence_summary = data.evidence_summary || {
+      order_count: 0,
+      event_count: 0,
+      legacy_log_count: 0
+    }
   } finally {
     diffDialog.loading = false
+  }
+}
+
+function openDiffTimeline(row) {
+  if (row.timeline) {
+    diffTimelineRef.value?.openPayload(row.timeline)
+    return
+  }
+  if (row.member_order_id) {
+    diffTimelineRef.value?.open(row.member_order_id)
   }
 }
 

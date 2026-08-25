@@ -190,13 +190,23 @@ class Merchant extends BaseController
      */
     public function auth()
     {
+        UnifiedPermissionContextService::assertAllowed(
+            UnifiedPermissionContextService::forPlatformUser(intval(user_id(true))),
+            'platform.merchant.review'
+        );
         $param = $this->params([
             'ids/a' => [],
             'auth_state/d' => 0,
             'auth_msg/s' => '',
+            'reason/s' => '',
         ]);
         validate(MerchantValidate::class)->scene('auth')->check($param);
-        $data = MerchantService::auth($param['ids'], $param);
+        $data = MerchantService::auth($param['ids'], $param, BusinessOperationContextFactory::fromRequest(
+            'admin-next',
+            'platform_admin',
+            intval(user_id(true)),
+            strval($param['reason'] ?: $param['auth_msg'])
+        ));
         return success($data);
     }
 

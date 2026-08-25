@@ -80,10 +80,16 @@ class MobileAdmin extends BaseController
             'ids/a' => [],
             'auth_state/d' => 0,
             'auth_msg/s' => '',
+            'reason/s' => '',
         ]);
         validate(MerchantValidate::class)->scene('auth')->check($param);
 
-        return success(MerchantService::auth($param['ids'], $param));
+        return success(MerchantService::auth($param['ids'], $param, BusinessOperationContextFactory::fromRequest(
+            'uniapp-weixin',
+            'member',
+            intval(member_id(true)),
+            strval($param['reason'] ?: $param['auth_msg'])
+        )));
     }
 
     public function orderParams()

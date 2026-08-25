@@ -169,6 +169,9 @@ class Order extends BaseController
     {
         $param = $this->params(['ids/a' => [], 'pick_up_code/s' => '']);
         validate(MemberOrderValidate::class)->scene('takeDelivery')->check($param);
+        $param['_operation_context'] = \app\common\domain\operation\BusinessOperationContextFactory::fromRequest(
+            'admin-next', 'platform_admin', intval(operate_user_id()), '订单核销'
+        );
         $data = MemberOrderService::takeDelivery($param['ids'], $param);
         return success($data);
     }
@@ -209,6 +212,9 @@ class Order extends BaseController
             'pay_auth_msg/s' =>0,
         ]);
         validate(MemberOrderValidate::class)->scene('orderPayAuth')->check($param);
+        $param['_operation_context'] = \app\common\domain\operation\BusinessOperationContextFactory::fromRequest(
+            'admin-next', 'platform_admin', intval(operate_user_id()), strval($param['pay_auth_msg'] ?? '')
+        );
         $data = MemberOrderService::orderPayAuth($param['ids'], $param);
         return success($data);
     }

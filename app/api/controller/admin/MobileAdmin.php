@@ -150,6 +150,10 @@ class MobileAdmin extends BaseController
         ]);
         validate(MemberOrderValidate::class)->scene('orderPayAuth')->check($param);
 
+        $param['_operation_context'] = \app\common\domain\operation\BusinessOperationContextFactory::fromRequest(
+            'uniapp-weixin', 'member', intval(member_id(true)), strval($param['pay_auth_msg'] ?? '')
+        );
+
         return success(MemberOrderService::orderPayAuth($param['ids'], $param));
     }
 
@@ -190,6 +194,9 @@ class MobileAdmin extends BaseController
 
         MemberOrderService::takeDelivery([$order['id']], [
             'pick_up_code' => $pickUpCode,
+            '_operation_context' => \app\common\domain\operation\BusinessOperationContextFactory::fromRequest(
+                'uniapp-weixin', 'member', intval(member_id(true)), '订单核销'
+            ),
         ]);
 
         return success([

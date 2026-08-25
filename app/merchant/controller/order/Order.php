@@ -147,6 +147,9 @@ class Order extends BaseController
             'pay_auth_msg/s' =>0,
         ]);
         validate(MemberOrderValidate::class)->scene('orderPayAuth')->check($param);
+        $param['_operation_context'] = \app\common\domain\operation\BusinessOperationContextFactory::fromRequest(
+            'merchant-web', 'merchant_user', intval(operate_user_id()), strval($param['pay_auth_msg'] ?? '')
+        );
         $data = MemberOrderService::orderPayAuth($param['ids'], $param);
         return success($data);
     }

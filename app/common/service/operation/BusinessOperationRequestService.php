@@ -68,7 +68,7 @@ class BusinessOperationRequestService
         }
         BusinessOperationRequestModel::where('id', $id)->update([
             'status' => $status,
-            'result_json' => $result === null ? null : json_encode($result, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+            'result_json' => $result === null ? null : json_encode($result, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRESERVE_ZERO_FRACTION),
             'error_message' => $errorMessage,
             'update_time' => date('Y-m-d H:i:s'),
         ]);

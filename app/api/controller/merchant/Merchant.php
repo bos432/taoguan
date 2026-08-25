@@ -147,6 +147,9 @@ class Merchant extends BaseController
             'merchant_id' => $merchant['id']
         ]);
         validate(MemberOrderValidate::class)->scene('orderPayAuth')->check($param);
+        $param['_operation_context'] = \app\common\domain\operation\BusinessOperationContextFactory::fromRequest(
+            'uniapp-weixin', 'member', intval(member_id(true)), strval($param['pay_auth_msg'] ?? '')
+        );
         $data = MemberOrderService::orderPayAuth($param['ids'], $param);
         return success($data);
     }

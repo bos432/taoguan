@@ -407,3 +407,12 @@
 - 运行或测试结果：`php tests/refactor/order-event-infrastructure.php` 通过 25 项断言；订单转换 13 项、核心状态 34 项、权限 19 项、SQL 快照 6 项回归断言全部通过；新增 PHP 文件语法检查通过。
 - 遗留问题：迁移尚未在隔离测试库执行；幂等和事件服务尚未接入现有业务写入口，因此当前线上行为不变。业务接入前必须先部署迁移，不允许通过捕获“表不存在”静默跳过事件。
 - 下一阶段应继续处理的事项：在隔离测试库执行迁移并验证索引；改造凭证支付审核和自提核销，要求状态变化、账单/库存和事件在同一事务内提交，并为旧接口生成兼容请求上下文。
+
+## 2026-08-25 渐进式重构阶段二：凭证审核与核销可信化
+
+- 阶段名称：渐进式重构阶段二：凭证审核与核销可信化
+- 本阶段完成内容：启动独立 MySQL 8.4 容器并导入 2026-06-19 快照，订单和采购流水数量与黄金基准一致；真实执行事件/幂等迁移并验证所有索引。凭证支付通过、凭证驳回和自提核销已接入服务端操作上下文、状态策略、幂等请求和订单事件，原有订单、账单、采购流水、商品转移、库存出库和日志仍与事件处于同一事务。平台后台、商家后台、移动商家和移动管理入口由服务端确定操作人及来源，兼容旧客户端在缺少请求编号时生成唯一兼容编号。
+- 修改/新增的主要文件：`app/common/domain/operation/BusinessOperationContextFactory.php`、`app/common/service/member/MemberOrderService.php`、`app/common/service/operation/BusinessOperationRequestService.php`、`app/admin/controller/order/Order.php`、`app/merchant/controller/order/Order.php`、`app/api/controller/merchant/Merchant.php`、`app/api/controller/admin/MobileAdmin.php`、`app/command/RefactorBaselineAudit.php`、`tests/refactor/order-event-database-integration.php`、`tests/refactor/voucher-review-database-integration.php`、`tests/refactor/voucher-approval-database-integration.php`、`tests/refactor/order-writeoff-database-integration.php`、`DEVELOPMENT_LOG.md`
+- 运行或测试结果：9 组测试共 140 项断言通过。凭证通过测试覆盖订单、账单、采购流水、事件和重复请求；驳回测试覆盖取消状态和重复请求；核销测试覆盖订单、库存出库和重复请求。测试全部使用外层事务回滚，结束后本地库仍为订单 1732、采购流水 1477、操作请求 0、事件 0。`refactor:baseline --database` 成功读取 8 张核心表，5 项硬检查全绿。
+- 遗留问题：迁移尚未部署灰度环境；微信支付回调仍在控制器直接写订单，且共享支付单遇到已支付订单会提前返回；退款、发货、收货、评价和取消尚未接入事件/幂等。兼容客户端自动生成请求编号只能保证单次调用内部一致，新版前端必须主动发送稳定 `X-Request-Id` 才能抵御网络重试。
+- 下一阶段应继续处理的事项：将微信支付回调迁移到支付应用服务，修复共享支付单提前返回并以微信交易号作为幂等请求编号；增加回调重复与多订单集成测试，然后接入退款事件。

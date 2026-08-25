@@ -21,6 +21,10 @@ use app\common\service\file\SettingService as FileSettingService;
 use app\common\service\merchant\MerchantService;
 use app\common\service\setting\SettingDeliveryService;
 use app\common\service\system\MerchantPurchaseLimitService;
+use app\common\domain\operation\BusinessOperationContextFactory;
+use app\common\domain\order\OrderStateTransitionPolicy;
+use app\common\service\operation\BusinessOperationRequestService;
+use app\common\service\order\OrderBusinessEventService;
 use EasyWeChat\Factory;
 use think\facade\Config;
 use think\facade\Db;
@@ -1220,9 +1224,20 @@ class MemberOrderService
     {
         $model = new MemberOrderModel();
         $pk = $model->getPk();
+        $context = $param['_operation_context'] ?? BusinessOperationContextFactory::fromRequest(
+            'legacy', 'system', intval(operate_user_id()), '订单核销'
+        );
         // 启动事务
         $model::startTrans();
         try {
+            $operation = BusinessOperationRequestService::begin('order.writeoff', $context);
+            if (!empty($operation['duplicate'])) {
+                if (intval($operation['status'] ?? 0) === 1) {
+                    $model::commit();
+                    return json_decode(strval($operation['result_json'] ?? 'true'), true) ?? true;
+                }
+                exception(intval($operation['status'] ?? 0) === 0 ? '该请求正在处理中，请勿重复提交' : '该请求已处理失败，请更换请求编号后重试');
+            }
             $list = $model->whereIn($pk, $ids)
                 ->with(['detaileds'])
                 ->where('is_disable',0)
@@ -1230,6 +1245,10 @@ class MemberOrderService
                 ->where('status',1)
                 ->select();
             foreach ($list as $key=>$val) {
+                $before = $val->toArray();
+                if (!OrderStateTransitionPolicy::canApply(OrderStateTransitionPolicy::PICKED_UP, $before)) {
+                    exception('订单状态已变化，请刷新后重试');
+                }
                 if($val['pick_up_code']!=$param['pick_up_code']){
                     exception('提货码错误');
                 }
@@ -1276,10 +1295,19 @@ class MemberOrderService
                     'role_type'=>1
                 ]);
                 $val->save();
+                $after = array_merge($before, OrderStateTransitionPolicy::after(OrderStateTransitionPolicy::PICKED_UP), [
+                    'delivery_time' => strval($val->delivery_time),
+                ]);
+                OrderBusinessEventService::record(OrderStateTransitionPolicy::PICKED_UP, $before, $after, $context, [
+                    'operation_request_id' => $operation['id'],
+                    'amount' => floatval($val['pay_price'] ?? $val['total_price'] ?? 0),
+                    'quantity' => intval($val['total_num'] ?? 0),
+                ]);
             }
+            BusinessOperationRequestService::complete(intval($operation['id']), true);
             // 提交事务
             $model::commit();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $errmsg = $e->getMessage();
             // 回滚事务
             $model::rollback();
@@ -1817,10 +1845,36 @@ class MemberOrderService
      */
     public static function orderPayAuth($ids,$param = [])
     {
+        if (!in_array(intval($param['pay_status'] ?? -1), [0, 1], true)) {
+            exception('支付审核状态无效');
+        }
         $model = new MemberOrderModel();
+        $eventType = intval($param['pay_status'] ?? 0) === 1
+            ? OrderStateTransitionPolicy::VOUCHER_APPROVED
+            : OrderStateTransitionPolicy::VOUCHER_REJECTED;
+        $operationType = intval($param['pay_status'] ?? 0) === 1
+            ? 'payment.voucher_approve'
+            : 'payment.voucher_reject';
+        $context = $param['_operation_context'] ?? BusinessOperationContextFactory::fromRequest(
+            'legacy',
+            'system',
+            intval(operate_user_id()),
+            strval($param['pay_auth_msg'] ?? '')
+        );
+        $resultParam = $param;
+        unset($resultParam['_operation_context']);
         // 启动事务
         $model::startTrans();
         try {
+            $operation = BusinessOperationRequestService::begin($operationType, $context);
+            if (!empty($operation['duplicate'])) {
+                if (intval($operation['status'] ?? 0) === 1) {
+                    $model::commit();
+                    $result = json_decode(strval($operation['result_json'] ?? ''), true);
+                    return is_array($result) ? $result : $resultParam;
+                }
+                exception(intval($operation['status'] ?? 0) === 0 ? '该请求正在处理中，请勿重复提交' : '该请求已处理失败，请更换请求编号后重试');
+            }
             $orderList = $model->whereIn('id',$ids)
                 ->where('is_disable',0)
                 ->where('is_delete',0)
@@ -1834,6 +1888,12 @@ class MemberOrderService
                 exception("未查询到符合条件的订单");
             }
             foreach ($orderList as $key=>$val) {
+                $before = $val->toArray();
+                if (!OrderStateTransitionPolicy::canApply($eventType, $before)) {
+                    exception('订单状态已变化，请刷新后重试');
+                }
+                $eventAfter = $before;
+                $eventAmount = 0;
                 switch ($param['pay_status']) {
                     case 1://支付成功
                         //商品转移操作
@@ -1891,6 +1951,11 @@ class MemberOrderService
                             'pay_price'=>$orderPayPrice,
                             'status'=>MemberOrderModel::getStatus('success',1), // 核销后变为完成
                         ]);
+                        $eventAfter = array_merge($before, OrderStateTransitionPolicy::after($eventType), [
+                            'pay_time' => $payTime,
+                            'pay_price' => $orderPayPrice,
+                        ]);
+                        $eventAmount = $orderPayPrice;
                         //支付账单
                         $bill_data = array(
                             'member_id'=>$val['member_id'],
@@ -1917,6 +1982,7 @@ class MemberOrderService
                             'pay_status'=>2, // 支付状态：2、拒绝
                             'status'=>MemberOrderModel::getStatus('cancel'), // 订单状态：7、取消
                         ]);
+                        $eventAfter = array_merge($before, OrderStateTransitionPolicy::after($eventType));
                         //订单日志
                         $log = MemberOrderLogService::add([
                             'title'=>'凭证支付订单驳回：'.$param['pay_auth_msg'],
@@ -1926,10 +1992,16 @@ class MemberOrderService
                         ]);
                         break;
                 }
+                OrderBusinessEventService::record($eventType, $before, $eventAfter, $context, [
+                    'operation_request_id' => $operation['id'],
+                    'amount' => $eventAmount,
+                    'quantity' => intval($val['total_num'] ?? 0),
+                ]);
             }
+             BusinessOperationRequestService::complete(intval($operation['id']), $resultParam);
              // 提交事务
              $model::commit();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $errmsg = $e->getMessage();
             // 回滚事务
             $model::rollback();
@@ -1937,6 +2009,6 @@ class MemberOrderService
         if (isset($errmsg)) {
             exception($errmsg);
         }
-        return $param;
+        return $resultParam;
     }
 }

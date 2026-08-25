@@ -560,3 +560,12 @@
 - 运行或测试结果：迁移已在本地隔离库执行；超管授权数据库集成测试通过 8 项断言，覆盖状态变更、授权前后审计、原因记录、重复请求回放、日志唯一性和事务回滚。完整 `tests/refactor` 27 个脚本共 384 项断言通过；`refactor:baseline --database` 5 项检查通过、0 失败；测试结束后订单 1732、明细 1733、采购流水 1477，操作请求、订单事件、网关尝试和商家授权日志均为 0。目标 PHP 语法和 `git diff --check` 通过。
 - 遗留问题：灰度及正式环境部署代码前必须先执行新增迁移；管理员页面尚未强制填写授权/取消原因，也尚未提供授权历史查询。会员绑定和商家审核仍使用现有服务入口，尚未拆成独立命令；重新审核不得修改超管状态的约束需在审核命令阶段固化测试。
 - 下一阶段应继续处理的事项：重新读取计划和日志后，拆分商家会员绑定命令；绑定和解绑必须独立于普通资料编辑，校验会员与商家冲突，支持幂等请求并写可追溯审计，保持现有接口兼容。
+
+## 2026-08-25 渐进式重构阶段三：商家会员绑定命令与审计
+
+- 阶段名称：渐进式重构阶段三：商家会员绑定命令与审计
+- 本阶段完成内容：新增管理员 `memberBind` 独立命令接口，普通商家资料编辑继续不接收 `member_id`；绑定服务锁定商家和目标会员，拒绝不存在会员及已绑定其他未删除商家的会员，支持绑定、换绑和以 `member_id=0` 解绑。换绑或解绑会同步取消原超管标记，避免新会员意外继承高风险权限，并分别记录会员绑定变化和必要的超管取消日志；商家更新、审计日志和幂等请求在同一事务提交，重复请求回放原结果。统一权限新增 `platform.merchant.bind` 和 `platform.merchant.super_authorize`，两个高风险控制器动作均在参数处理前执行后端权限断言。
+- 修改/新增的主要文件：`app/common/service/merchant/MerchantMemberBindingService.php`、`app/admin/controller/merchant/Merchant.php`、`app/common/validate/merchant/MerchantValidate.php`、`app/common/service/permission/UnifiedPermissionContextService.php`、`private/migrations/20260825_expand_merchant_authorization_values.sql`、`tests/refactor/merchant-member-binding-database-integration.php`、`tests/refactor/unified-permission-context-database-integration.php`、`REFACTOR_PERMISSION_MATRIX.md`、`DEVELOPMENT_LOG.md`
+- 运行或测试结果：授权审计前后值字段扩展迁移已在本地隔离库执行并确认均为 `int unsigned`；会员绑定数据库集成测试通过 11 项断言，覆盖换绑、超管取消、双日志、原因、重复请求、冲突拦截、失败请求回滚和测试数据回滚；统一权限测试通过 22 项断言。完整 `tests/refactor` 28 个脚本共 397 项断言通过；测试结束后订单 1732、明细 1733、采购流水 1477，操作请求、订单事件、网关尝试和商家授权日志均为 0；目标语法和 `git diff --check` 通过。
+- 遗留问题：灰度及正式环境必须依次执行授权日志建表迁移和本阶段字段扩展迁移；后台页面尚未提供绑定会员选择、解绑确认和原因输入，普通角色还需在菜单权限数据中分配新增接口 URL。商家审核仍使用 `MerchantService::auth()`，重新审核不改变绑定和超管状态尚未由独立审核命令测试固化。
+- 下一阶段应继续处理的事项：重新读取计划和日志后，拆分商家审核命令；保留旧 URL 和返回结构，增加幂等、审核人/来源/原因审计，并用数据库测试证明重复审核以及重新审核均不会新增、取消或转移会员绑定和超管权限。

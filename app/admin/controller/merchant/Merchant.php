@@ -3,9 +3,11 @@
 namespace app\admin\controller\merchant;
 
 use app\common\controller\BaseController;
+use app\common\domain\operation\BusinessOperationContextFactory;
+use app\common\service\merchant\MerchantMemberBindingService;
 use app\common\service\merchant\MerchantService;
 use app\common\service\merchant\MerchantSuperAuthorizationService;
-use app\common\domain\operation\BusinessOperationContextFactory;
+use app\common\service\permission\UnifiedPermissionContextService;
 use app\common\service\system\MobileAuditGrantService;
 use app\common\validate\merchant\MerchantValidate;
 use hg\apidoc\annotation as Apidoc;
@@ -144,11 +146,37 @@ class Merchant extends BaseController
      */
     public function memberSuper()
     {
+        UnifiedPermissionContextService::assertAllowed(
+            UnifiedPermissionContextService::forPlatformUser(intval(user_id(true))),
+            'platform.merchant.super_authorize'
+        );
         $param = $this->params(['ids/a' => [], 'member_is_super/d' => 0, 'reason/s' => '']);
         validate(MerchantValidate::class)->scene('member_super')->check($param);
         $data = MerchantSuperAuthorizationService::execute(
             $param['ids'],
             intval($param['member_is_super']),
+            BusinessOperationContextFactory::fromRequest(
+                'admin-next', 'platform_admin', intval(user_id(true)), strval($param['reason'] ?? '')
+            )
+        );
+        return success($data);
+    }
+
+    /**
+     * @Apidoc\Title("绑定商家会员")
+     * @Apidoc\Method("POST")
+     */
+    public function memberBind()
+    {
+        UnifiedPermissionContextService::assertAllowed(
+            UnifiedPermissionContextService::forPlatformUser(intval(user_id(true))),
+            'platform.merchant.bind'
+        );
+        $param = $this->params(['id/d' => 0, 'member_id/d' => 0, 'reason/s' => '']);
+        validate(MerchantValidate::class)->scene('member_bind')->check($param);
+        $data = MerchantMemberBindingService::execute(
+            intval($param['id']),
+            intval($param['member_id']),
             BusinessOperationContextFactory::fromRequest(
                 'admin-next', 'platform_admin', intval(user_id(true)), strval($param['reason'] ?? '')
             )

@@ -20,6 +20,8 @@ $platform = UnifiedPermissionContextService::forPlatformUser(1);
 $assert($platform['identity']['type'] === 'platform_user', 'platform identity returned');
 $assert(in_array('platform_super', $platform['role_codes'], true), 'platform super role returned');
 $assert(in_array('platform.order.writeoff', $platform['permission_codes'], true), 'platform permission mapped');
+$assert(in_array('platform.merchant.bind', $platform['permission_codes'], true), 'merchant binding permission mapped');
+$assert(in_array('platform.merchant.super_authorize', $platform['permission_codes'], true), 'merchant super authorization permission mapped');
 $assert($platform['data_scope']['type'] === 'all', 'platform data scope returned');
 $assert(strlen($platform['permission_version']) === 20, 'platform permission version returned');
 

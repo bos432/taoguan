@@ -15,7 +15,8 @@ use app\common\service\system\UserService;
 class UnifiedPermissionContextService
 {
     public const PLATFORM_PERMISSIONS = [
-        'platform.merchant.view', 'platform.merchant.review', 'platform.order.view',
+        'platform.merchant.view', 'platform.merchant.review', 'platform.merchant.bind',
+        'platform.merchant.super_authorize', 'platform.order.view',
         'platform.order.payment_review', 'platform.order.writeoff', 'platform.order.refund',
         'platform.finance.ledger', 'platform.finance.gateway_attempt',
     ];
@@ -30,6 +31,8 @@ class UnifiedPermissionContextService
     private const PLATFORM_URL_MAP = [
         'admin/merchant.Merchant/list' => 'platform.merchant.view',
         'admin/merchant.Merchant/auth' => 'platform.merchant.review',
+        'admin/merchant.Merchant/memberBind' => 'platform.merchant.bind',
+        'admin/merchant.Merchant/memberSuper' => 'platform.merchant.super_authorize',
         'admin/order.Order/list' => 'platform.order.view',
         'admin/order.Order/orderPayAuth' => 'platform.order.payment_review',
         'admin/order.Order/takeDelivery' => 'platform.order.writeoff',

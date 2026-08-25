@@ -67,6 +67,6 @@
 
 首批稳定权限码：
 
-- 平台：`platform.merchant.view`、`platform.merchant.review`、`platform.order.view`、`platform.order.payment_review`、`platform.order.writeoff`、`platform.order.refund`、`platform.finance.ledger`、`platform.finance.gateway_attempt`。
+- 平台：`platform.merchant.view`、`platform.merchant.review`、`platform.merchant.bind`、`platform.merchant.super_authorize`、`platform.order.view`、`platform.order.payment_review`、`platform.order.writeoff`、`platform.order.refund`、`platform.finance.ledger`、`platform.finance.gateway_attempt`。
 - 商家：`merchant.profile.edit`、`merchant.order.view`、`merchant.order.verify`、`merchant.order.cross_verify`、`merchant.stats.view`、`merchant.product.publish`。
 - 会员：`member.profile.view`、`member.order.view_own`、`member.order.create`、`member.order.refund_own`。

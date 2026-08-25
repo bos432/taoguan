@@ -194,6 +194,9 @@ class Order extends BaseController
             'refund_reason/s' =>'',
         ]);
         validate(MemberOrderValidate::class)->scene('serviceOrder')->check($param);
+        $param['_operation_context'] = \app\common\domain\operation\BusinessOperationContextFactory::fromRequest(
+            'admin-next', 'platform_admin', intval(operate_user_id()), strval($param['refund_reason'] ?? '')
+        );
         $data = MemberOrderService::serviceOrder($param['id'], $param,1);
         return success($data);
     }

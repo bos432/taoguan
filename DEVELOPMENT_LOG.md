@@ -434,3 +434,12 @@
 - 运行或测试结果：`php tests/refactor/refund-request-database-integration.php` 通过 10 项断言；完整 11 组测试共 162 项断言通过。回滚后隔离库订单仍为 1732，操作请求和事件均为 0。
 - 遗留问题：管理员售后审核与退款完成仍留在旧订单 Service；拒绝售后当前保持订单状态 5 的历史语义；微信退款包含外部调用，不能只靠数据库事务实现原子性，需要记录外部调用结果并设计补偿。
 - 下一阶段应继续处理的事项：将凭证支付的售后同意、拒绝和人工退款迁入 `OrderRefundService`，接入幂等与事件并覆盖商家余额扣减、会员账单和重复请求；随后抽象微信退款网关。
+
+## 2026-08-25 渐进式重构阶段二：凭证退款可信化
+
+- 阶段名称：渐进式重构阶段二：凭证退款可信化
+- 本阶段完成内容：在 `OrderRefundService` 新增凭证支付售后审核与人工退款路径，旧 `serviceOrder` 根据订单支付方式兼容转调；支持同意退款、同意退货、拒绝售后和退货退款四种现有语义。凭证退款在单一事务内写订单退款状态、退款单号、会员退款账单、按订单明细比例扣减商家余额、传统日志、业务事件和幂等结果；管理员操作上下文由服务端生成。
+- 修改/新增的主要文件：`app/common/service/order/OrderRefundService.php`、`app/common/service/member/MemberOrderService.php`、`app/admin/controller/order/Order.php`、`tests/refactor/voucher-refund-database-integration.php`、`DEVELOPMENT_LOG.md`
+- 运行或测试结果：`php tests/refactor/voucher-refund-database-integration.php` 通过 13 项断言，覆盖退款状态、金额、退款单号、会员账单、事件、幂等重复和事务回滚；完整 12 组测试共 175 项断言通过。回滚后订单 1732、采购流水 1477、操作请求 0、事件 0。
+- 遗留问题：微信支付退款仍在旧 Service 中直接调用外部网关；数据库事务不能回滚已成功的微信退款，需要先记录外部请求状态、响应和补偿标记。售后拒绝继续保留状态 5 的历史兼容语义。
+- 下一阶段应继续处理的事项：新增退款网关调用记录表和接口，拆出微信退款服务，按“准备记录、调用网关、落库完成/待补偿”处理外部一致性；增加网关假实现测试，禁止自动测试调用真实微信退款。

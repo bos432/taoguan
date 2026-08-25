@@ -1469,6 +1469,10 @@ class MemberOrderService
      */
     public static function serviceOrder($id,$param = [],$source=1)
     {
+        $payType = intval(MemberOrderModel::where('id', $id)->value('pay_type'));
+        if ($payType === MemberOrderModel::getPayType('voucher', 1)) {
+            return OrderRefundService::reviewVoucher(intval($id), $param, intval($source));
+        }
         $model = new MemberOrderModel();
         $pk = $model->getPk();
         // 启动事务

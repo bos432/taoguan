@@ -25,6 +25,7 @@ use app\common\domain\operation\BusinessOperationContextFactory;
 use app\common\domain\order\OrderStateTransitionPolicy;
 use app\common\service\operation\BusinessOperationRequestService;
 use app\common\service\order\OrderBusinessEventService;
+use app\common\service\order\OrderRefundService;
 use EasyWeChat\Factory;
 use think\facade\Config;
 use think\facade\Db;
@@ -1454,61 +1455,7 @@ class MemberOrderService
      */
     public static function submitService($ids,$param = [])
     {
-        $model = new MemberOrderModel();
-        $pk = $model->getPk();
-        $refundType = isset($param['refund_type']) ? intval($param['refund_type']) : 2;
-        $refundPrice = isset($param['refund_price']) ? $param['refund_price'] : null;
-        $refundExplain = isset($param['refund_reason_wap_explain']) ? $param['refund_reason_wap_explain'] : null;
-        $refundImageIds = isset($param['refund_reason_wap_imgs']) ? implode(",",array_column($param['refund_reason_wap_imgs'],'file_id')) : null;
-        // 启动事务
-        $model::startTrans();
-        try {
-            $list = $model->whereIn($pk, $ids)
-                ->when((isset($param['member_id']) && $param['member_id']>0), function ($query) use ($param) {
-                    $query->where('member_id', $param['member_id']);
-                })
-                ->where('is_disable',0)
-                ->where('is_delete',0)
-                ->where('status',4)
-                ->select();
-            if ($list->isEmpty()) {
-                exception('订单不存在，或当前状态不支持申请售后');
-            }
-            $matchedIds = [];
-            foreach ($list as $key=>$val) {
-                $matchedIds[] = intval($val[$pk]);
-                //订单日志
-                $log = MemberOrderLogService::add([
-                    'title'=>'买家提交申请售后',
-                    'member_order_id'=>$val['id'],
-                    'role_type'=>3
-                ]);
-            }
-            $saveData = [
-                'refund_status' => 1,
-                'refund_type' => $refundType,
-                'refund_price' => $refundPrice,
-                'refund_reason_wap_explain' => $refundExplain,
-                'refund_reason_wap_img_ids' => $refundImageIds,
-                'status' => MemberOrderModel::getStatus('service',1),
-                'update_time' => datetime(),
-            ];
-            $model->whereIn($pk, $matchedIds)->update($saveData);
-            foreach ($matchedIds as $orderId) {
-                MemberOrderCache::del($orderId);
-            }
-            // 提交事务
-            $model::commit();
-        } catch (\Exception $e) {
-            $errmsg = $e->getMessage();
-            // 回滚事务
-            $model::rollback();
-        }
-        if (isset($errmsg)) {
-            exception($errmsg);
-        }
-        MemberOrderCache::del($ids);
-        return true;
+        return OrderRefundService::request(array_map('intval', (array) $ids), $param);
     }
     /**
      * @title:售后处理

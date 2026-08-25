@@ -425,3 +425,12 @@
 - 运行或测试结果：`php tests/refactor/wechat-payment-callback-database-integration.php` 通过 12 项断言；测试构造共享支付单第一笔已支付、第二笔待支付场景，确认结果为 processed=1/skipped=1，第二笔订单正常支付，账单和事件各新增一次；相同交易号重复回调不产生重复账单或事件；外层事务回滚后订单、操作请求和事件全部恢复。
 - 遗留问题：微信支付失败通知当前仍保持原有“不改变订单”行为且未记录失败事件；真实微信 SDK 签名回调只能在灰度配置可用后做端到端验证。退款、发货、收货、评价和取消仍待接入事件与幂等。
 - 下一阶段应继续处理的事项：拆出退款应用服务并接入申请、审核和完成事件；优先覆盖凭证人工退款以避免测试调用微信退款外部接口，再为微信退款增加外部调用结果记录和补偿策略。
+
+## 2026-08-25 渐进式重构阶段二：售后申请服务拆分
+
+- 阶段名称：渐进式重构阶段二：售后申请服务拆分
+- 本阶段完成内容：从 `MemberOrderService` 中完整拆出售后申请写逻辑到 `OrderRefundService::request`，旧接口保持原方法和返回值并转调新服务。售后申请现在锁定订单、校验完成态、使用服务端会员上下文和请求编号，并将订单状态、售后参数、传统订单日志、幂等请求和 `refund.requested` 事件在同一事务提交。
+- 修改/新增的主要文件：`app/common/service/order/OrderRefundService.php`、`app/common/service/member/MemberOrderService.php`、`app/api/controller/member/MemberOrder.php`、`tests/refactor/refund-request-database-integration.php`、`DEVELOPMENT_LOG.md`
+- 运行或测试结果：`php tests/refactor/refund-request-database-integration.php` 通过 10 项断言；完整 11 组测试共 162 项断言通过。回滚后隔离库订单仍为 1732，操作请求和事件均为 0。
+- 遗留问题：管理员售后审核与退款完成仍留在旧订单 Service；拒绝售后当前保持订单状态 5 的历史语义；微信退款包含外部调用，不能只靠数据库事务实现原子性，需要记录外部调用结果并设计补偿。
+- 下一阶段应继续处理的事项：将凭证支付的售后同意、拒绝和人工退款迁入 `OrderRefundService`，接入幂等与事件并覆盖商家余额扣减、会员账单和重复请求；随后抽象微信退款网关。

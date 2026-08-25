@@ -267,6 +267,9 @@ class MemberOrder extends BaseController
         $param = $this->params(['id/d' => 0,'refund_reason_wap_explain/s'=>'','refund_reason_wap_imgs/a'=>[],'refund_type/d'=>2,'refund_price/f'=>0]);
         $param['member_id']=member_id(true);
         validate(MemberOrderValidate::class)->scene('submitService')->check($param);
+        $param['_operation_context'] = \app\common\domain\operation\BusinessOperationContextFactory::fromRequest(
+            'uniapp-weixin', 'member', intval($param['member_id']), strval($param['refund_reason_wap_explain'] ?? '')
+        );
         $data = MemberOrderService::submitService([$param['id']],$param);
         return success($data);
     }

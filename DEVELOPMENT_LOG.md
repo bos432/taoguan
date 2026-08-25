@@ -461,3 +461,12 @@
 - 运行或测试结果：新增取消 11 项、履约 14 项、时间线 6 项数据库断言通过；完整 `tests/refactor` 17 个脚本共 232 项断言通过。相关 PHP 文件语法检查、目标前端 ESLint 和 `npm run build:admin-next-local` 通过；独立 Playwright 时间线交互用例 1/1 通过；真实管理员调用 `/admin/order.Order/timeline` 返回 200，并正确返回快照订单的 `legacy_only` 摘要和旧日志。全部数据库测试均回滚，结束后订单 1732、采购流水 1477、操作请求/事件/网关记录均为 0。本地 PHP 服务已恢复在 `http://127.0.0.1:807/`。
 - 遗留问题：发货仍保留在旧 `MemberOrderService`，尚未接入统一幂等和业务事件；退货寄回物流也尚无独立事件。当前快照没有持久化新版事件，因此真实接口只验证了历史日志分支，新旧混合分支由 Playwright 契约数据验证。
 - 下一阶段应继续处理的事项：重新读取计划和日志后，将平台/商家发货入口抽取到 `OrderFulfillmentService`，统一操作上下文、状态策略、物流字段、旧日志、幂等请求和 `order.delivered` 事件，并增加重复发货数据库集成测试。
+
+## 2026-08-25 渐进式重构阶段二：发货履约可信化
+
+- 阶段名称：渐进式重构阶段二：发货履约可信化
+- 本阶段完成内容：将平台订单发货从 `MemberOrderService` 抽取到 `OrderFulfillmentService::deliver`，旧接口保持 URL、参数和返回值不变并转调新服务。服务锁定待发货订单和商品库存记录，在同一事务内写库存出库、物流公司、运单号、发货时间、订单状态、旧订单日志、幂等结果及 `order.delivered` 业务事件；快递公司不存在或禁用时返回明确错误。平台控制器统一注入管理员身份、`admin-next` 来源和请求编号；前端发货 API 同时发送 `X-Request-Id` 与兼容参数编号。
+- 修改/新增的主要文件：`app/common/service/order/OrderFulfillmentService.php`、`app/common/service/member/MemberOrderService.php`、`app/admin/controller/order/Order.php`、`zflAdminWeb/src/api/order/list.js`、`tests/refactor/order-delivery-database-integration.php`、`DEVELOPMENT_LOG.md`
+- 运行或测试结果：发货数据库集成测试通过 14 项断言，覆盖物流字段、状态转换、库存出库、旧日志、业务事件和重复请求；完整 `tests/refactor` 18 个脚本共 246 项断言通过。相关 PHP 语法、前端 API ESLint、`npm run build:admin-next-local` 和目标差异检查通过。测试全部回滚，结束后订单 1732、采购流水 1477、操作请求/事件/网关记录均为 0。
+- 遗留问题：当前兼容语义仍允许库存不足的商品不记出库但订单继续发货，本阶段没有改变线上规则；阶段四统一库存边界时需要决定是否改为强制拦截。买家退货寄回仍在旧订单 Service，尚未接入业务事件和幂等请求。
+- 下一阶段应继续处理的事项：重新读取计划和日志后，将买家退货寄回抽入退款/履约应用服务，记录退货物流事件和幂等请求；随后进入订单创建事件及下单幂等小阶段。

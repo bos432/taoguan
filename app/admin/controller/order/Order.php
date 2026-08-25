@@ -1,6 +1,7 @@
 <?php
 namespace app\admin\controller\order;
 use app\common\controller\BaseController;
+use app\common\domain\operation\BusinessOperationContextFactory;
 use app\common\model\member\MemberOrderModel;
 use app\common\service\member\MemberBillService;
 use app\common\service\member\MemberOrderService;
@@ -151,6 +152,9 @@ class Order extends BaseController
     {
         $param = $this->params(['ids/a' => [], 'setting_delivery_id/d' => 0,'kuaidi_order_no/s'=>'']);
         validate(MemberOrderValidate::class)->scene('delivery')->check($param);
+        $param['_operation_context'] = BusinessOperationContextFactory::fromRequest(
+            'admin-next', 'platform_admin', operate_user_id(), '订单发货'
+        );
         $data = MemberOrderService::delivery($param['ids'], $param);
         return success($data);
     }

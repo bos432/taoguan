@@ -85,10 +85,16 @@ export function getParams(data) {
  * @param {array} data 请求数据
  */
 export function sendDelivery(data) {
+  const requestId =
+    data.request_id ||
+    (globalThis.crypto?.randomUUID
+      ? globalThis.crypto.randomUUID()
+      : `delivery-${Date.now()}-${Math.random().toString(16).slice(2)}`)
   return request({
     url: url + 'delivery',
     method: 'post',
-    data
+    headers: { 'X-Request-Id': requestId },
+    data: { ...data, request_id: requestId }
   })
 }
 /**

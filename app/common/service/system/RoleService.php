@@ -195,6 +195,7 @@ class RoleService
         $param['ids'] = $ids;
 
         RoleCache::del($ids);
+        self::clearUserCacheByRoles($ids);
 
         return $param;
     }
@@ -244,6 +245,7 @@ class RoleService
         $update['ids'] = $ids;
 
         RoleCache::del($ids);
+        self::clearUserCacheByRoles($ids);
 
         return $update;
     }
@@ -322,5 +324,13 @@ class RoleService
         $role_menu_ids = array_unique(array_filter($role_menu_ids));
 
         return $role_menu_ids;
+    }
+
+    private static function clearUserCacheByRoles(array $roleIds): void
+    {
+        $userIds = UserAttributesModel::whereIn('role_id', $roleIds)->column('user_id');
+        if ($userIds !== []) {
+            UserCache::del(array_values(array_unique(array_map('intval', $userIds))));
+        }
     }
 }

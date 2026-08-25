@@ -132,7 +132,7 @@ class InspectionUserService
             $InspectionMenuModel = new InspectionMenuModel();
             $MenuPk = $InspectionMenuModel->getPk();
 
-            if (user_is_super($id)) {
+            if (ins_user_is_super($id)) {
                 $menu      = $InspectionMenuModel->field($MenuPk . ',menu_url')->where([where_delete()])->select()->toArray();
                 $menu_ids  = array_column($menu, 'menu_id');
                 $menu_urls = array_filter(array_column($menu, 'menu_url'));

@@ -8,6 +8,7 @@ use app\common\validate\inspection\InspectionUserCenterValidate;
 use app\common\validate\inspection\InspectionUserLogValidate;
 use app\common\service\inspection\InspectionUserCenterService;
 use app\common\service\inspection\InspectionUserLogService;
+use app\common\service\permission\UnifiedPermissionContextService;
 use hg\apidoc\annotation as Apidoc;
 
 /**
@@ -17,6 +18,14 @@ use hg\apidoc\annotation as Apidoc;
  */
 class UserCenter extends BaseController
 {
+    /**
+     * @Apidoc\Title("统一权限上下文")
+     */
+    public function permissionContext()
+    {
+        return success(UnifiedPermissionContextService::forInspectionUser(intval(ins_user_id(true))));
+    }
+
     /**
      * @Apidoc\Title("我的信息")
      * @Apidoc\Returned(ref="app\common\model\system\UserModel", withoutField="password")

@@ -587,3 +587,12 @@
 - 运行或测试结果：授权审计查询数据库集成测试通过 6 项断言，完整 `tests/refactor` 30 个脚本共 417 项断言通过；真实本地管理员 GET `/admin/merchant.Merchant/authorizationLogs?merchant_id=4` 返回 HTTP 200。前端目标 Prettier、ESLint 和 `npm run build:admin-next-local` 通过；Playwright 绑定与审计交互 1/1 通过，覆盖影响提示、空原因不请求、绑定请求参数及请求编号、审计证据展示，写接口全部拦截未修改数据库。测试结束后核心表数量保持不变，操作请求、订单事件、网关尝试和商家授权日志均为 0；`git diff --check` 通过。
 - 遗留问题：当前绑定页面以会员 ID 精确设置，尚未提供按昵称/手机号检索的会员选择器；授权记录首版加载最近 50 条，尚未提供分页及类型筛选。普通平台角色若需要操作绑定或超管，部署时仍需在菜单权限数据中分配新增接口 URL。巡检端尚未接入统一权限上下文。
 - 下一阶段应继续处理的事项：重新读取计划和日志后，将巡检端接入统一权限上下文与 403 契约；梳理巡检员现有菜单/角色事实，保持入口独立和数据范围不变，并用授权/未授权测试验证后端是唯一授权源。
+
+## 2026-08-25 渐进式重构阶段三：巡检端统一权限上下文
+
+- 阶段名称：渐进式重构阶段三：巡检端统一权限上下文
+- 本阶段完成内容：统一权限服务新增巡检订单查看/管理、文件管理和巡检用户管理 4 个稳定权限码，复用巡检菜单 URL 和现有机构超管事实生成 `inspection_system_super`、`inspection_super`、`inspection_operator` 角色及固定机构数据范围。巡检个人中心新增登录后 `permissionContext` 入口，使用隐藏接口菜单迁移满足原中间件 URL 存在性校验，不新增可见菜单、不免登录。修复 `InspectionUserService` 错用平台 `user_is_super()` 的跨系统超管判断，改为巡检专用 `ins_user_is_super()`，防止相同数字 ID 导致权限串用。
+- 修改/新增的主要文件：`app/common/service/permission/UnifiedPermissionContextService.php`、`app/common/service/inspection/InspectionUserService.php`、`app/inspection/controller/system/UserCenter.php`、`config/inspection.php`、`private/migrations/20260825_add_inspection_permission_context_menu.sql`、`tests/refactor/inspection-unified-permission-context-database-integration.php`、`REFACTOR_PERMISSION_MATRIX.md`、`DEVELOPMENT_LOG.md`
+- 运行或测试结果：巡检统一权限数据库集成测试通过 11 项断言，覆盖巡检专用超管函数、活跃机构超管全权限、机构数据隔离、普通无角色用户空权限及统一 HTTP 403 契约，临时角色/超管变更均回滚。完整 `tests/refactor` 31 个脚本共 428 项断言通过；迁移本地执行后隐藏 URL 记录唯一。真实巡检账号 `18612345678` 登录成功，GET `/inspection/system.UserCenter/permissionContext` 返回 200、角色 `inspection_super`、4 个权限码、机构范围 7。核心业务数量保持不变，操作请求、订单事件、网关尝试和商家授权日志均为 0；PHP 语法和 `git diff --check` 通过。
+- 遗留问题：灰度及正式环境需执行巡检权限 URL 迁移并清理 `inspection_menu`、`inspection_user` 缓存；巡检前端尚未消费 `permissionContext`，现阶段仍以旧菜单结果显示入口，后端统一上下文已可供迁移。平台后台新增的商家绑定、超管及授权记录 URL 尚未写入版本化菜单迁移，普通角色无法在角色菜单中显式分配。
+- 下一阶段应继续处理的事项：重新读取计划和日志后，为 admin-next 商家绑定、超管授权和授权记录新增隐藏菜单迁移，映射到现有商家管理父菜单；不自动扩权任何普通角色，通过角色菜单显式分配，并验证未分配角色 403、系统超管可用。

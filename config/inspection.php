@@ -27,6 +27,7 @@ return [
         'inspection/system.Notice/info',
         'inspection/system.Login/logout',
         'inspection/system.UserCenter/info',
+        'inspection/system.UserCenter/permissionContext',
     ],
 
     // 菜单免限url（不限速率）

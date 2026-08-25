@@ -7,8 +7,10 @@ namespace app\common\service\permission;
 use app\common\exception\PermissionDeniedException;
 use app\common\model\member\MemberModel;
 use app\common\model\merchant\MerchantModel;
+use app\common\model\inspection\InspectionModel;
 use app\common\service\merchant\MerchantIdentityService;
 use app\common\service\merchant\MerchantUserService;
+use app\common\service\inspection\InspectionUserService;
 use app\common\service\system\MobileAdminAccessService;
 use app\common\service\system\UserService;
 
@@ -26,6 +28,10 @@ class UnifiedPermissionContextService
     ];
     public const MEMBER_PERMISSIONS = [
         'member.profile.view', 'member.order.view_own', 'member.order.create', 'member.order.refund_own',
+    ];
+    public const INSPECTION_PERMISSIONS = [
+        'inspection.order.view', 'inspection.order.manage',
+        'inspection.file.manage', 'inspection.user.manage',
     ];
 
     private const PLATFORM_URL_MAP = [
@@ -61,6 +67,19 @@ class UnifiedPermissionContextService
         'order_view' => 'platform.order.view',
         'order_pay_auth' => 'platform.order.payment_review',
         'order_writeoff' => 'platform.order.writeoff',
+    ];
+    private const INSPECTION_URL_MAP = [
+        'inspection/order.InspectionOrder/list' => 'inspection.order.view',
+        'inspection/order.InspectionOrder/info' => 'inspection.order.view',
+        'inspection/order.InspectionOrder/getParams' => 'inspection.order.view',
+        'inspection/order.InspectionOrder/add' => 'inspection.order.manage',
+        'inspection/order.InspectionOrder/edit' => 'inspection.order.manage',
+        'inspection/order.InspectionOrder/dele' => 'inspection.order.manage',
+        'inspection/order.InspectionOrder/disable' => 'inspection.order.manage',
+        'inspection/file.File/list' => 'inspection.file.manage',
+        'inspection/file.File/add' => 'inspection.file.manage',
+        'inspection/system.User/list' => 'inspection.user.manage',
+        'inspection/system.Role/list' => 'inspection.user.manage',
     ];
 
     public static function forPlatformUser(int $userId): array
@@ -150,6 +169,43 @@ class UnifiedPermissionContextService
                 'type' => $merchantId > 0 ? 'member_and_merchant' : 'member',
                 'merchant_ids' => $merchantId > 0 ? [$merchantId] : [],
                 'member_id' => $memberId,
+            ]
+        );
+    }
+
+    public static function forInspectionUser(int $inspectionUserId): array
+    {
+        $user = InspectionUserService::info($inspectionUserId, true, false);
+        $inspectionId = intval($user['ins_id'] ?? 0);
+        $inspection = InspectionModel::where('id', $inspectionId)
+            ->field('id,title,is_disable,is_delete')->find();
+        $inspection = $inspection ? $inspection->toArray() : [];
+        $enabled = intval($user['is_disable'] ?? 0) === 0
+            && intval($user['is_delete'] ?? 0) === 0
+            && intval($inspection['is_disable'] ?? 0) === 0
+            && intval($inspection['is_delete'] ?? 0) === 0;
+        $isSystemSuper = ins_user_is_super($inspectionUserId);
+        $isInspectionSuper = intval($user['is_super'] ?? 0) === 1;
+        $permissions = [];
+        if ($enabled) {
+            $permissions = ($isSystemSuper || $isInspectionSuper)
+                ? self::INSPECTION_PERMISSIONS
+                : self::permissionsFromUrls($user['roles'] ?? [], self::INSPECTION_URL_MAP);
+        }
+        $role = $isSystemSuper
+            ? 'inspection_system_super'
+            : ($isInspectionSuper ? 'inspection_super' : 'inspection_operator');
+
+        return self::context(
+            ['type' => 'inspection_user', 'id' => $inspectionUserId, 'label' => strval($user['nickname'] ?? $user['username'] ?? '')],
+            [],
+            [$role],
+            $permissions,
+            [
+                'type' => 'inspection',
+                'merchant_ids' => [],
+                'member_id' => 0,
+                'inspection_ids' => $inspectionId > 0 ? [$inspectionId] : [],
             ]
         );
     }

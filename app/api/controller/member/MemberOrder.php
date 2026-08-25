@@ -1,11 +1,9 @@
 <?php
 namespace app\api\controller\member;
 use app\common\controller\BaseController;
-use app\common\model\member\MemberOrderModel;
-use app\common\service\member\MemberBillService;
-use app\common\service\member\MemberOrderLogService;
 use app\common\service\member\MemberOrderService;
 use app\common\service\member\SettingService as MemberSettingService;
+use app\common\service\order\WechatPaymentCallbackService;
 use app\common\validate\member\MemberOrderValidate;
 use EasyWeChat\Factory;
 use hg\apidoc\annotation as Apidoc;
@@ -183,50 +181,14 @@ class MemberOrder extends BaseController
         $app = Factory::payment($config);
         $response = $app->handlePaidNotify(function($message, $fail){
             Log::record($message);
-            // 使用通知里的 "微信支付订单号" 或者 "商户订单号" 去自己的数据库找到订单
-            $out_trade_no = $message['out_trade_no'];
-
-            $list = MemberOrderModel::where('pay_common_on',$out_trade_no)->select();
-            foreach ($list as $k=>$order){
-                if (!$order || $order->pay_status==1) { // 如果订单不存在 或者 订单已经支付过了
-                    return true; // 告诉微信，我已经处理完了，订单没找到，别再通知我了
-                }
-                if ($message['return_code'] === 'SUCCESS') { // return_code 表示通信状态，不代表支付状态
-                    // 用户是否支付成功
-                    if (array_get($message, 'result_code') === 'SUCCESS') {
-                        $order->pay_time = date('Y-m-d H:i:s'); // 更新支付时间为当前时间
-                        $order->pay_price = $order->total_price;
-                        $order->pay_status = 1;
-                        $order->status = 1;
-                        //支付账单
-                        $bill_data = array(
-                            'member_id'=>$order->member_id,
-                            'title'=>'购买商品',
-                            'in_out'=>2,
-                            'money'=>$order->total_price,
-                            'bill_type_id'=>1,
-                            'order_id'=>$order->id,
-                            'trans_id'=>$message['transaction_id']
-                        );
-                        MemberBillService::add($bill_data);
-                        //订单日志
-                        $log = MemberOrderLogService::add([
-                            'title'=>'订单支付成功',
-                            'member_order_id'=>$order['id'],
-                            'role_type'=>3,
-                            'create_uid'=>$order->member_id
-                        ]);
-                        // 用户支付失败
-                    } elseif (array_get($message, 'result_code') === 'FAIL') {
-                        $order->pay_status = 0;
-                        $order->status = 0;
-                    }
-                } else {
-                    return $fail('通信失败，请稍后再通知我');
-                }
-                $order->save(); // 保存订单
+            if (($message['return_code'] ?? '') !== 'SUCCESS') {
+                return $fail('通信失败，请稍后再通知我');
             }
-            return true; // 返回处理完成
+            if (($message['result_code'] ?? '') !== 'SUCCESS') {
+                return true;
+            }
+            WechatPaymentCallbackService::handleSuccess($message);
+            return true;
         });
 
         $response->send(); // return $response;

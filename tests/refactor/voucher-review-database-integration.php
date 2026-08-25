@@ -9,6 +9,7 @@ use app\common\model\member\MemberOrderModel;
 use app\common\model\order\BusinessOperationRequestModel;
 use app\common\model\order\OrderBusinessEventModel;
 use app\common\service\member\MemberOrderService;
+use app\common\service\order\VoucherPaymentReviewService;
 use think\facade\Db;
 
 $app = new think\App();
@@ -49,7 +50,7 @@ $assert = static function (bool $condition, string $message) use (&$assertions):
 
 Db::startTrans();
 try {
-    $first = MemberOrderService::orderPayAuth([(int) $before['id']], $params);
+    $first = VoucherPaymentReviewService::review([(int) $before['id']], $params);
     $after = MemberOrderModel::where('id', $before['id'])->find()->toArray();
     $assert($first === array_diff_key($params, ['_operation_context' => true]), 'compatibility return excludes internal context');
     $assert((int) $after['status'] === 7 && (int) $after['pay_status'] === 2, 'voucher rejection updates order');

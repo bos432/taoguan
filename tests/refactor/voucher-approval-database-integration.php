@@ -9,6 +9,7 @@ use app\common\model\member\MemberOrderModel;
 use app\common\model\order\BusinessOperationRequestModel;
 use app\common\model\order\OrderBusinessEventModel;
 use app\common\service\member\MemberOrderService;
+use app\common\service\order\VoucherPaymentReviewService;
 use think\facade\Db;
 
 $app = new think\App();
@@ -45,7 +46,7 @@ $initialBills = Db::name('member_bill')->where('order_id', $before['id'])->count
 $initialLedger = Db::name('merchant_purchase_ledger')->where('member_order_id', $before['id'])->count();
 Db::startTrans();
 try {
-    $first = MemberOrderService::orderPayAuth([(int) $before['id']], $params);
+    $first = VoucherPaymentReviewService::review([(int) $before['id']], $params);
     $after = MemberOrderModel::where('id', $before['id'])->find()->toArray();
     $assert((int) $after['status'] === 4 && (int) $after['pay_status'] === 1, 'approval completes voucher order');
     $assert((float) $after['pay_price'] === (float) $before['total_price'], 'approved amount persisted');

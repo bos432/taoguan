@@ -3,12 +3,9 @@ namespace app\common\service\member;
 use app\api\controller\member\MemberOrder;
 use app\common\cache\member\MemberOrderCache;
 use app\common\model\file\FileModel;
-use app\common\model\file\MerchantFileModel;
-use app\common\model\goods\GoodsImagesModel;
 use app\common\model\goods\GoodsInventoryModel;
 use app\common\model\goods\GoodsLabelModel;
 use app\common\model\goods\GoodsModel;
-use app\common\service\finance\MerchantPurchaseLedgerService;
 use app\common\service\goods\GoodsBuyLockService;
 use app\common\model\member\MemberOrderDetailedModel;
 use app\common\model\member\MemberOrderModel;
@@ -28,6 +25,7 @@ use app\common\service\order\OrderBusinessEventService;
 use app\common\service\order\OrderRefundService;
 use app\common\service\order\OrderCancellationService;
 use app\common\service\order\OrderFulfillmentService;
+use app\common\service\order\VoucherPaymentReviewService;
 use app\common\gateway\payment\PrepaymentGatewayInterface;
 use app\common\gateway\payment\WechatPrepaymentGateway;
 use app\common\service\order\WechatPrepaymentSagaService;
@@ -1568,170 +1566,6 @@ class MemberOrderService
      */
     public static function orderPayAuth($ids,$param = [])
     {
-        if (!in_array(intval($param['pay_status'] ?? -1), [0, 1], true)) {
-            exception('支付审核状态无效');
-        }
-        $model = new MemberOrderModel();
-        $eventType = intval($param['pay_status'] ?? 0) === 1
-            ? OrderStateTransitionPolicy::VOUCHER_APPROVED
-            : OrderStateTransitionPolicy::VOUCHER_REJECTED;
-        $operationType = intval($param['pay_status'] ?? 0) === 1
-            ? 'payment.voucher_approve'
-            : 'payment.voucher_reject';
-        $context = $param['_operation_context'] ?? BusinessOperationContextFactory::fromRequest(
-            'legacy',
-            'system',
-            intval(operate_user_id()),
-            strval($param['pay_auth_msg'] ?? '')
-        );
-        $resultParam = $param;
-        unset($resultParam['_operation_context']);
-        // 启动事务
-        $model::startTrans();
-        try {
-            $operation = BusinessOperationRequestService::begin($operationType, $context);
-            if (!empty($operation['duplicate'])) {
-                if (intval($operation['status'] ?? 0) === 1) {
-                    $model::commit();
-                    $result = json_decode(strval($operation['result_json'] ?? ''), true);
-                    return is_array($result) ? $result : $resultParam;
-                }
-                exception(intval($operation['status'] ?? 0) === 0 ? '该请求正在处理中，请勿重复提交' : '该请求已处理失败，请更换请求编号后重试');
-            }
-            $orderList = $model->whereIn('id',$ids)
-                ->where('is_disable',0)
-                ->where('is_delete',0)
-                ->where('pay_status',0)
-                ->where('pay_type',MemberOrderModel::getPayType('voucher',1))
-                ->when(isset($param['merchant_id']) && $param['merchant_id'],function ($query) use ($param) {
-                    $query->where('merchant_id',$param['merchant_id']);
-                })
-                ->select();
-            if(count($orderList)<=0){
-                exception("未查询到符合条件的订单");
-            }
-            foreach ($orderList as $key=>$val) {
-                $before = $val->toArray();
-                if (!OrderStateTransitionPolicy::canApply($eventType, $before)) {
-                    exception('订单状态已变化，请刷新后重试');
-                }
-                $eventAfter = $before;
-                $eventAmount = 0;
-                switch ($param['pay_status']) {
-                    case 1://支付成功
-                        //商品转移操作
-                        $payTime = datetime();
-                        $orderPayPrice = count($orderList) > 1
-                            ? floatval($val['total_price'] ?? 0)
-                            : floatval($param['pay_price'] ?? $val['total_price'] ?? 0);
-                        $merchant_id = MerchantModel::where('member_id',$val['member_id'])
-                            ->where('is_disable',0)
-                            ->where('is_delete',0)
-                            ->where('auth_state',1)
-                            ->value('id');
-                        if($merchant_id){
-                            $ledgerOrder = $val->toArray();
-                            $ledgerOrder['pay_price'] = $orderPayPrice;
-                            MerchantPurchaseLedgerService::recordOrder($ledgerOrder, intval($merchant_id), $payTime);
-                            $goods = MemberOrderDetailedModel::leftjoin('ya_goods', 'ya_goods.id=ya_member_order_detailed.goods_id')
-                                ->where('ya_member_order_detailed.member_order_id',$val['id'])
-                                ->field('ya_goods.*,ya_member_order_detailed.quantity')
-                                ->select()
-                                ->toArray();
-                            foreach ($goods as $k=>$v) {
-                                $goods[$k]['merchant_id']=$merchant_id;
-                                $goods[$k]['status']=1;
-                                $goods[$k]['sales_sum']=0;
-                                $goods[$k]['click_count']=0;
-                                $goods[$k]['stock']=$v['quantity'];
-                                unset($goods[$k]['quantity']);
-                                unset($goods[$k]['id']);
-                                $add_goods_id = GoodsModel::insertGetId($goods[$k]);
-                                //商品组图
-                                $goods_images = GoodsImagesModel::where('goods_id',$v['id'])->column('image_id');
-                                $add_goods_images = [];
-                                if(count($goods_images)>0){
-                                    $merchant_files = Db::name('merchant_file')->whereIn('file_id',$goods_images)->select()->toArray();
-                                    foreach ($merchant_files as $fk=>$fv) {
-                                        $merchant_files[$fk]['mer_id'] = $merchant_id;
-                                        unset($merchant_files[$fk]['file_id']);
-                                        $image_id = MerchantFileModel::insertGetId($merchant_files[$fk]);
-                                        array_push($add_goods_images,[
-                                            'image_id'=>$image_id,
-                                            'goods_id'=>$add_goods_id,
-                                        ]);
-                                    }
-                                }
-                                if(count($add_goods_images)){
-                                    $add_imgs_res = GoodsImagesModel::insertAll($add_goods_images);
-                                }
-                            }
-                        }
-                        //更改订单状态 - 核销后变为完成状态
-                        $edit_res = $model->where('id',$val['id'])->update([
-                            'pay_time'=>$payTime,
-                            'pay_status'=>1,
-                            'pay_price'=>$orderPayPrice,
-                            'status'=>MemberOrderModel::getStatus('success',1), // 核销后变为完成
-                        ]);
-                        $eventAfter = array_merge($before, OrderStateTransitionPolicy::after($eventType), [
-                            'pay_time' => $payTime,
-                            'pay_price' => $orderPayPrice,
-                        ]);
-                        $eventAmount = $orderPayPrice;
-                        //支付账单
-                        $bill_data = array(
-                            'member_id'=>$val['member_id'],
-                            'title'=>'购买商品',
-                            'in_out'=>2,
-                            'money'=>$orderPayPrice,
-                            'bill_type_id'=>4,//凭证支付
-                            'order_id'=>$val['id'],
-                        );
-                        MemberBillService::add($bill_data);
-                        //订单日志
-                        $log = MemberOrderLogService::add([
-                            'title'=>'凭证支付订单成功',
-                            'member_order_id'=>$val['id'],
-                            'role_type'=>3,
-                            'create_uid'=>$val['member_id']
-                        ]);
-                        break;
-                    case 0: // 驳回
-                        $edit_res = $model->where('id',$val['id'])->update([
-                            'update_time'=>datetime(),
-                            'update_uid'=>operate_user_id(),
-                            'pay_auth_msg'=>$param['pay_auth_msg'],
-                            'pay_status'=>2, // 支付状态：2、拒绝
-                            'status'=>MemberOrderModel::getStatus('cancel'), // 订单状态：7、取消
-                        ]);
-                        $eventAfter = array_merge($before, OrderStateTransitionPolicy::after($eventType));
-                        //订单日志
-                        $log = MemberOrderLogService::add([
-                            'title'=>'凭证支付订单驳回：'.$param['pay_auth_msg'],
-                            'member_order_id'=>$val['id'],
-                            'role_type'=>3,
-                            'create_uid'=>operate_user_id()
-                        ]);
-                        break;
-                }
-                OrderBusinessEventService::record($eventType, $before, $eventAfter, $context, [
-                    'operation_request_id' => $operation['id'],
-                    'amount' => $eventAmount,
-                    'quantity' => intval($val['total_num'] ?? 0),
-                ]);
-            }
-             BusinessOperationRequestService::complete(intval($operation['id']), $resultParam);
-             // 提交事务
-             $model::commit();
-        } catch (\Throwable $e) {
-            $errmsg = $e->getMessage();
-            // 回滚事务
-            $model::rollback();
-        }
-        if (isset($errmsg)) {
-            exception($errmsg);
-        }
-        return $resultParam;
+        return VoucherPaymentReviewService::review(array_map('intval', (array) $ids), $param);
     }
 }

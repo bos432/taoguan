@@ -650,3 +650,12 @@
 - 运行或测试结果：`git log --all --name-only` 仅检出巡检后端及 admin-next/商家端管理文件；仓库顶层仅有 `zflAdminWeb`、`zflMerchantWeb`、`zflUniApp` 三套前端源码，`public` 仅有 admin、admin-next、app、merchant 等入口。此前真实巡检账号权限上下文 HTTP 验证仍为 200、角色 `inspection_super`、4 项权限、机构范围 7。
 - 遗留问题：阶段三“巡检前端消费统一权限上下文”缺少可修改的前端源码和入口定义，待补充原巡检端源码或明确批准新建巡检前端后才能继续；后端统一权限接口、缓存刷新和 403 契约已完成，不阻塞其他模块重构。
 - 下一阶段应继续处理的事项：重新读取计划和日志后，进入阶段四后端模块化；盘点订单控制器和 `MemberOrderService` 仍存在的直接状态写入口，选择一个明确写操作迁移到现有命令服务并补兼容测试。
+
+## 2026-08-25 渐进式重构阶段四：凭证支付审核服务拆分
+
+- 阶段名称：渐进式重构阶段四：凭证支付审核服务拆分
+- 本阶段完成内容：将凭证支付批准/驳回的事务、状态机校验、幂等请求、业务事件、会员账单、采购台账、商品及图片承接逻辑从巨型 `MemberOrderService` 迁入独立 `VoucherPaymentReviewService`。旧 `orderPayAuth()` 保留原方法名、参数和返回结构，仅转调新服务，admin、merchant 和移动管理接口无需修改 URL。购买商品承接收口为新服务私有步骤，不改变历史状态语义。
+- 修改/新增的主要文件：`app/common/service/order/VoucherPaymentReviewService.php`、`app/common/service/member/MemberOrderService.php`、`tests/refactor/voucher-approval-database-integration.php`、`tests/refactor/voucher-review-database-integration.php`、`DEVELOPMENT_LOG.md`
+- 运行或测试结果：凭证批准 14 项、驳回 9 项数据库断言通过；首次执行直接调用新服务，重复请求通过旧兼容入口回放，覆盖状态、金额、事件、账单、采购台账、幂等和事务回滚。完整 `tests/refactor` 36 个脚本共 493 项断言通过；`MemberOrderService` 从 1737 行降至 1571 行，新服务 190 行。业务基线保持订单 1732、明细 1733、采购台账 1477，事件、幂等、网关及授权日志测试表均为 0；PHP 语法与 `git diff --check` 通过。
+- 遗留问题：`MemberOrderService` 仍超过 800 行，下单 `confirmOrder`、微信重新支付 `payOrder` 和核销 `takeDelivery` 仍直接包含复杂事务；本阶段未改变这些路径。旧备份 `MemberOrderService-22.php` 仍按计划只标记、不删除。
+- 下一阶段应继续处理的事项：重新读取计划和日志后，拆分订单核销 `takeDelivery` 到独立写命令服务；保持旧入口兼容，并复用现有核销、事件和幂等集成测试验证库存出库及状态变化。

@@ -1473,6 +1473,11 @@ class MemberOrderService
         if ($payType === MemberOrderModel::getPayType('voucher', 1)) {
             return OrderRefundService::reviewVoucher(intval($id), $param, intval($source));
         }
+        $refundStatus = intval($param['refund_status'] ?? 0);
+        $refundType = intval($param['refund_type'] ?? 0);
+        if (($refundStatus === 2 && $refundType === 1) || $refundStatus === 4) {
+            return OrderRefundService::reviewWechat(intval($id), $param, intval($source));
+        }
         $model = new MemberOrderModel();
         $pk = $model->getPk();
         // 启动事务

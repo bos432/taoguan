@@ -443,3 +443,12 @@
 - 运行或测试结果：`php tests/refactor/voucher-refund-database-integration.php` 通过 13 项断言，覆盖退款状态、金额、退款单号、会员账单、事件、幂等重复和事务回滚；完整 12 组测试共 175 项断言通过。回滚后订单 1732、采购流水 1477、操作请求 0、事件 0。
 - 遗留问题：微信支付退款仍在旧 Service 中直接调用外部网关；数据库事务不能回滚已成功的微信退款，需要先记录外部请求状态、响应和补偿标记。售后拒绝继续保留状态 5 的历史兼容语义。
 - 下一阶段应继续处理的事项：新增退款网关调用记录表和接口，拆出微信退款服务，按“准备记录、调用网关、落库完成/待补偿”处理外部一致性；增加网关假实现测试，禁止自动测试调用真实微信退款。
+
+## 2026-08-25 渐进式重构阶段二：微信退款 Saga 与补偿记录
+
+- 阶段名称：渐进式重构阶段二：微信退款 Saga 与补偿记录
+- 本阶段完成内容：新增外部支付网关调用记录表、模型和状态服务，记录准备、请求中、成功、失败及结果未知；新增退款网关接口和微信实现，自动测试使用可注入假网关。微信退款从旧订单 Service 迁入 `OrderRefundService::reviewWechat`，采用“幂等操作与网关准备、外部调用、响应持久化、订单事务收口”的 Saga。成功后写订单、商家扣减、日志和事件；外部成功但本地失败时标记待补偿；网络超时标记结果未知并阻止相同请求再次调用网关。
+- 修改/新增的主要文件：`private/migrations/20260825_add_payment_gateway_attempt.sql`、`app/common/model/finance/PaymentGatewayAttemptModel.php`、`app/common/gateway/payment/RefundGatewayInterface.php`、`app/common/gateway/payment/WechatRefundGateway.php`、`app/common/service/payment/PaymentGatewayAttemptService.php`、`app/common/service/order/OrderRefundService.php`、`app/common/service/member/MemberOrderService.php`、`app/command/RefactorBaselineAudit.php`、`tests/refactor/payment-gateway-infrastructure.php`、`tests/refactor/wechat-refund-saga-database-integration.php`、`DEVELOPMENT_LOG.md`
+- 运行或测试结果：本地迁移执行成功，唯一键和 4 组查询索引正确；支付网关基础设施 9 项、微信退款 Saga 17 项断言通过。完整 14 组测试共 201 项断言通过；`refactor:baseline --database` 读取 9 张核心表且硬检查 0 失败；回滚后订单 1732、采购流水 1477、操作请求/事件/网关记录均为 0。测试未读取微信证书、未调用真实微信接口。
+- 遗留问题：尚未实现结果未知记录的后台人工核对/补偿页面和定时告警；真实微信退款响应字段需要灰度环境契约验证。发货、收货、评价和取消仍未接入事件/幂等。
+- 下一阶段应继续处理的事项：接入发货、收货、评价和买家取消事件，修复取消订单只软删除但无显式取消状态的诊断展示；随后新增订单时间线查询接口和后台页面。

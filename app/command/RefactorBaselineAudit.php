@@ -206,7 +206,7 @@ class RefactorBaselineAudit extends Command
         $connection = (string) config('database.default', 'mysql');
         $prefix = (string) config("database.connections.{$connection}.prefix", '');
         $rows = [];
-        foreach (['member_order', 'member_order_detailed', 'member_order_log', 'merchant', 'goods', 'member', 'business_operation_request', 'order_business_event'] as $table) {
+        foreach (['member_order', 'member_order_detailed', 'member_order_log', 'merchant', 'goods', 'member', 'business_operation_request', 'order_business_event', 'payment_gateway_attempt'] as $table) {
             $fullTable = $prefix . $table;
             $columns = Db::query('SHOW COLUMNS FROM `' . str_replace('`', '``', $fullTable) . '`');
             $indexes = Db::query('SHOW INDEX FROM `' . str_replace('`', '``', $fullTable) . '`');

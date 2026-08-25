@@ -389,3 +389,12 @@
 - 运行或测试结果：`php tests/refactor/permission-characterization.php` 通过 19 项断言；`php tests/refactor/core-state-characterization.php` 通过 34 项断言；`php tests/refactor/sql-snapshot-audit.php` 通过 6 项断言；`php think refactor:baseline` 输出权限基线，5 项硬检查全部通过、0 项失败；相关 PHP 语法检查通过。
 - 遗留问题：平台、商家、会员和巡检目前仍使用不同权限码/菜单 URL；API 中间件的超级会员旁路、商家超管在审核失败/过期后的实际行权规则，需要阶段三统一权限上下文时显式决策并增加授权日志。
 - 下一阶段应继续处理的事项：完成本阶段测试并提交；重新读取计划和日志后，进入阶段二第一小阶段，先建立订单状态转换特征表和单一写入口清单，再开始拆分查询服务。
+
+## 2026-08-25 渐进式重构阶段二：订单转换与写入口基线
+
+- 阶段名称：渐进式重构阶段二：订单转换与写入口基线
+- 本阶段完成内容：将创建、微信支付、凭证审核、发货、自提核销、收货、评价、售后、退款和取消共 13 类现有业务转换固化为纯状态策略；记录各控制器到订单 Service 的共享写入口。明确保留“凭证审核通过直接完成”和“买家取消仅软删除”两项兼容差异，不修改历史订单。
+- 修改/新增的主要文件：`app/common/domain/order/OrderStateTransitionPolicy.php`、`tests/refactor/order-transition-characterization.php`、`ORDER_STATE_BASELINE.md`、`REFACTOR_BASELINE.md`、`DEVELOPMENT_LOG.md`
+- 运行或测试结果：`php tests/refactor/order-transition-characterization.php` 通过 13 项断言；核心状态 34 项、权限 19 项、SQL 快照 6 项回归断言继续通过；新增 PHP 文件语法检查和目标文件 `git diff --check` 通过。
+- 遗留问题：现有写方法尚未统一调用状态策略；微信支付回调仍直接在控制器写订单且共享支付单的循环存在提前返回风险。需要事件流水和幂等基础设施落地后优先迁移该入口。
+- 下一阶段应继续处理的事项：新增版本化订单业务事件表、幂等请求表及对应模型/记录服务，先完成无业务接入的迁移检查和单元测试。

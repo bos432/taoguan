@@ -13,6 +13,15 @@ export function info(params) {
   })
 }
 /**
+ * 统一权限上下文
+ */
+export function permissionContext() {
+  return request({
+    url: url + 'permissionContext',
+    method: 'get'
+  })
+}
+/**
  * 修改信息
  * @param {array} data 请求数据
  */

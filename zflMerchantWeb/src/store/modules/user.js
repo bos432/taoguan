@@ -4,7 +4,10 @@ import { store } from '@/store'
 import { useStorage } from '@vueuse/core'
 import { useSettingsStore } from '@/store/modules/settings'
 import { login as loginApi, logout as logoutApi } from '@/api/system/login'
-import { info as userInfoApi } from '@/api/system/user-center'
+import {
+  info as userInfoApi,
+  permissionContext as permissionContextApi
+} from '@/api/system/user-center'
 import defaultSettings from '@/settings'
 
 export const useUserStore = defineStore('user', () => {
@@ -17,8 +20,30 @@ export const useUserStore = defineStore('user', () => {
     nickname: '',
     avatar_url: '',
     roles: [],
-    menus: []
+    menus: [],
+    role_codes: [],
+    permission_codes: [],
+    permission_map: {},
+    permission_version: '',
+    data_scope: {},
+    merchant: {},
+    identity: {}
   })
+
+  function applyPermissionContext(context = {}) {
+    user.role_codes = context.role_codes || []
+    user.permission_codes = context.permission_codes || []
+    user.permission_map = context.permission_map || {}
+    user.permission_version = context.permission_version || ''
+    user.data_scope = context.data_scope || {}
+    user.merchant = context.merchant || {}
+    user.identity = context.identity || {}
+    return context
+  }
+
+  function refreshPermissionContext() {
+    return permissionContextApi().then(({ data }) => applyPermissionContext(data))
+  }
 
   // 登录
   function login(data) {
@@ -40,8 +65,8 @@ export const useUserStore = defineStore('user', () => {
   // 用户信息
   function userInfo() {
     return new Promise((resolve, reject) => {
-      userInfoApi()
-        .then(({ data }) => {
+      Promise.all([userInfoApi(), permissionContextApi()])
+        .then(([{ data }, { data: permissionContext }]) => {
           if (!data) {
             reject('Verification failed, please Login again.')
             return
@@ -55,6 +80,7 @@ export const useUserStore = defineStore('user', () => {
           user.avatar_url = data.avatar_url
           user.roles = data.roles
           user.menus = data.menus
+          applyPermissionContext(permissionContext)
           resolve(data)
         })
         .catch((err) => {
@@ -92,6 +118,7 @@ export const useUserStore = defineStore('user', () => {
     user,
     login,
     userInfo,
+    refreshPermissionContext,
     logout,
     resetToken
   }

@@ -623,3 +623,12 @@
 - 运行或测试结果：聚焦数据库集成测试通过 18 项断言，覆盖商家/巡检初始空权限、商家或机构数据范围、显式授权、权限版本变化、撤权后立即 403、正确解除角色用户关系，以及正式编辑/删除路径调用缓存失效入口。完整 `tests/refactor` 34 个脚本共 468 项断言通过；测试结束后订单 1732、明细 1733、采购台账 1477，操作请求、订单事件、网关尝试、商家授权日志和两类临时用户均为 0；目标 PHP 语法与 `git diff --check` 通过。
 - 遗留问题：商家桌面端与巡检前端尚未主动消费统一权限上下文；当前后端缓存已即时失效，但已打开页面需在后续前端迁移阶段主动刷新上下文。灰度及正式环境仍需执行此前权限菜单迁移并清理一次存量缓存。
 - 下一阶段应继续处理的事项：重新读取计划和日志后，推进阶段三“登录或切换商家身份后强制刷新权限上下文”；先盘点商家桌面端和 uni-app 的登录、身份切换及权限入口，以一个端为小阶段完成统一权限上下文接入和自动化验证。
+
+## 2026-08-25 渐进式重构阶段三：商家桌面端统一权限上下文
+
+- 阶段名称：渐进式重构阶段三：商家桌面端统一权限上下文
+- 本阶段完成内容：商家桌面端新增统一权限上下文 API，登录后的用户初始化并行获取原有用户菜单和统一权限，保存角色码、权限码、权限映射、权限版本、数据范围、商家及身份信息，并提供 `refreshPermissionContext()` 供角色变化后主动刷新。原 `roles/menus` 保留用于兼容现有按钮和动态路由。后端将上下文接口设置为需登录但免单独角色授权，并新增可重复执行的隐藏菜单迁移。
+- 修改/新增的主要文件：`config/merchant.php`、`private/migrations/20260825_add_merchant_permission_context_menu.sql`、`zflMerchantWeb/src/api/system/user-center.js`、`zflMerchantWeb/src/store/modules/user.js`、`tests/refactor/merchant-web-permission-context-contract.php`、`DEVELOPMENT_LOG.md`
+- 运行或测试结果：迁移连续执行两次后有效菜单仍唯一；商家前端权限契约测试通过 15 项断言，完整 `tests/refactor` 35 个脚本共 483 项断言通过。真实本地 HTTP GET `/merchant/system.UserCenter/permissionContext` 返回 200、`merchant_user` 身份、商家数据范围和 20 位权限版本。目标文件 Prettier 检查通过，`npm run build:prod` 通过（2394 个模块）；业务基线保持订单 1732、明细 1733、采购台账 1477，事件、幂等、网关及授权日志测试表均为 0，`git diff --check` 通过。
+- 遗留问题：商家前端仓库的 ESLint 配置引用 `vue-eslint-parser`，但该依赖未写入 `package.json/package-lock.json`，因此 ESLint 8 无法启动；本阶段未扩展到依赖治理。生产主包约 1.36 MB，属于既有体积问题。商家页面现有按钮仍按旧 URL 权限判断，统一权限码将在后续逐模块迁移时替换。
+- 下一阶段应继续处理的事项：重新读取计划和日志后，进入 uni-app 登录与商家身份切换权限刷新小阶段；盘点 `merchant/Identity` 调用和全局状态，确保登录、恢复会话及切换身份后统一替换权限上下文，退出时清空旧权限。

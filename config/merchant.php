@@ -27,6 +27,7 @@ return [
         'merchant/system.Notice/info',
         'merchant/system.Login/logout',
         'merchant/system.UserCenter/info',
+        'merchant/system.UserCenter/permissionContext',
         'merchant/system.UserPreference/bootstrap',
         'merchant/system.UserPreference/runtime',
         'merchant/system.UserPreference/list',

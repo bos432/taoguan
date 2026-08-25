@@ -26,6 +26,8 @@ use app\common\domain\order\OrderStateTransitionPolicy;
 use app\common\service\operation\BusinessOperationRequestService;
 use app\common\service\order\OrderBusinessEventService;
 use app\common\service\order\OrderRefundService;
+use app\common\service\order\OrderCancellationService;
+use app\common\service\order\OrderFulfillmentService;
 use EasyWeChat\Factory;
 use think\facade\Config;
 use think\facade\Db;
@@ -1081,51 +1083,7 @@ class MemberOrderService
      */
     public static function cancelOrder($ids,$param = [])
     {
-        $model = new MemberOrderModel();
-        $pk = $model->getPk();
-        // 启动事务
-        $model::startTrans();
-        try {
-            $list = $model->whereIn($pk, $ids)
-                ->with(['detaileds'])
-                ->when((isset($param['member_id']) && $param['member_id']>0), function ($query) use ($param) {
-                    $query->where('member_id', $param['member_id']);
-                })
-                ->where('is_disable',0)
-                ->where('is_delete',0)
-                ->where('status',0)
-                ->select();
-            foreach ($list as $key=>$val) {
-                //增加库存
-                foreach ($val['detaileds'] as $k=>$v) {
-                    $goods  = GoodsModel::query()->where('id',$v['goods_id'])->find();
-                    if($goods){
-                        $goods_res = GoodsModel::query()->where('id',$goods['id'])->update(['stock'=>bcadd($goods['stock'],$v['quantity'])]);
-                    }
-                }
-                $val->is_delete = 1;
-                $val->delete_uid = operate_user_id();
-                $val->delete_time = datetime();
-                //订单日志
-                $log = MemberOrderLogService::add([
-                    'title'=>'买家取消订单',
-                    'member_order_id'=>$val['id'],
-                    'role_type'=>3
-                ]);
-                $val->save();
-            }
-            // 提交事务
-            $model::commit();
-        } catch (\Exception $e) {
-            $errmsg = $e->getMessage();
-            // 回滚事务
-            $model::rollback();
-        }
-        if (isset($errmsg)) {
-            exception($errmsg);
-        }
-        MemberOrderCache::del($ids);
-        return true;
+        return OrderCancellationService::cancel(array_map('intval', (array) $ids), $param);
     }
 
     /**
@@ -1331,42 +1289,7 @@ class MemberOrderService
      */
     public static function confirmReceipt($ids,$param = [])
     {
-        $model = new MemberOrderModel();
-        $pk = $model->getPk();
-        // 启动事务
-        $model::startTrans();
-        try {
-            $list = $model->whereIn($pk, $ids)
-                ->when((isset($param['member_id']) && $param['member_id']>0), function ($query) use ($param) {
-                    $query->where('member_id', $param['member_id']);
-                })
-                ->where('is_disable',0)
-                ->where('is_delete',0)
-                ->where('status',2)
-                ->select();
-            foreach ($list as $key=>$val) {
-                $val->status = MemberOrderModel::getStatus('p_evaluate',1);
-                $val->receipt_time = datetime();
-                //订单日志
-                $log = MemberOrderLogService::add([
-                    'title'=>'买家已收货',
-                    'member_order_id'=>$val['id'],
-                    'role_type'=>3
-                ]);
-                $val->save();
-            }
-            // 提交事务
-            $model::commit();
-        } catch (\Exception $e) {
-            $errmsg = $e->getMessage();
-            // 回滚事务
-            $model::rollback();
-        }
-        if (isset($errmsg)) {
-            exception($errmsg);
-        }
-        MemberOrderCache::del($ids);
-        return true;
+        return OrderFulfillmentService::receive(array_map('intval', (array) $ids), $param);
     }
 
     /**
@@ -1380,68 +1303,7 @@ class MemberOrderService
      */
     public static function submitEvaluation($ids,$param = [])
     {
-        $model = new MemberOrderModel();
-        $pk = $model->getPk();
-        // 启动事务
-        $model::startTrans();
-        try {
-            $list = $model->whereIn($pk, $ids)
-                ->with([
-                    'detaileds'=>function($query){
-                        $query->field('id,member_order_id,goods_id,quantity,price,total');
-                    },
-                    'detaileds.goods',
-                ])
-                ->when((isset($param['member_id']) && $param['member_id']>0), function ($query) use ($param) {
-                    $query->where('member_id', $param['member_id']);
-                })
-                ->where('is_disable',0)
-                ->where('is_delete',0)
-                ->where('status',3)
-                ->select();
-            foreach ($list as $key=>$val) {
-                //写入评论
-                $detailed_res = MemberOrderDetailedModel::query()
-                    ->where('member_order_id',$val['id'])
-                    ->update([
-                        'evaluate_content'=>$param['evaluate_content'],
-                        'evaluate_num'=>$param['evaluate_num'],
-                    ]);
-                $val->status = MemberOrderModel::getStatus('success',1);
-                $val->success_time = datetime();
-                //订单完成时，给商家入明细
-                if(isset($val['detaileds']) && $val['pay_type']!=MemberOrderModel::getPayType('voucher',1)){
-                    foreach ($val['detaileds'] as $k1 => $v1) {
-                        if(isset($v1['goods']['merchant_id'])){
-                            $mer_recharge = MerchantService::recharge(
-                                $v1['goods']['merchant_id'],
-                                $v1['total'],
-                                "用户购买".$v1['quantity']."件【".$v1['goods']['title']."】",
-                                $v1['id'],
-                            );
-                        }
-                    }
-                }
-                //订单日志
-                $log = MemberOrderLogService::add([
-                    'title'=>'买家完成评论',
-                    'member_order_id'=>$val['id'],
-                    'role_type'=>3
-                ]);
-                $val->save();
-            }
-            // 提交事务
-            $model::commit();
-        } catch (\Exception $e) {
-            $errmsg = $e->getMessage();
-            // 回滚事务
-            $model::rollback();
-        }
-        if (isset($errmsg)) {
-            exception($errmsg);
-        }
-        MemberOrderCache::del($ids);
-        return true;
+        return OrderFulfillmentService::evaluate(array_map('intval', (array) $ids), $param);
     }
 
     /**

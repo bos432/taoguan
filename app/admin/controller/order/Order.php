@@ -4,6 +4,7 @@ use app\common\controller\BaseController;
 use app\common\model\member\MemberOrderModel;
 use app\common\service\member\MemberBillService;
 use app\common\service\member\MemberOrderService;
+use app\common\service\order\OrderTimelineQueryService;
 use app\common\service\member\SettingService as MemberSettingService;
 use app\common\validate\member\MemberOrderValidate;
 use EasyWeChat\Factory;
@@ -18,6 +19,12 @@ use think\facade\Log;
  */
 class Order extends BaseController
 {
+    public function timeline()
+    {
+        $param = $this->params(['id/d' => 0]);
+        validate(MemberOrderValidate::class)->scene('info')->check($param);
+        return success(OrderTimelineQueryService::byOrderId(intval($param['id'])));
+    }
     /**
     * @Apidoc\Title("订单管理列表")
     * @Apidoc\Query(ref="pagingQuery")

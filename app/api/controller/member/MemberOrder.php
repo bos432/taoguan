@@ -155,6 +155,9 @@ class MemberOrder extends BaseController
         $param = $this->params(['id/d' => 0]);
         $param['member_id']=member_id(true);
         validate(MemberOrderValidate::class)->scene('cancelOrder')->check($param);
+        $param['_operation_context'] = \app\common\domain\operation\BusinessOperationContextFactory::fromRequest(
+            'uniapp-weixin', 'member', intval($param['member_id']), '买家取消订单'
+        );
         $data = MemberOrderService::cancelOrder([$param['id']],$param);
         return success($data);
     }
@@ -241,6 +244,9 @@ class MemberOrder extends BaseController
         $param = $this->params(['id/d' => 0]);
         $param['member_id']=member_id(true);
         validate(MemberOrderValidate::class)->scene('confirmReceipt')->check($param);
+        $param['_operation_context'] = \app\common\domain\operation\BusinessOperationContextFactory::fromRequest(
+            'uniapp-weixin', 'member', intval($param['member_id']), '买家确认收货'
+        );
         $data = MemberOrderService::confirmReceipt([$param['id']],$param);
         return success($data);
     }
@@ -254,6 +260,9 @@ class MemberOrder extends BaseController
         $param = $this->params(['id/d' => 0,'evaluate_content/s'=>'','evaluate_num/d'=>0]);
         $param['member_id']=member_id(true);
         validate(MemberOrderValidate::class)->scene('submitEvaluation')->check($param);
+        $param['_operation_context'] = \app\common\domain\operation\BusinessOperationContextFactory::fromRequest(
+            'uniapp-weixin', 'member', intval($param['member_id']), '买家完成评价'
+        );
         $data = MemberOrderService::submitEvaluation([$param['id']],$param);
         return success($data);
     }

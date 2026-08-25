@@ -148,3 +148,15 @@ export function orderPayAuth(data) {
     data
   })
 }
+
+/**
+ * 订单完整流转时间线
+ * @param {object} params 请求参数
+ */
+export function timeline(params) {
+  return request({
+    url: url + 'timeline',
+    method: 'get',
+    params
+  })
+}

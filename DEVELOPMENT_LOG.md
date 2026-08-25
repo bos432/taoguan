@@ -452,3 +452,12 @@
 - 运行或测试结果：本地迁移执行成功，唯一键和 4 组查询索引正确；支付网关基础设施 9 项、微信退款 Saga 17 项断言通过。完整 14 组测试共 201 项断言通过；`refactor:baseline --database` 读取 9 张核心表且硬检查 0 失败；回滚后订单 1732、采购流水 1477、操作请求/事件/网关记录均为 0。测试未读取微信证书、未调用真实微信接口。
 - 遗留问题：尚未实现结果未知记录的后台人工核对/补偿页面和定时告警；真实微信退款响应字段需要灰度环境契约验证。发货、收货、评价和取消仍未接入事件/幂等。
 - 下一阶段应继续处理的事项：接入发货、收货、评价和买家取消事件，修复取消订单只软删除但无显式取消状态的诊断展示；随后新增订单时间线查询接口和后台页面。
+
+## 2026-08-25 渐进式重构阶段二：取消、履约与订单时间线
+
+- 阶段名称：渐进式重构阶段二：取消、履约与订单时间线
+- 本阶段完成内容：将买家取消抽取到 `OrderCancellationService`，保留 `status=0 + is_delete=1` 的历史兼容语义并以 `order.canceled` 事件明确记录取消，库存恢复改为数据库原子递增且重复请求不重复返还；将确认收货和评价抽取到 `OrderFulfillmentService`，订单、评价、非凭证商家入账、旧日志、幂等请求和业务事件在同一事务内提交。新增订单时间线查询服务和管理员只读接口，统一返回订单摘要、新事件、旧日志及 `legacy_only/hybrid/event` 覆盖标记；`admin-next` 订单列表新增“流转”抽屉，可查看状态前后变化、金额、数量、来源、操作人、请求编号、原因和历史日志。
+- 修改/新增的主要文件：`app/common/service/order/OrderCancellationService.php`、`app/common/service/order/OrderFulfillmentService.php`、`app/common/service/order/OrderTimelineQueryService.php`、`app/common/service/member/MemberOrderService.php`、`app/api/controller/member/MemberOrder.php`、`app/admin/controller/order/Order.php`、`zflAdminWeb/src/api/order/list.js`、`zflAdminWeb/src/views/order/list.vue`、`zflAdminWeb/src/views/order/components/OrderTimelineDrawer.vue`、`tests/refactor/order-cancellation-database-integration.php`、`tests/refactor/order-fulfillment-database-integration.php`、`tests/refactor/order-timeline-database-integration.php`、`zflAdminWeb/tests/order-timeline-audit.spec.js`、`DEVELOPMENT_LOG.md`
+- 运行或测试结果：新增取消 11 项、履约 14 项、时间线 6 项数据库断言通过；完整 `tests/refactor` 17 个脚本共 232 项断言通过。相关 PHP 文件语法检查、目标前端 ESLint 和 `npm run build:admin-next-local` 通过；独立 Playwright 时间线交互用例 1/1 通过；真实管理员调用 `/admin/order.Order/timeline` 返回 200，并正确返回快照订单的 `legacy_only` 摘要和旧日志。全部数据库测试均回滚，结束后订单 1732、采购流水 1477、操作请求/事件/网关记录均为 0。本地 PHP 服务已恢复在 `http://127.0.0.1:807/`。
+- 遗留问题：发货仍保留在旧 `MemberOrderService`，尚未接入统一幂等和业务事件；退货寄回物流也尚无独立事件。当前快照没有持久化新版事件，因此真实接口只验证了历史日志分支，新旧混合分支由 Playwright 契约数据验证。
+- 下一阶段应继续处理的事项：重新读取计划和日志后，将平台/商家发货入口抽取到 `OrderFulfillmentService`，统一操作上下文、状态策略、物流字段、旧日志、幂等请求和 `order.delivered` 事件，并增加重复发货数据库集成测试。

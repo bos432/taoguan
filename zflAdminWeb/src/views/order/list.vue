@@ -399,7 +399,7 @@
           show-overflow-tooltip
         />
         <el-table-column prop="create_time" label="下单时间" min-width="165" sortable="custom" />
-        <el-table-column label="操作" width="150" fixed="right">
+        <el-table-column label="操作" width="190" fixed="right">
           <template #default="scope">
             <el-link
               type="primary"
@@ -408,6 +408,14 @@
               @click="onDetails(scope.row.id)"
             >
               详情
+            </el-link>
+            <el-link
+              type="primary"
+              class="mr-1"
+              :underline="false"
+              @click="onTimeline(scope.row)"
+            >
+              流转
             </el-link>
             <el-link
               v-if="scope.row.status == 1 && scope.row.delivery_type == 1"
@@ -463,6 +471,7 @@
       @getList="list"
       :drawer="drawer"
     ></detail>
+    <OrderTimelineDrawer ref="timeline" />
     <!-- 售后 -->
     <el-dialog
       v-model="serviceDialog"
@@ -652,9 +661,10 @@ import {
   orderPayAuth
 } from '@/api/order/list'
 import detail from '@/views/order/handle/details.vue'
+import OrderTimelineDrawer from '@/views/order/components/OrderTimelineDrawer.vue'
 export default {
   name: 'orderList',
-  components: { Pagination, detail },
+  components: { Pagination, detail, OrderTimelineDrawer },
   computed: {
     runtimeModeLabel() {
       return process.env.NODE_ENV === 'production' ? '生产构建' : '开发构建'
@@ -1347,6 +1357,9 @@ export default {
       this.$refs.detail.isEdit = false
       this.$refs.detail.getInfo(id)
       this.drawer = true
+    },
+    onTimeline(row) {
+      this.$refs.timeline.open(row.id)
     },
     closeDrawer() {
       this.drawer = false

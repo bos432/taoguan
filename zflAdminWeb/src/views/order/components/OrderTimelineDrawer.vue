@@ -165,6 +165,7 @@ export default {
           'refund.requested': '申请售后',
           'refund.service_approved': '售后审核通过',
           'refund.service_rejected': '售后审核拒绝',
+          'refund.return_shipped': '买家寄回退货',
           'refund.completed': '退款完成'
         }[eventType] ||
         eventType ||

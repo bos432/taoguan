@@ -470,3 +470,12 @@
 - 运行或测试结果：发货数据库集成测试通过 14 项断言，覆盖物流字段、状态转换、库存出库、旧日志、业务事件和重复请求；完整 `tests/refactor` 18 个脚本共 246 项断言通过。相关 PHP 语法、前端 API ESLint、`npm run build:admin-next-local` 和目标差异检查通过。测试全部回滚，结束后订单 1732、采购流水 1477、操作请求/事件/网关记录均为 0。
 - 遗留问题：当前兼容语义仍允许库存不足的商品不记出库但订单继续发货，本阶段没有改变线上规则；阶段四统一库存边界时需要决定是否改为强制拦截。买家退货寄回仍在旧订单 Service，尚未接入业务事件和幂等请求。
 - 下一阶段应继续处理的事项：重新读取计划和日志后，将买家退货寄回抽入退款/履约应用服务，记录退货物流事件和幂等请求；随后进入订单创建事件及下单幂等小阶段。
+
+## 2026-08-25 渐进式重构阶段二：退货寄回物流可信化
+
+- 阶段名称：渐进式重构阶段二：退货寄回物流可信化
+- 本阶段完成内容：新增 `refund.return_shipped` 状态基线，明确退货寄回只允许“售后中 + 退货退款 + 已同意退货”，且提交物流后主状态和售后状态保持不变。将旧 `returnGoods` 写逻辑迁入 `OrderRefundService::shipReturn`，订单锁定、快递校验、退货物流、旧日志、幂等结果和业务事件在同一事务提交；事件扩展数据包含快递公司、编码和运单号。移动会员控制器注入会员身份与 `uniapp-weixin` 来源；uni-app 对订单、快递公司和运单号计算确定性请求编号，同一物流内容重试不会重复记事件。
+- 修改/新增的主要文件：`app/common/domain/order/OrderStateTransitionPolicy.php`、`app/common/service/order/OrderRefundService.php`、`app/common/service/member/MemberOrderService.php`、`app/api/controller/member/MemberOrder.php`、`tests/refactor/order-transition-characterization.php`、`tests/refactor/return-shipment-database-integration.php`、`zflAdminWeb/src/views/order/components/OrderTimelineDrawer.vue`、`zflUniApp/zflUniApp/api/member.js`、`DEVELOPMENT_LOG.md`
+- 运行或测试结果：订单转换特征测试扩展为 16 项断言，退货寄回数据库集成测试通过 14 项断言；完整 `tests/refactor` 19 个脚本共 263 项断言通过。相关 PHP 语法、移动 API `node --check`、后台 `npm run build:admin-next-local` 和目标差异检查通过；测试全部回滚，结束后订单 1732、采购流水 1477、操作请求/事件/网关记录均为 0。H5 构建首次因 HBuilderX 未打开失败，自动启动后再次执行明确返回“此功能需要先登录”，构建脚本正确拒绝同步旧产物，因此本阶段未把 H5 发布标记为通过。
+- 遗留问题：本机 HBuilderX 未登录，无法完成 H5/小程序真实编译；需要具备 DCloud 登录态后补跑 `npm run build:h5:local` 和小程序构建。退货运单在业务上允许用户修改，内容变化会形成新的请求编号和新事件，这是可追溯修改而非重复提交。
+- 下一阶段应继续处理的事项：重新读取计划和日志后，进入订单创建事件与下单幂等小阶段，先梳理 `confirmOrder` 的购物车、库存和订单创建事务边界，再接入 `order.created` 事件和稳定请求编号。

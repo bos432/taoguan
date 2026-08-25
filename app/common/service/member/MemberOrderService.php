@@ -1449,58 +1449,7 @@ class MemberOrderService
      */
     public static function returnGoods($ids,$param = [])
     {
-        $model = new MemberOrderModel();
-        $pk = $model->getPk();
-        // 启动事务
-        $model::startTrans();
-        try {
-            $list = $model->whereIn($pk, $ids)
-                ->when((isset($param['member_id']) && $param['member_id']>0), function ($query) use ($param) {
-                    $query->where('member_id', $param['member_id']);
-                })
-                ->where('is_disable',0)
-                ->where('is_delete',0)
-                ->where('status',5)
-                ->where('refund_type',2)
-                ->where('refund_status',2)
-                ->select();
-            if(count($list)<=0){
-                exception("未查询到退货订单");
-            }
-            $delivery_obj = SettingDeliveryModel::query()->where('id',$param['refund_delivery_id'])->find();
-            if(!$delivery_obj){
-                exception("快递公司不存在");
-            }
-            $matchedIds = [];
-            foreach ($list as $key=>$val) {
-                $matchedIds[] = intval($val[$pk]);
-                //订单日志
-                $log = MemberOrderLogService::add([
-                    'title'=>'买家已发货',
-                    'member_order_id'=>$val['id'],
-                    'role_type'=>3
-                ]);
-            }
-            $saveData = [
-                'refund_delivery_id' => $param['refund_delivery_id'],
-                'refund_express' => $param['refund_express'],
-                'refund_express_name' => $delivery_obj['title'],
-                'refund_express_code' => $delivery_obj['code'],
-                'update_time' => datetime(),
-            ];
-            $model->whereIn($pk, $matchedIds)->update($saveData);
-            // 提交事务
-            $model::commit();
-        } catch (\Exception $e) {
-            $errmsg = $e->getMessage();
-            // 回滚事务
-            $model::rollback();
-        }
-        if (isset($errmsg)) {
-            exception($errmsg);
-        }
-        MemberOrderCache::del($ids);
-        return true;
+        return OrderRefundService::shipReturn(array_map('intval', (array) $ids), $param);
     }
 
     /**

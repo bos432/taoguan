@@ -19,6 +19,7 @@ class OrderStateTransitionPolicy
     public const SERVICE_REQUESTED = 'refund.requested';
     public const SERVICE_APPROVED = 'refund.service_approved';
     public const SERVICE_REJECTED = 'refund.service_rejected';
+    public const RETURN_SHIPPED = 'refund.return_shipped';
     public const REFUNDED = 'refund.completed';
     public const CANCELED = 'order.canceled';
 
@@ -38,6 +39,7 @@ class OrderStateTransitionPolicy
             self::SERVICE_REQUESTED => ['before' => ['status' => [$status('success')]], 'after' => ['status' => $status('service'), 'refund_status' => 1]],
             self::SERVICE_APPROVED => ['before' => ['status' => [$status('service')], 'refund_status' => [1]], 'after' => ['refund_status' => 2]],
             self::SERVICE_REJECTED => ['before' => ['status' => [$status('service')], 'refund_status' => [1]], 'after' => ['refund_status' => 3]],
+            self::RETURN_SHIPPED => ['before' => ['status' => [$status('service')], 'refund_status' => [2]], 'after' => ['status' => $status('service'), 'refund_status' => 2]],
             self::REFUNDED => ['before' => ['status' => [$status('service')], 'refund_status' => [1, 2]], 'after' => ['status' => $status('refund')]],
             self::CANCELED => ['before' => ['status' => [$status('p_pay')], 'pay_status' => [0]], 'after' => ['is_delete' => 1]],
         ];

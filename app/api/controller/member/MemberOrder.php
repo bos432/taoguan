@@ -292,6 +292,9 @@ class MemberOrder extends BaseController
         $param = $this->params(['id/d' => 0,'refund_delivery_id/d'=>0,'refund_express/s'=>'']);
         $param['member_id']=member_id(true);
         validate(MemberOrderValidate::class)->scene('returnGoods')->check($param);
+        $param['_operation_context'] = \app\common\domain\operation\BusinessOperationContextFactory::fromRequest(
+            'uniapp-weixin', 'member', intval($param['member_id']), '买家提交退货物流'
+        );
         $data = MemberOrderService::returnGoods([$param['id']],$param);
         return success($data);
     }

@@ -1,5 +1,16 @@
 import request from "./request.js";
 
+function stableRequestId(prefix, values = []) {
+  let hash = 2166136261;
+  String(values.join("|"))
+    .split("")
+    .forEach((char) => {
+      hash ^= char.charCodeAt(0);
+      hash = Math.imul(hash, 16777619);
+    });
+  return `${prefix}:${(hash >>> 0).toString(16)}`;
+}
+
 export default {
   miniappLogin: (params) => request("/member.Login/miniapp", params, "post"),
   miniappByPhone: (params) => request("/member.Login/miniappByPhone", params, "post"),
@@ -25,6 +36,14 @@ export default {
   confirmReceipt: (params) => request("/member.MemberOrder/confirmReceipt", params, "post"),
   getOrderInfo: (params) => request("/member.MemberOrder/info", params, "post"),
   submitService: (params) => request("/member.MemberOrder/submitService", params, "post"),
-  returnGoods: (params) => request("/member.MemberOrder/returnGoods", params, "post"),
+  returnGoods: (params) =>
+    request(
+      "/member.MemberOrder/returnGoods",
+      {
+        ...params,
+        request_id: params.request_id || stableRequestId("return-shipment", [params.id, params.refund_delivery_id, params.refund_express]),
+      },
+      "post"
+    ),
   getOrderTransaction: (params) => request("/member.MemberOrder/getOrderTransaction", params, "get"),
 };

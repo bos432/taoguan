@@ -8,6 +8,7 @@ use app\common\cache\member\MemberOrderCache;
 use app\common\domain\operation\BusinessOperationContextFactory;
 use app\common\domain\order\OrderStateTransitionPolicy;
 use app\common\model\member\MemberOrderModel;
+use app\common\model\setting\SettingDeliveryModel;
 use app\common\model\finance\PaymentGatewayAttemptModel;
 use app\common\gateway\payment\RefundGatewayInterface;
 use app\common\gateway\payment\WechatRefundGateway;
@@ -19,6 +20,81 @@ use app\common\service\payment\PaymentGatewayAttemptService;
 
 class OrderRefundService
 {
+    public static function shipReturn(array $ids, array $param = []): bool
+    {
+        $model = new MemberOrderModel();
+        $context = $param['_operation_context'] ?? BusinessOperationContextFactory::fromRequest(
+            'legacy', 'member', intval($param['member_id'] ?? 0), '买家提交退货物流'
+        );
+        $model::startTrans();
+        try {
+            $operation = BusinessOperationRequestService::begin('refund.return_ship', $context);
+            if (!empty($operation['duplicate'])) {
+                if (intval($operation['status'] ?? 0) === 1) {
+                    $model::commit();
+                    return true;
+                }
+                exception(intval($operation['status'] ?? 0) === 0 ? '该请求正在处理中，请勿重复提交' : '该请求已处理失败，请更换请求编号后重试');
+            }
+            $delivery = SettingDeliveryModel::where('id', intval($param['refund_delivery_id'] ?? 0))
+                ->where('is_disable', 0)->where('is_delete', 0)->find();
+            if (!$delivery) {
+                exception('快递公司不存在或已禁用');
+            }
+            $orders = $model->whereIn('id', $ids)
+                ->when(intval($param['member_id'] ?? 0) > 0, static function ($query) use ($param) {
+                    $query->where('member_id', intval($param['member_id']));
+                })
+                ->where('is_disable', 0)->where('is_delete', 0)
+                ->where('status', MemberOrderModel::getStatus('service', 1))
+                ->where('refund_type', 2)->where('refund_status', 2)->lock(true)->select();
+            if ($orders->isEmpty()) {
+                exception('订单不存在，或当前售后状态不支持提交退货物流');
+            }
+            foreach ($orders as $order) {
+                $before = $order->toArray();
+                if (!OrderStateTransitionPolicy::canApply(OrderStateTransitionPolicy::RETURN_SHIPPED, $before)) {
+                    exception('售后状态已变化，请刷新后重试');
+                }
+                $after = array_merge($before, OrderStateTransitionPolicy::after(OrderStateTransitionPolicy::RETURN_SHIPPED), [
+                    'refund_delivery_id' => intval($delivery['id']),
+                    'refund_express' => strval($param['refund_express'] ?? ''),
+                    'refund_express_name' => strval($delivery['title']),
+                    'refund_express_code' => strval($delivery['code']),
+                ]);
+                MemberOrderModel::where('id', $before['id'])->update([
+                    'refund_delivery_id' => $after['refund_delivery_id'],
+                    'refund_express' => $after['refund_express'],
+                    'refund_express_name' => $after['refund_express_name'],
+                    'refund_express_code' => $after['refund_express_code'],
+                    'update_time' => date('Y-m-d H:i:s'),
+                ]);
+                MemberOrderLogService::add([
+                    'title' => '买家已发货', 'member_order_id' => $before['id'], 'role_type' => 3,
+                    'create_uid' => intval($context['operator_id'] ?? 0),
+                ]);
+                OrderBusinessEventService::record(OrderStateTransitionPolicy::RETURN_SHIPPED, $before, $after, $context, [
+                    'operation_request_id' => $operation['id'],
+                    'amount' => floatval($before['refund_price'] ?? 0),
+                    'quantity' => intval($before['total_num'] ?? 0),
+                    'payload' => [
+                        'refund_delivery_id' => $after['refund_delivery_id'],
+                        'refund_express' => $after['refund_express'],
+                        'refund_express_name' => $after['refund_express_name'],
+                        'refund_express_code' => $after['refund_express_code'],
+                    ],
+                ]);
+            }
+            BusinessOperationRequestService::complete(intval($operation['id']), true);
+            $model::commit();
+        } catch (\Throwable $throwable) {
+            $model::rollback();
+            throw $throwable;
+        }
+        MemberOrderCache::del($ids);
+        return true;
+    }
+
     public static function request(array $ids, array $param = []): bool
     {
         $model = new MemberOrderModel();

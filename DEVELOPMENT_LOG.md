@@ -515,3 +515,12 @@
 - 运行或测试结果：支付网关查询数据库集成测试通过 7 项断言；完整 `tests/refactor` 22 个脚本共 317 项断言通过；目标 PHP 语法、前端 ESLint、Prettier、`git diff --check` 和 `npm run build:admin-next-local` 通过；Playwright 异常核对页面交互 1/1 通过；真实本地管理员接口 `/admin/report.PaymentGatewayAttempt/summary` 返回 200。测试结束后订单 1732、订单明细 1733、采购流水 1477，操作请求、事件和网关记录均为 0。
 - 遗留问题：当前异常页是隐藏静态路由，尚未接入菜单权限；真实微信预下单/退款响应契约仍需灰度验证。人工补偿写操作尚未实现，必须先明确权限码、二次确认、幂等请求、补偿前状态复核和完整操作日志。
 - 下一阶段应继续处理的事项：重新读取计划和日志后，进入每日自动对账小阶段，先建立只读对账服务和命令，输出订单金额、订单数量、核销数量、事件覆盖及未解释异常；对账不得修改历史订单或财务数据。
+
+## 2026-08-25 渐进式重构阶段二：每日订单与财务只读对账
+
+- 阶段名称：渐进式重构阶段二：每日订单与财务只读对账
+- 本阶段完成内容：新增每日只读对账服务和 `php think refactor:reconcile` 命令，默认核对昨天并将 JSON 报告写入 `runtime/refactor-reconciliation/YYYY-MM-DD.json`，支持 `--date` 和 `--output` 供服务器 cron 调用。报告汇总订单创建/支付数量与金额、采购流水、会员账单、核销事件及历史核销候选，并列出缺少账单、采购台账核算异常、事件覆盖期缺少支付事件和支付网关待关注订单。凭证支付同时输出数据库 `pay_price` 原始金额和按 `total_price` 计算的台账兼容金额；核销明确区分 `order.picked_up` 新事件和仅按自提 `delivery_time` 推断的历史候选，不把历史推断伪装成精确事件。
+- 修改/新增的主要文件：`app/common/service/report/DailyOrderReconciliationService.php`、`app/command/RefactorDailyReconciliation.php`、`config/console.php`、`tests/refactor/daily-order-reconciliation-database-integration.php`、`DEVELOPMENT_LOG.md`
+- 运行或测试结果：每日对账数据库集成测试通过 14 项断言，覆盖凭证金额双口径、采购流水、会员账单、核销事件、事件覆盖、缺账单告警、无效日期和事务回滚；完整 `tests/refactor` 23 个脚本共 331 项断言通过。真实命令对本地快照 `2026-06-13` 生成报告成功：支付订单 23 笔，原始实付/账单 6,624.00 元，台账兼容金额/采购流水 55,639.00 元，历史调整差额 49,015.00 元，报告明确保留两个口径。`refactor:baseline --database` 5 项检查通过、0 失败；PHP 语法和 `git diff --check` 通过；测试结束后订单 1732、明细 1733、采购流水 1477，操作请求/事件/网关记录均为 0。
+- 遗留问题：代码已具备每日自动执行入口，但灰度/正式服务器尚未配置系统 cron；部署时需在每日业务低峰执行 `php think refactor:reconcile` 并监控命令退出状态。历史快照没有 `order.picked_up` 事件且没有可识别的自提 `delivery_time` 候选，因此历史核销数显示 0，不代表历史从未核销；只能在新事件上线后精确统计。
+- 下一阶段应继续处理的事项：重新读取计划和日志后，完善差额订单诊断，将采购台账差额订单与统一订单时间线/业务事件关联，返回明确的匹配关系、未配平原因和完整流转证据，并保持旧算法并行输出。

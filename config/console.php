@@ -11,5 +11,7 @@ return [
         'refactor:baseline' => 'app\command\RefactorBaselineAudit',
         // SQL 快照只读结构与业务基准
         'refactor:snapshot' => 'app\command\RefactorSnapshotAudit',
+        // 每日订单、核销与财务只读对账
+        'refactor:reconcile' => 'app\command\RefactorDailyReconciliation',
     ],
 ];

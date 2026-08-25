@@ -254,11 +254,13 @@
           </template>
         </el-table-column>
         <el-table-column prop="create_time" label="添加时间" width="170" />
-        <el-table-column label="操作" width="360" fixed="right">
+        <el-table-column label="操作" width="440" fixed="right">
           <template #default="{ row }">
             <div class="actions">
               <el-button link type="primary" @click="openEdit(row)">编辑</el-button>
               <el-button link type="info" @click="openDetail(row)">详情</el-button>
+              <el-button link type="primary" @click="openMemberBinding(row)">绑定会员</el-button>
+              <el-button link type="info" @click="openAuthorizationLogs(row)">授权记录</el-button>
               <el-button link type="warning" @click="openDisableDialog([row])">
                 {{ Number(row.is_disable) === 1 ? '启用商家' : '停用商家' }}
               </el-button>
@@ -314,6 +316,9 @@
             <el-tag :type="Number(detailRow.member_is_super || 0) === 1 ? 'success' : 'info'">
               {{ Number(detailRow.member_is_super || 0) === 1 ? '已启用' : '未启用' }}
             </el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item label="绑定会员">
+            {{ Number(detailRow.member_id || 0) > 0 ? `会员 #${detailRow.member_id}` : '未绑定' }}
           </el-descriptions-item>
           <el-descriptions-item label="提醒天数">
             {{ detailRow.renew_remind_days || '--' }}
@@ -465,6 +470,14 @@
               placeholder="请填写拒绝原因"
             />
           </el-form-item>
+          <el-form-item v-else label="审核说明">
+            <el-input
+              v-model="actionForm.reason"
+              type="textarea"
+              :rows="3"
+              placeholder="请填写审核依据或说明"
+            />
+          </el-form-item>
         </template>
 
         <template v-else-if="actionType === 'renew'">
@@ -495,6 +508,81 @@
         <el-button type="primary" :loading="actionLoading" @click="submitAction">提交</el-button>
       </template>
     </el-dialog>
+
+    <el-dialog v-model="bindingVisible" title="绑定小程序会员" width="560px" destroy-on-close>
+      <el-form label-position="top">
+        <el-form-item label="目标商家">
+          <el-input
+            :model-value="bindingTarget ? merchantDisplayTitle(bindingTarget) : ''"
+            disabled
+          />
+        </el-form-item>
+        <el-form-item label="当前绑定">
+          <el-input
+            :model-value="
+              Number(bindingTarget?.member_id || 0) > 0
+                ? `会员 #${bindingTarget.member_id}`
+                : '未绑定'
+            "
+            disabled
+          />
+        </el-form-item>
+        <el-form-item label="目标会员 ID">
+          <el-input-number v-model="bindingForm.member_id" :min="0" :step="1" style="width: 100%" />
+          <div class="muted">填写 0 表示解绑；同一会员不能绑定多个商家。</div>
+        </el-form-item>
+        <el-form-item label="变更原因">
+          <el-input
+            v-model="bindingForm.reason"
+            type="textarea"
+            :rows="3"
+            placeholder="请填写绑定、换绑或解绑原因"
+          />
+        </el-form-item>
+        <div v-if="Number(bindingTarget?.member_is_super || 0) === 1" class="danger-tip">
+          当前会员拥有商家超管权限。换绑或解绑将同时取消该权限，目标会员不会自动继承。
+        </div>
+      </el-form>
+      <template #footer>
+        <el-button @click="bindingVisible = false">取消</el-button>
+        <el-button type="primary" :loading="bindingLoading" @click="submitMemberBinding">
+          确认变更
+        </el-button>
+      </template>
+    </el-dialog>
+
+    <el-drawer
+      v-model="authorizationVisible"
+      :title="
+        authorizationTarget ? `${merchantDisplayTitle(authorizationTarget)} · 授权记录` : '授权记录'
+      "
+      size="860px"
+    >
+      <div v-loading="authorizationLoading" class="detail-wrap">
+        <el-table
+          :data="authorizationRows"
+          row-key="id"
+          :empty-text="authorizationError || '暂无授权记录'"
+        >
+          <el-table-column prop="action_title" label="操作" width="150" />
+          <el-table-column label="变更" min-width="190">
+            <template #default="{ row }">{{ row.before_title }} → {{ row.after_title }}</template>
+          </el-table-column>
+          <el-table-column prop="operator_title" label="操作人" min-width="140" />
+          <el-table-column prop="source_title" label="来源" width="120" />
+          <el-table-column prop="reason" label="原因" min-width="180">
+            <template #default="{ row }">{{ row.reason || '--' }}</template>
+          </el-table-column>
+          <el-table-column prop="create_time" label="时间" width="170" />
+          <el-table-column
+            prop="request_id"
+            label="请求编号"
+            min-width="220"
+            show-overflow-tooltip
+          />
+        </el-table>
+      </div>
+    </el-drawer>
 
     <el-drawer v-model="recordVisible" title="续费记录" size="760px">
       <div v-loading="recordLoading" class="detail-wrap">
@@ -531,6 +619,8 @@ import {
   getParams as getParamsApi,
   auth as authApi,
   memberSuper as memberSuperApi,
+  memberBind as memberBindApi,
+  authorizationLogs as authorizationLogsApi,
   renew as renewApi,
   renewRecordList
 } from '@/api/merchant/merchant'
@@ -555,11 +645,19 @@ const paramsError = ref('')
 const listError = ref('')
 const recordError = ref('')
 const memberSuperLoadingId = ref(0)
+const bindingLoading = ref(false)
+const authorizationLoading = ref(false)
 
 const detailVisible = ref(false)
 const editVisible = ref(false)
 const actionVisible = ref(false)
 const recordVisible = ref(false)
+const bindingVisible = ref(false)
+const authorizationVisible = ref(false)
+const bindingTarget = ref(null)
+const authorizationTarget = ref(null)
+const authorizationRows = ref([])
+const authorizationError = ref('')
 
 const actionType = ref('')
 const actionTitle = ref('批量操作')
@@ -606,6 +704,7 @@ const defaultActionForm = () => ({
   sync_goods_disable: 0,
   auth_state: 1,
   auth_msg: '',
+  reason: '',
   renew_months: 1,
   renew_days: 0,
   amount: 0,
@@ -616,6 +715,7 @@ const defaultActionForm = () => ({
 const query = reactive(defaultQuery())
 const editForm = reactive(defaultEditForm())
 const actionForm = reactive(defaultActionForm())
+const bindingForm = reactive({ member_id: 0, reason: '' })
 
 const isEditing = computed(() => Boolean(editForm.id))
 const passwordFieldLabel = computed(() => (isEditing.value ? '登录密码（选填）' : '登录密码'))
@@ -1221,6 +1321,14 @@ async function submitAction() {
     ElMessage.warning('请至少填写一个大于 0 的续费月数或续费天数')
     return
   }
+  if (actionType.value === 'auth') {
+    const reviewReason =
+      Number(actionForm.auth_state) === 2 ? actionForm.auth_msg : actionForm.reason
+    if (!String(reviewReason || '').trim()) {
+      ElMessage.warning(Number(actionForm.auth_state) === 2 ? '请填写拒绝原因' : '请填写审核说明')
+      return
+    }
+  }
 
   actionLoading.value = true
   try {
@@ -1234,7 +1342,9 @@ async function submitAction() {
       await authApi({
         ids,
         auth_state: actionForm.auth_state,
-        auth_msg: actionForm.auth_msg
+        auth_msg: actionForm.auth_msg,
+        reason: actionForm.auth_state === 2 ? actionForm.auth_msg : actionForm.reason,
+        request_id: createRequestId('merchant-review')
       })
     } else if (actionType.value === 'renew') {
       await renewApi({
@@ -1311,12 +1421,20 @@ async function handleMemberSuperChange(row, value) {
     ? `确认将“${merchantName}”设为商家超管吗？开启后，绑定会员将在小程序获得平台商家审核和跨商家订单核销权限。`
     : `确认取消“${merchantName}”的商家超管权限吗？取消后，绑定会员将失去平台商家审核和跨商家订单核销权限。`
 
+  let reason = ''
   try {
-    await ElMessageBox.confirm(content, nextValue ? '开启商家超管' : '取消商家超管', {
-      type: 'warning',
-      confirmButtonText: '确认',
-      cancelButtonText: '取消'
-    })
+    const promptResult = await ElMessageBox.prompt(
+      content,
+      nextValue ? '开启商家超管' : '取消商家超管',
+      {
+        type: 'warning',
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        inputPlaceholder: '请填写本次权限变更原因',
+        inputValidator: (value) => String(value || '').trim() !== '' || '请填写权限变更原因'
+      }
+    )
+    reason = String(promptResult.value || '').trim()
   } catch (error) {
     return
   }
@@ -1325,7 +1443,9 @@ async function handleMemberSuperChange(row, value) {
   try {
     const res = await memberSuperApi({
       ids: [row.id],
-      member_is_super: nextValue
+      member_is_super: nextValue,
+      reason,
+      request_id: createRequestId('merchant-super')
     })
     ElMessage.success(res.msg || (nextValue ? '商家超管已开启' : '商家超管已取消'))
     setRecentAction(`${nextValue ? '开启' : '取消'}商家超管：${merchantName}`)
@@ -1335,6 +1455,67 @@ async function handleMemberSuperChange(row, value) {
   } finally {
     memberSuperLoadingId.value = 0
   }
+}
+
+function openMemberBinding(row) {
+  bindingTarget.value = row
+  bindingForm.member_id = Number(row.member_id || 0)
+  bindingForm.reason = ''
+  bindingVisible.value = true
+}
+
+async function submitMemberBinding() {
+  const target = bindingTarget.value
+  if (!target) return
+  const memberId = Number(bindingForm.member_id || 0)
+  const reason = String(bindingForm.reason || '').trim()
+  if (memberId === Number(target.member_id || 0)) {
+    ElMessage.warning('目标会员与当前绑定一致，无需提交')
+    return
+  }
+  if (!reason) {
+    ElMessage.warning('请填写会员绑定变更原因')
+    return
+  }
+  bindingLoading.value = true
+  try {
+    await memberBindApi({
+      id: target.id,
+      member_id: memberId,
+      reason,
+      request_id: createRequestId('merchant-member-bind')
+    })
+    ElMessage.success(memberId > 0 ? '会员绑定已更新' : '会员绑定已解除')
+    setRecentAction(`${memberId > 0 ? '绑定' : '解绑'}会员：${merchantDisplayTitle(target)}`)
+    bindingVisible.value = false
+    await fetchList()
+  } catch (error) {
+    ElMessage.error(memberId > 0 ? '会员绑定失败' : '会员解绑失败')
+  } finally {
+    bindingLoading.value = false
+  }
+}
+
+async function openAuthorizationLogs(row) {
+  authorizationTarget.value = row
+  authorizationRows.value = []
+  authorizationError.value = ''
+  authorizationVisible.value = true
+  authorizationLoading.value = true
+  try {
+    const res = await authorizationLogsApi({ merchant_id: row.id, page: 1, limit: 50 })
+    authorizationRows.value = Array.isArray(res.data?.list) ? res.data.list : []
+  } catch (error) {
+    authorizationError.value = '授权记录加载失败，请关闭后重试'
+    ElMessage.error('加载授权记录失败')
+  } finally {
+    authorizationLoading.value = false
+  }
+}
+
+function createRequestId(prefix) {
+  const uuid = globalThis.crypto?.randomUUID?.()
+  return `${prefix}:${uuid || `${Date.now()}-${Math.random().toString(16).slice(2)}`}`
 }
 
 async function openRenewRecords(singleRows = []) {

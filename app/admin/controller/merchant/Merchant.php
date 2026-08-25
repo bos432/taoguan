@@ -5,6 +5,7 @@ namespace app\admin\controller\merchant;
 use app\common\controller\BaseController;
 use app\common\domain\operation\BusinessOperationContextFactory;
 use app\common\service\merchant\MerchantMemberBindingService;
+use app\common\service\merchant\MerchantAuthorizationLogQueryService;
 use app\common\service\merchant\MerchantService;
 use app\common\service\merchant\MerchantSuperAuthorizationService;
 use app\common\service\permission\UnifiedPermissionContextService;
@@ -182,6 +183,27 @@ class Merchant extends BaseController
             )
         );
         return success($data);
+    }
+
+    /**
+     * @Apidoc\Title("商家授权审计记录")
+     */
+    public function authorizationLogs()
+    {
+        UnifiedPermissionContextService::assertAllowed(
+            UnifiedPermissionContextService::forPlatformUser(intval(user_id(true))),
+            'platform.merchant.view'
+        );
+        $param = $this->params(['merchant_id/d' => 0, 'authorization_type/s' => '']);
+        if (intval($param['merchant_id']) <= 0) {
+            exception('请选择商家');
+        }
+        return success(MerchantAuthorizationLogQueryService::list(
+            intval($param['merchant_id']),
+            strval($param['authorization_type']),
+            $this->page(),
+            $this->limit()
+        ));
     }
 
     /**

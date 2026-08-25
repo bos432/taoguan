@@ -578,3 +578,12 @@
 - 运行或测试结果：商家审核数据库集成测试通过 14 项断言，覆盖审核通过、默认管理员可用、审核日志、重复请求回放、重新审核不重复创建管理员、拒绝原因及审计，并证明首次审核、重复请求、重新审核和拒绝审核都不会新增、取消或转移会员绑定及会员超管权限。完整 `tests/refactor` 29 个脚本共 411 项断言通过；测试结束后订单 1732、明细 1733、采购流水 1477，操作请求、订单事件、网关尝试和商家授权日志均为 0；目标 PHP 语法和 `git diff --check` 通过。
 - 遗留问题：旧审核实现仍以私有 `legacyAuth()` 留在超大 `MerchantService` 中，待阶段四拆分时删除；灰度及正式环境仍需先部署授权审计迁移。admin-next 商家页面目前没有独立会员绑定/解绑和授权原因交互，也没有审计历史查看入口；普通审核角色的菜单权限数据仍需在迁移/页面阶段配置。
 - 下一阶段应继续处理的事项：重新读取计划和日志后，为 admin-next 商家管理补齐独立会员绑定/解绑、超管授予/取消及授权审计历史交互；高风险操作必须展示目标商家、当前/目标会员、影响权限并要求确认，保留现有资料编辑和审核操作。
+
+## 2026-08-25 渐进式重构阶段三：admin-next 商家权限操作与审计
+
+- 阶段名称：渐进式重构阶段三：admin-next 商家权限操作与审计
+- 本阶段完成内容：商家列表新增独立“绑定会员”和“授权记录”入口，普通资料编辑表单仍不包含会员或超管字段。绑定弹窗展示目标商家、当前/目标会员和超管影响，会员 ID 为 0 时执行解绑，换绑/解绑明确提示取消现有超管且不自动转授；原因必填并发送客户端请求编号。超管开关改为必须填写授权/取消原因的确认输入，商家审核通过或拒绝也要求填写依据并发送请求编号。新增只读授权审计查询服务和接口，抽屉展示审核、绑定及超管变更的前后值、操作人、来源、原因、时间和请求编号；接口使用 `platform.merchant.view` 后端权限断言。
+- 修改/新增的主要文件：`app/common/service/merchant/MerchantAuthorizationLogQueryService.php`、`app/admin/controller/merchant/Merchant.php`、`app/common/service/permission/UnifiedPermissionContextService.php`、`tests/refactor/merchant-authorization-log-query-database-integration.php`、`zflAdminWeb/src/api/merchant/merchant.js`、`zflAdminWeb/src/views/merchant/merchant.vue`、`zflAdminWeb/tests/merchant-authorization-audit.spec.js`、`DEVELOPMENT_LOG.md`
+- 运行或测试结果：授权审计查询数据库集成测试通过 6 项断言，完整 `tests/refactor` 30 个脚本共 417 项断言通过；真实本地管理员 GET `/admin/merchant.Merchant/authorizationLogs?merchant_id=4` 返回 HTTP 200。前端目标 Prettier、ESLint 和 `npm run build:admin-next-local` 通过；Playwright 绑定与审计交互 1/1 通过，覆盖影响提示、空原因不请求、绑定请求参数及请求编号、审计证据展示，写接口全部拦截未修改数据库。测试结束后核心表数量保持不变，操作请求、订单事件、网关尝试和商家授权日志均为 0；`git diff --check` 通过。
+- 遗留问题：当前绑定页面以会员 ID 精确设置，尚未提供按昵称/手机号检索的会员选择器；授权记录首版加载最近 50 条，尚未提供分页及类型筛选。普通平台角色若需要操作绑定或超管，部署时仍需在菜单权限数据中分配新增接口 URL。巡检端尚未接入统一权限上下文。
+- 下一阶段应继续处理的事项：重新读取计划和日志后，将巡检端接入统一权限上下文与 403 契约；梳理巡检员现有菜单/角色事实，保持入口独立和数据范围不变，并用授权/未授权测试验证后端是唯一授权源。

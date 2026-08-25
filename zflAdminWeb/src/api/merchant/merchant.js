@@ -115,6 +115,30 @@ export function memberSuper(data) {
 }
 
 /**
+ * 绑定或解绑商家会员
+ * @param {object} data 请求数据
+ */
+export function memberBind(data) {
+  return request({
+    url: url + 'memberBind',
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 商家授权审计记录
+ * @param {object} params 请求参数
+ */
+export function authorizationLogs(params) {
+  return request({
+    url: url + 'authorizationLogs',
+    method: 'get',
+    params
+  })
+}
+
+/**
  * 商家续费
  * @param {array} data 请求数据
  */

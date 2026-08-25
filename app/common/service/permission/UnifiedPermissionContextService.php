@@ -33,6 +33,7 @@ class UnifiedPermissionContextService
         'admin/merchant.Merchant/auth' => 'platform.merchant.review',
         'admin/merchant.Merchant/memberBind' => 'platform.merchant.bind',
         'admin/merchant.Merchant/memberSuper' => 'platform.merchant.super_authorize',
+        'admin/merchant.Merchant/authorizationLogs' => 'platform.merchant.view',
         'admin/order.Order/list' => 'platform.order.view',
         'admin/order.Order/orderPayAuth' => 'platform.order.payment_review',
         'admin/order.Order/takeDelivery' => 'platform.order.writeoff',

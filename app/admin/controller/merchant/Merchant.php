@@ -4,6 +4,8 @@ namespace app\admin\controller\merchant;
 
 use app\common\controller\BaseController;
 use app\common\service\merchant\MerchantService;
+use app\common\service\merchant\MerchantSuperAuthorizationService;
+use app\common\domain\operation\BusinessOperationContextFactory;
 use app\common\service\system\MobileAuditGrantService;
 use app\common\validate\merchant\MerchantValidate;
 use hg\apidoc\annotation as Apidoc;
@@ -142,9 +144,15 @@ class Merchant extends BaseController
      */
     public function memberSuper()
     {
-        $param = $this->params(['ids/a' => [], 'member_is_super/d' => 0]);
+        $param = $this->params(['ids/a' => [], 'member_is_super/d' => 0, 'reason/s' => '']);
         validate(MerchantValidate::class)->scene('member_super')->check($param);
-        $data = MerchantService::setMemberSuper($param['ids'], intval($param['member_is_super']));
+        $data = MerchantSuperAuthorizationService::execute(
+            $param['ids'],
+            intval($param['member_is_super']),
+            BusinessOperationContextFactory::fromRequest(
+                'admin-next', 'platform_admin', intval(user_id(true)), strval($param['reason'] ?? '')
+            )
+        );
         return success($data);
     }
 

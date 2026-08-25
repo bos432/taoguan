@@ -440,45 +440,11 @@ class MerchantService
         if (!self::supportsMemberSuperFlag()) {
             exception('请先执行商家超管字段补丁后再操作');
         }
-        $ids = array_values(array_unique(array_filter(array_map('intval', (array) $ids))));
-        if (empty($ids)) {
-            exception('请选择商家');
-        }
-
-        $memberIsSuper = $memberIsSuper === 1 ? 1 : 0;
-        $merchantList = MerchantModel::whereIn('id', $ids)
-            ->where('is_delete', 0)
-            ->field('id,title,member_id,member_is_super')
-            ->select()
-            ->toArray();
-        if (empty($merchantList)) {
-            exception('未找到可设置的商家');
-        }
-
-        if ($memberIsSuper === 1) {
-            $missingMembers = [];
-            foreach ($merchantList as $merchant) {
-                if (intval($merchant['member_id'] ?? 0) <= 0) {
-                    $missingMembers[] = trim((string) ($merchant['title'] ?? ('商家#' . intval($merchant['id'] ?? 0))));
-                }
-            }
-            if (!empty($missingMembers)) {
-                exception('以下商家尚未绑定会员，无法设置商家超管：' . implode('、', $missingMembers));
-            }
-        }
-
-        MerchantModel::whereIn('id', $ids)->update([
-            'member_is_super' => $memberIsSuper,
-            'update_uid' => user_id(),
-            'update_time' => datetime(),
+        return MerchantSuperAuthorizationService::execute((array) $ids, $memberIsSuper, [
+            'request_id' => 'compat:merchant-super:' . bin2hex(random_bytes(8)),
+            'source' => 'legacy', 'operator_type' => 'platform_admin',
+            'operator_id' => intval(user_id()), 'reason' => '兼容接口设置商家超管',
         ]);
-
-        MerchantCache::del($ids);
-
-        return [
-            'ids' => $ids,
-            'member_is_super' => $memberIsSuper,
-        ];
     }
 
     private static function supportsMemberSuperFlag(): bool

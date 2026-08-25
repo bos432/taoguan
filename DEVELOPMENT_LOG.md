@@ -551,3 +551,12 @@
 - 运行或测试结果：移动统一授权特征测试通过 15 项，原权限特征 19 项、统一上下文 20 项继续通过；完整 `tests/refactor` 26 个脚本共 376 项断言通过。清理本地 API 缓存后，为无 `platform.merchant.review` 权限的普通会员生成测试 token，直接 POST `/api/admin.MobileAdmin/merchantAuth`，真实响应为 HTTP 403、业务码 `40301`、错误码 `AUTH_FORBIDDEN`、权限码 `platform.merchant.review`，请求在参数校验及写服务前终止。测试结束后订单 1732、明细 1733、采购流水 1477，操作请求/事件/网关记录均为 0；目标 PHP 语法和 `git diff --check` 通过。
 - 遗留问题：本阶段只迁移 MobileAdmin 控制器；admin-next、商家桌面端和巡检端仍有旧菜单中间件/控制器校验。真实授权用户的商家审核、支付审核和核销成功路径由既有数据库集成测试覆盖，但尚未使用小程序页面做全流程浏览器验收。
 - 下一阶段应继续处理的事项：重新读取计划和日志后，将商家资料编辑、会员绑定、商家审核和超管授权拆成独立命令服务；普通资料编辑必须继续禁止修改 `member_id` 与超管状态，授权和取消必须记录授权人、时间、原因及业务事件/操作日志。
+
+## 2026-08-25 渐进式重构阶段三：商家超管授权命令与审计
+
+- 阶段名称：渐进式重构阶段三：商家超管授权命令与审计
+- 本阶段完成内容：保留管理员 `memberSuper` 原 URL 和返回字段，通过独立 `MerchantSuperAuthorizationService` 执行授予及取消超管；授权前复核商家已绑定会员、已审核通过且未禁用，商家字段变更、幂等请求完成和授权审计日志在同一数据库事务提交。新增授权审计表，记录商家、会员、授权前后值、操作人、来源端、请求编号、原因和时间；相同请求编号重复提交直接回放原结果，不重复变更或写日志。旧 `MerchantService::setMemberSuper()` 保留为兼容壳，普通资料编辑仍不接受 `member_id` 和 `member_is_super`。
+- 修改/新增的主要文件：`private/migrations/20260825_add_merchant_authorization_log.sql`、`app/common/model/merchant/MerchantAuthorizationLogModel.php`、`app/common/service/merchant/MerchantSuperAuthorizationService.php`、`app/common/service/merchant/MerchantService.php`、`app/admin/controller/merchant/Merchant.php`、`tests/refactor/merchant-super-authorization-database-integration.php`、`DEVELOPMENT_LOG.md`
+- 运行或测试结果：迁移已在本地隔离库执行；超管授权数据库集成测试通过 8 项断言，覆盖状态变更、授权前后审计、原因记录、重复请求回放、日志唯一性和事务回滚。完整 `tests/refactor` 27 个脚本共 384 项断言通过；`refactor:baseline --database` 5 项检查通过、0 失败；测试结束后订单 1732、明细 1733、采购流水 1477，操作请求、订单事件、网关尝试和商家授权日志均为 0。目标 PHP 语法和 `git diff --check` 通过。
+- 遗留问题：灰度及正式环境部署代码前必须先执行新增迁移；管理员页面尚未强制填写授权/取消原因，也尚未提供授权历史查询。会员绑定和商家审核仍使用现有服务入口，尚未拆成独立命令；重新审核不得修改超管状态的约束需在审核命令阶段固化测试。
+- 下一阶段应继续处理的事项：重新读取计划和日志后，拆分商家会员绑定命令；绑定和解绑必须独立于普通资料编辑，校验会员与商家冲突，支持幂等请求并写可追溯审计，保持现有接口兼容。

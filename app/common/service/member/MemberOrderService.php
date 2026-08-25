@@ -3,7 +3,6 @@ namespace app\common\service\member;
 use app\api\controller\member\MemberOrder;
 use app\common\cache\member\MemberOrderCache;
 use app\common\model\file\FileModel;
-use app\common\model\goods\GoodsInventoryModel;
 use app\common\model\goods\GoodsLabelModel;
 use app\common\model\goods\GoodsModel;
 use app\common\service\goods\GoodsBuyLockService;
@@ -25,6 +24,7 @@ use app\common\service\order\OrderBusinessEventService;
 use app\common\service\order\OrderRefundService;
 use app\common\service\order\OrderCancellationService;
 use app\common\service\order\OrderFulfillmentService;
+use app\common\service\order\OrderWriteoffService;
 use app\common\service\order\VoucherPaymentReviewService;
 use app\common\gateway\payment\PrepaymentGatewayInterface;
 use app\common\gateway\payment\WechatPrepaymentGateway;
@@ -1135,101 +1135,7 @@ class MemberOrderService
      */
     public static function takeDelivery($ids, $param = [])
     {
-        $model = new MemberOrderModel();
-        $pk = $model->getPk();
-        $context = $param['_operation_context'] ?? BusinessOperationContextFactory::fromRequest(
-            'legacy', 'system', intval(operate_user_id()), '订单核销'
-        );
-        // 启动事务
-        $model::startTrans();
-        try {
-            $operation = BusinessOperationRequestService::begin('order.writeoff', $context);
-            if (!empty($operation['duplicate'])) {
-                if (intval($operation['status'] ?? 0) === 1) {
-                    $model::commit();
-                    return json_decode(strval($operation['result_json'] ?? 'true'), true) ?? true;
-                }
-                exception(intval($operation['status'] ?? 0) === 0 ? '该请求正在处理中，请勿重复提交' : '该请求已处理失败，请更换请求编号后重试');
-            }
-            $list = $model->whereIn($pk, $ids)
-                ->with(['detaileds'])
-                ->where('is_disable',0)
-                ->where('is_delete',0)
-                ->where('status',1)
-                ->select();
-            foreach ($list as $key=>$val) {
-                $before = $val->toArray();
-                if (!OrderStateTransitionPolicy::canApply(OrderStateTransitionPolicy::PICKED_UP, $before)) {
-                    exception('订单状态已变化，请刷新后重试');
-                }
-                if($val['pick_up_code']!=$param['pick_up_code']){
-                    exception('提货码错误');
-                }
-                //出库
-                $inventorys = [];
-                foreach ($val['detaileds'] as $k=>$v) {
-                    $warehousing_num = GoodsInventoryModel::query()
-                        ->where('goods_id',$v['goods_id'])
-                        ->where('is_disable',0)
-                        ->where('is_delete',0)
-                        ->sum('warehousing_num');
-                    $merchant_id = GoodsModel::query()->where('id',$v['goods_id'])->value('merchant_id');
-                    if($warehousing_num>=$v['quantity']){
-                        $last_warehousing = GoodsInventoryModel::query()
-                            ->where('goods_id',$v['goods_id'])
-                            ->where('is_disable',0)
-                            ->where('is_delete',0)
-                            ->order(['create_time'=>'desc'])
-                            ->field('id,setting_warehouse_id,setting_hall_id')
-                            ->find();
-                        array_push($inventorys,[
-                            'merchant_id'=>$merchant_id,//商家id
-                            'goods_id'=>$v['goods_id'],//商品id
-                            'warehousing_num'=>-$v['quantity'],//出入库数量
-                            'setting_warehouse_id'=>isset($last_warehousing['setting_warehouse_id'])?$last_warehousing['setting_warehouse_id']:null,//仓库id
-                            'setting_hall_id'=>isset($last_warehousing['setting_hall_id'])?$last_warehousing['setting_hall_id']:null,//大厅id
-                            'inventory_type'=>2,//出入库类型：1、入库 2、出库
-                            'member_id'=>$val['member_id'],//购买用户
-                            'member_order_id'=>$val['id'],//订单id
-                            'create_time'=>datetime(),
-                            'create_uid'=>operate_user_id()
-                        ]);
-                    }
-                }
-                if(count($inventorys)>0){
-                    $inventory_add = GoodsInventoryModel::insertAll($inventorys);
-                }
-                $val->status = MemberOrderModel::getStatus('p_evaluate',1);
-                $val->delivery_time = datetime();
-                //订单日志
-                $log = MemberOrderLogService::add([
-                    'title'=>'用户已提货',
-                    'member_order_id'=>$val['id'],
-                    'role_type'=>1
-                ]);
-                $val->save();
-                $after = array_merge($before, OrderStateTransitionPolicy::after(OrderStateTransitionPolicy::PICKED_UP), [
-                    'delivery_time' => strval($val->delivery_time),
-                ]);
-                OrderBusinessEventService::record(OrderStateTransitionPolicy::PICKED_UP, $before, $after, $context, [
-                    'operation_request_id' => $operation['id'],
-                    'amount' => floatval($val['pay_price'] ?? $val['total_price'] ?? 0),
-                    'quantity' => intval($val['total_num'] ?? 0),
-                ]);
-            }
-            BusinessOperationRequestService::complete(intval($operation['id']), true);
-            // 提交事务
-            $model::commit();
-        } catch (\Throwable $e) {
-            $errmsg = $e->getMessage();
-            // 回滚事务
-            $model::rollback();
-        }
-        if (isset($errmsg)) {
-            exception($errmsg);
-        }
-        MemberOrderCache::del($ids);
-        return true;
+        return OrderWriteoffService::writeoff(array_map('intval', (array) $ids), $param);
     }
 
     /**

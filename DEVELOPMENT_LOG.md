@@ -659,3 +659,12 @@
 - 运行或测试结果：凭证批准 14 项、驳回 9 项数据库断言通过；首次执行直接调用新服务，重复请求通过旧兼容入口回放，覆盖状态、金额、事件、账单、采购台账、幂等和事务回滚。完整 `tests/refactor` 36 个脚本共 493 项断言通过；`MemberOrderService` 从 1737 行降至 1571 行，新服务 190 行。业务基线保持订单 1732、明细 1733、采购台账 1477，事件、幂等、网关及授权日志测试表均为 0；PHP 语法与 `git diff --check` 通过。
 - 遗留问题：`MemberOrderService` 仍超过 800 行，下单 `confirmOrder`、微信重新支付 `payOrder` 和核销 `takeDelivery` 仍直接包含复杂事务；本阶段未改变这些路径。旧备份 `MemberOrderService-22.php` 仍按计划只标记、不删除。
 - 下一阶段应继续处理的事项：重新读取计划和日志后，拆分订单核销 `takeDelivery` 到独立写命令服务；保持旧入口兼容，并复用现有核销、事件和幂等集成测试验证库存出库及状态变化。
+
+## 2026-08-25 渐进式重构阶段四：订单核销服务拆分
+
+- 阶段名称：渐进式重构阶段四：订单核销服务拆分
+- 本阶段完成内容：将自提订单核销的提货码校验、库存出库、订单日志、状态更新、业务事件、幂等请求和缓存失效从 `MemberOrderService` 迁入独立 `OrderWriteoffService`。旧 `takeDelivery()` 保留原入口并转调新服务，admin、merchant 和移动核销接口的 URL、参数及 `true` 返回结构不变；继续保持待发货到待评价的历史状态语义。
+- 修改/新增的主要文件：`app/common/service/order/OrderWriteoffService.php`、`app/common/service/member/MemberOrderService.php`、`tests/refactor/order-writeoff-database-integration.php`、`DEVELOPMENT_LOG.md`
+- 运行或测试结果：订单核销数据库集成测试通过 10 项断言，首次执行直接调用新服务、重复请求通过旧兼容入口，覆盖订单状态、库存流水、事件、幂等和事务回滚。完整 `tests/refactor` 36 个脚本共 493 项断言通过；`MemberOrderService` 从 1571 行降至 1477 行，新服务 122 行。业务基线保持订单 1732、明细 1733、库存流水 0、采购台账 1477，事件、幂等、网关及授权日志测试表均为 0；PHP 语法与 `git diff --check` 通过。
+- 遗留问题：核销服务沿用历史规则，库存可用量不足时跳过出库但仍推进订单状态，本阶段按兼容原则未改变；后续商品/库存模块需要独立梳理该规则并通过并发测试后再决定是否收紧。`MemberOrderService` 仍超过 800 行。
+- 下一阶段应继续处理的事项：重新读取计划和日志后，拆分 `confirmOrder` 下单事务为独立订单创建服务；保持微信预支付 Saga、购物车清理、库存扣减、事件及幂等逻辑，复用订单创建和微信预支付集成测试。

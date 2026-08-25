@@ -9,6 +9,7 @@ use app\common\model\member\MemberOrderModel;
 use app\common\model\order\BusinessOperationRequestModel;
 use app\common\model\order\OrderBusinessEventModel;
 use app\common\service\member\MemberOrderService;
+use app\common\service\order\OrderWriteoffService;
 use think\facade\Db;
 
 $app = new think\App();
@@ -44,7 +45,7 @@ $assert = static function (bool $condition, string $message) use (&$assertions):
 Db::startTrans();
 try {
     MemberOrderModel::where('id', $before['id'])->update(['status' => 1, 'delivery_type' => 2, 'pick_up_code' => $pickUpCode]);
-    $first = MemberOrderService::takeDelivery([(int) $before['id']], $params);
+    $first = OrderWriteoffService::writeoff([(int) $before['id']], $params);
     $after = MemberOrderModel::where('id', $before['id'])->find()->toArray();
     $assert($first === true, 'writeoff keeps compatibility return');
     $assert((int) $after['status'] === 3, 'writeoff moves order to pending evaluation');

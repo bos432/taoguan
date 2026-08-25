@@ -30,6 +30,8 @@ use app\common\service\order\OrderCancellationService;
 use app\common\service\order\OrderFulfillmentService;
 use app\common\gateway\payment\PrepaymentGatewayInterface;
 use app\common\gateway\payment\WechatPrepaymentGateway;
+use app\common\service\order\WechatPrepaymentSagaService;
+use app\common\service\payment\PaymentGatewayAttemptService;
 use EasyWeChat\Factory;
 use think\facade\Config;
 use think\facade\Db;
@@ -741,22 +743,21 @@ class MemberOrderService
             $pendingAmount
         );
         $model = new MemberOrderModel();
+        $databasePrepared = false;
         // 启动事务
         $model::startTrans();
         try {
             $operation = BusinessOperationRequestService::begin('order.create', $operationContext);
             if (!empty($operation['duplicate'])) {
-                if (intval($operation['status'] ?? 0) === 1) {
-                    $model::commit();
-                    return json_decode(strval($operation['result_json'] ?? 'true'), true);
-                }
-                exception(intval($operation['status'] ?? 0) === 0 ? '该下单请求正在处理中，请勿重复提交' : '该下单请求已失败，请重新结算后再试');
+                $model::commit();
+                return WechatPrepaymentSagaService::replayOrBlock($operation);
             }
             $pay_common_on = "";//支付订单号
             $order_nos = $model::generateOrderNumber(count($param['merchant_list']));
             $pay_common_on = $order_nos[0];
             $total_fee = 0;//支付金额
             $total_goods_num=0;//商品数量
+            $createdOrderIds = [];
             foreach ($param['merchant_list'] as $key=>$val){
                 $data = [
                     'create_uid'=>$param['member_id'],//添加用户id
@@ -779,6 +780,7 @@ class MemberOrderService
                     'self_phone'=>isset($param['self_phone']) && $param['delivery_type']==2?$param['self_phone']:null,//自提预留手机号
                 ];
                 $order_id = $model::insertGetId($data);
+                $createdOrderIds[] = intval($order_id);
                 $order_detailed = [];
                 $total_num = 0;
                 $total_price = 0;
@@ -871,25 +873,30 @@ class MemberOrderService
             switch ($data['pay_type']){
                 case 1:
                     /*************************************组装微信支付************************************/
-                    $result = $prepaymentGateway->prepay([
+                    $gatewayRequest = [
                         'description' => '购买' . $total_goods_num . '件商品',
                         'out_trade_no' => $pay_common_on,
                         'amount' => floatval($total_fee),
                         'notify_url' => 'https://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . '/api/member.MemberOrder/orderNotify',
                         'member_id' => intval($param['member_id']),
+                    ];
+                    $attempt = PaymentGatewayAttemptService::prepare([
+                        'operation_request_id' => $operation['id'],
+                        'business_type' => 'prepayment',
+                        'provider' => 'wechat',
+                        'merchant_request_no' => $pay_common_on,
+                        'member_order_id' => $createdOrderIds[0],
+                        'order_no' => $order_nos[0],
+                        'total_amount' => floatval($total_fee),
+                        'amount' => floatval($total_fee),
+                        'request' => $gatewayRequest,
                     ]);
-                    if (!empty($result['success'])) {
-                        $bridgeConfig = $result['bridge_config'];
-                        BusinessOperationRequestService::complete(intval($operation['id']), $bridgeConfig);
-                        // 提交事务
-                        $model::commit();
-                        GoodsBuyLockService::releaseByMember($orderedGoodsIds, intval($param['member_id'] ?? 0));
-                        // 小程序处理
-                        return $bridgeConfig; // 返回数组
-                    }else{
-                        exception(strval($result['error'] ?? '微信预下单失败'));
-                    }
-                    break;
+                    $model::commit();
+                    $databasePrepared = true;
+                    GoodsBuyLockService::releaseByMember($orderedGoodsIds, intval($param['member_id'] ?? 0));
+                    return WechatPrepaymentSagaService::execute(
+                        $attempt, $operation, $gatewayRequest, $createdOrderIds, $param, $prepaymentGateway
+                    );
                 case 2:
                     /*************************************凭证支付************************************/
                     break;
@@ -897,12 +904,14 @@ class MemberOrderService
             BusinessOperationRequestService::complete(intval($operation['id']), true);
             // 提交事务
             $model::commit();
+            $databasePrepared = true;
             GoodsBuyLockService::releaseByMember($orderedGoodsIds, intval($param['member_id'] ?? 0));
             return true;
         } catch (\Exception $e) {
             $errmsg = $e->getMessage();
-            // 回滚事务
-            $model::rollback();
+            if (!$databasePrepared) {
+                $model::rollback();
+            }
         }
         if (isset($errmsg)) {
             exception($errmsg);

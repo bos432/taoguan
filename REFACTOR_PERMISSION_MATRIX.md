@@ -43,3 +43,30 @@
 - 巡检非超管必须通过菜单角色校验，无权限时返回明确拒绝错误。
 
 阶段三统一权限响应前，这些特征不得回归；兼容接口仍保留原 URL 和原业务结构。
+
+## 5. 统一权限上下文契约
+
+阶段三首个兼容接口已固定返回以下字段：
+
+- `identity`：当前身份类型、ID 和显示名称。
+- `merchant`：当前商家 ID、名称和审核状态；非商家身份为空。
+- `role_codes`：稳定角色码，例如 `platform_super`、`merchant_owner`、`merchant_employee`、`merchant_super`、`member`。
+- `permission_codes` / `permission_map`：稳定权限码数组及映射。
+- `data_scope`：`all`、`role`、`merchant`、`member` 或 `member_and_merchant`，并明确商家 ID 与会员 ID。
+- `permission_version`：由当前身份、角色、权限与数据范围生成的版本摘要；登录、刷新或切换商家身份后应替换前端旧版本。
+
+兼容查询入口：
+
+| 来源端 | 接口 |
+|---|---|
+| `admin-next` | `admin/system.UserCenter/permissionContext` |
+| 商家桌面端 | `merchant/system.UserCenter/permissionContext` |
+| uni-app 会员/移动商家端 | `api/merchant.Identity/context`，且 `current`、`switch` 附带 `permission_context` |
+
+统一拒绝契约为 HTTP `403`、业务码 `40301`、错误码 `AUTH_FORBIDDEN`，并在 `data.permission` 返回被拒绝的权限码。旧控制器尚未全部迁移到统一断言，迁移期间原后端校验继续保留，不能提前删除。
+
+首批稳定权限码：
+
+- 平台：`platform.merchant.view`、`platform.merchant.review`、`platform.order.view`、`platform.order.payment_review`、`platform.order.writeoff`、`platform.order.refund`、`platform.finance.ledger`、`platform.finance.gateway_attempt`。
+- 商家：`merchant.profile.edit`、`merchant.order.view`、`merchant.order.verify`、`merchant.order.cross_verify`、`merchant.stats.view`、`merchant.product.publish`。
+- 会员：`member.profile.view`、`member.order.view_own`、`member.order.create`、`member.order.refund_own`。

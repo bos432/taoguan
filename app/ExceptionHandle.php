@@ -4,6 +4,7 @@
 // 应用异常处理类
 namespace app;
 
+use app\common\exception\PermissionDeniedException;
 use app\common\service\utils\RetCodeUtils;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\ModelNotFoundException;
@@ -72,6 +73,15 @@ class ExceptionHandle extends Handle
             $data['msg']  = $e->getError();
             $data['data'] = [];
             return response($data, 200, [], 'json');
+        }
+
+        if ($e instanceof PermissionDeniedException) {
+            return json([
+                'code' => PermissionDeniedException::BUSINESS_CODE,
+                'error_code' => PermissionDeniedException::ERROR_CODE,
+                'msg' => $e->getMessage(),
+                'data' => ['permission' => $e->permission()],
+            ], 403);
         }
 
         // 请求异常

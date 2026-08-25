@@ -4,6 +4,7 @@ namespace app\api\controller\merchant;
 
 use app\common\controller\BaseController;
 use app\common\service\merchant\MerchantIdentityService;
+use app\common\service\permission\UnifiedPermissionContextService;
 
 class Identity extends BaseController
 {
@@ -16,9 +17,11 @@ class Identity extends BaseController
 
     public function current()
     {
-        return success(
-            MerchantIdentityService::current(member_id(true), MerchantIdentityService::requestedMerUserId())
-        );
+        $memberId = member_id(true);
+        $merchantUserId = MerchantIdentityService::requestedMerUserId();
+        $result = MerchantIdentityService::current($memberId, $merchantUserId);
+        $result['permission_context'] = UnifiedPermissionContextService::forMember($memberId, $merchantUserId);
+        return success($result);
     }
 
     public function switch()
@@ -27,9 +30,11 @@ class Identity extends BaseController
             'mer_user_id/d' => 0,
         ]);
 
-        return success(
-            MerchantIdentityService::switch(member_id(true), intval($param['mer_user_id'] ?? 0))
-        );
+        $memberId = member_id(true);
+        $merchantUserId = intval($param['mer_user_id'] ?? 0);
+        $result = MerchantIdentityService::switch($memberId, $merchantUserId);
+        $result['permission_context'] = UnifiedPermissionContextService::forMember($memberId, $merchantUserId);
+        return success($result);
     }
 
     public function permissions()
@@ -37,5 +42,13 @@ class Identity extends BaseController
         return success([
             'permissions' => MerchantIdentityService::permissions(member_id(true), MerchantIdentityService::requestedMerUserId()),
         ]);
+    }
+
+    public function context()
+    {
+        return success(UnifiedPermissionContextService::forMember(
+            member_id(true),
+            MerchantIdentityService::requestedMerUserId()
+        ));
     }
 }

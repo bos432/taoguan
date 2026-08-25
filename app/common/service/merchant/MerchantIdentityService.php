@@ -41,6 +41,12 @@ class MerchantIdentityService
                 'is_unauth' => 1,
                 'is_disable' => 0,
             ],
+            [
+                'api_url' => 'api/merchant.Identity/context',
+                'api_name' => '统一身份权限上下文',
+                'is_unauth' => 1,
+                'is_disable' => 0,
+            ],
         ];
     }
 

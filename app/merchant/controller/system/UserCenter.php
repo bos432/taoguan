@@ -8,6 +8,7 @@ use app\common\validate\merchant\MerchantUserCenterValidate;
 use app\common\validate\merchant\MerchantUserLogValidate;
 use app\common\service\merchant\MerchantUserCenterService;
 use app\common\service\merchant\MerchantUserLogService;
+use app\common\service\permission\UnifiedPermissionContextService;
 use hg\apidoc\annotation as Apidoc;
 
 /**
@@ -17,6 +18,11 @@ use hg\apidoc\annotation as Apidoc;
  */
 class UserCenter extends BaseController
 {
+    public function permissionContext()
+    {
+        return success(UnifiedPermissionContextService::forMerchantUser(mer_user_id(true)));
+    }
+
     /**
      * @Apidoc\Title("我的信息")
      * @Apidoc\Returned(ref="app\common\model\system\UserModel", withoutField="password")

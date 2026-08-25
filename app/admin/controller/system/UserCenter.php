@@ -8,6 +8,7 @@ use app\common\validate\system\UserCenterValidate;
 use app\common\validate\system\UserLogValidate;
 use app\common\service\system\UserCenterService;
 use app\common\service\system\UserLogService;
+use app\common\service\permission\UnifiedPermissionContextService;
 use hg\apidoc\annotation as Apidoc;
 
 /**
@@ -17,6 +18,11 @@ use hg\apidoc\annotation as Apidoc;
  */
 class UserCenter extends BaseController
 {
+    public function permissionContext()
+    {
+        return success(UnifiedPermissionContextService::forPlatformUser(user_id(true)));
+    }
+
     /**
      * @Apidoc\Title("我的信息")
      * @Apidoc\Returned(ref="app\common\model\system\UserModel", withoutField="password")

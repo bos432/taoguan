@@ -533,3 +533,12 @@
 - 运行或测试结果：差额证据数据库集成测试通过 10 项断言，覆盖 2998 元匹配金额、未配平数量、原因、订单时间线、业务事件、汇总和回滚；完整 `tests/refactor` 24 个脚本共 341 项断言通过。`npm run build:admin-next-local` 通过；Playwright 2998 差额弹窗到时间线抽屉交互 1/1 通过；目标 ESLint、Prettier、PHP 语法和 `git diff --check` 通过。真实本地快照按商家 4、买入方向、目标 2998 元运行原配平算法返回 `balance`，主表 20 笔订单均附带证据，合计 40 条旧日志；测试结束后订单 1732、明细 1733、采购流水 1477，操作请求/事件/网关记录均为 0。
 - 遗留问题：本地历史快照在新版事件表启用前形成，真实差额订单当前均显示 `legacy_only`，完整新事件分支由数据库集成测试和 Playwright 契约验证；灰度产生新订单后需再验证 `hybrid/event`。旧配平算法仍作为主计算结果，本阶段只补证据，没有切换到事件事实算法，也没有修改任何历史金额或订单状态。
 - 下一阶段应继续处理的事项：重新读取计划和日志后，进入阶段三统一权限的首个小阶段，先定义统一权限上下文响应与 403 契约，并为平台管理员、财务、审核员、客服、商家负责人、员工、超管、巡检员和会员建立可自动验证的权限码基线。
+
+## 2026-08-25 渐进式重构阶段三：统一权限上下文与 403 契约
+
+- 阶段名称：渐进式重构阶段三：统一权限上下文与 403 契约
+- 本阶段完成内容：新增统一权限上下文服务，将平台后台菜单 URL、商家后台菜单 URL、小程序商家身份权限和移动管理布尔权限适配为稳定权限码。统一响应包含当前身份、商家、角色码、权限码/映射、数据范围和由事实生成的 `permission_version`；分别新增 admin-next、商家桌面端和 uni-app 查询入口，商家身份 `current/switch` 在保留旧字段的同时附带新上下文，使切换身份后可立即替换权限缓存。新增 `PermissionDeniedException` 和异常渲染契约，统一返回 HTTP 403、业务码 `40301`、错误码 `AUTH_FORBIDDEN` 及被拒绝权限码。旧控制器校验继续保留，本阶段没有一次性替换全部写接口。
+- 修改/新增的主要文件：`app/common/exception/PermissionDeniedException.php`、`app/common/service/permission/UnifiedPermissionContextService.php`、`app/ExceptionHandle.php`、`app/admin/controller/system/UserCenter.php`、`app/merchant/controller/system/UserCenter.php`、`app/api/controller/merchant/Identity.php`、`app/common/service/merchant/MerchantIdentityService.php`、`tests/refactor/unified-permission-context-database-integration.php`、`REFACTOR_PERMISSION_MATRIX.md`、`DEVELOPMENT_LOG.md`
+- 运行或测试结果：统一权限数据库集成测试通过 20 项断言，覆盖平台超管、商家数据隔离、商家桌面超管不得跨商家、会员本人权限、稳定权限版本、允许/拒绝断言及异常处理器最终 JSON；完整 `tests/refactor` 25 个脚本共 361 项断言通过。真实本地管理员登录后调用 `/admin/system.UserCenter/permissionContext` 返回 200，包含 `platform_super`、8 个平台权限码、`all` 数据范围和 20 位权限版本；全部目标 PHP 语法和 `git diff --check` 通过。
+- 遗留问题：统一上下文目前覆盖平台后台、商家桌面端和 uni-app 会员/移动商家，巡检端仍需接入；平台普通角色的权限码由现有菜单 URL 映射，尚未逐个角色账号做浏览器验收。高风险写接口仍使用旧 `MobileAdminAccessService` 校验，尚未迁移到统一 `assertAllowed`，因此新 403 契约只对接入新断言的接口生效。
+- 下一阶段应继续处理的事项：重新读取计划和日志后，先迁移移动端商家审核、支付审核和订单核销三个高风险写接口；必须保留旧授权事实作为上下文来源，改为统一权限码断言，并用未授权真实 HTTP 请求验证 403 契约。

@@ -714,6 +714,9 @@ class MemberOrderService
      */
     public static function confirmOrder($param){
         MerchantService::assertMemberMerchantAvailableIfExists($param['member_id'] ?? 0);
+        $operationContext = $param['_operation_context'] ?? BusinessOperationContextFactory::fromRequest(
+            'legacy', 'member', intval($param['member_id'] ?? 0), '会员确认下单'
+        );
         $source = trim(strval($param['source'] ?? ''));
         $orderedGoodsIds = [];
         $pendingQuantity = 0;
@@ -740,6 +743,14 @@ class MemberOrderService
         // 启动事务
         $model::startTrans();
         try {
+            $operation = BusinessOperationRequestService::begin('order.create', $operationContext);
+            if (!empty($operation['duplicate'])) {
+                if (intval($operation['status'] ?? 0) === 1) {
+                    $model::commit();
+                    return json_decode(strval($operation['result_json'] ?? 'true'), true);
+                }
+                exception(intval($operation['status'] ?? 0) === 0 ? '该下单请求正在处理中，请勿重复提交' : '该下单请求已失败，请重新结算后再试');
+            }
             $pay_common_on = "";//支付订单号
             $order_nos = $model::generateOrderNumber(count($param['merchant_list']));
             $pay_common_on = $order_nos[0];
@@ -816,6 +827,23 @@ class MemberOrderService
                     'total_price'=>$total_price,
                     'pick_up_code'=>$data['delivery_type']==2?$order_id.rand(10, 99):null
                 ]);
+                $createdOrder = array_merge($data, [
+                    'id' => $order_id,
+                    'total_num' => $total_num,
+                    'total_price' => $total_price,
+                    'pay_status' => 0,
+                    'refund_status' => 0,
+                ]);
+                OrderBusinessEventService::record(OrderStateTransitionPolicy::CREATED, [], $createdOrder, $operationContext, [
+                    'operation_request_id' => $operation['id'],
+                    'amount' => floatval($total_price),
+                    'quantity' => intval($total_num),
+                    'payload' => [
+                        'pay_common_on' => $pay_common_on,
+                        'pay_type' => intval($data['pay_type']),
+                        'delivery_type' => intval($data['delivery_type']),
+                    ],
+                ]);
                 $total_fee = bcadd($total_fee,$total_price,2);
                 $total_goods_num=bcadd($total_goods_num,$total_num,0);
                 //清除购物车
@@ -863,11 +891,13 @@ class MemberOrderService
                         'openid' => ThirdModel::where('member_id',$param['member_id'])->value('openid'),
                     ]);
                     if ($result['return_code']  === 'SUCCESS' && $result['return_msg'] === 'OK') {
+                        $bridgeConfig = $app->jssdk->bridgeConfig($result['prepay_id'], false);
+                        BusinessOperationRequestService::complete(intval($operation['id']), $bridgeConfig);
                         // 提交事务
                         $model::commit();
                         GoodsBuyLockService::releaseByMember($orderedGoodsIds, intval($param['member_id'] ?? 0));
                         // 小程序处理
-                        return $app->jssdk->bridgeConfig($result['prepay_id'], false); // 返回数组
+                        return $bridgeConfig; // 返回数组
                     }else{
                         exception($result['return_msg']);
                     }
@@ -876,6 +906,7 @@ class MemberOrderService
                     /*************************************凭证支付************************************/
                     break;
             }
+            BusinessOperationRequestService::complete(intval($operation['id']), true);
             // 提交事务
             $model::commit();
             GoodsBuyLockService::releaseByMember($orderedGoodsIds, intval($param['member_id'] ?? 0));

@@ -142,6 +142,9 @@ class MemberOrder extends BaseController
         $param = $this->params(MemberOrderService::$edit_field);
         $param['member_id']=member_id();
         validate(MemberOrderValidate::class)->scene('confirmOrder')->check($param);
+        $param['_operation_context'] = \app\common\domain\operation\BusinessOperationContextFactory::fromRequest(
+            'uniapp-weixin', 'member', intval($param['member_id']), '会员确认下单'
+        );
         $data = MemberOrderService::confirmOrder($param);
         return success($data);
     }

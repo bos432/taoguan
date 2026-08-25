@@ -25,7 +25,12 @@ export default {
   shopCartDel: (params) => request("/member.MemberShopCart/dele", params, "post"),
   shopCartEdit: (params) => request("/member.MemberShopCart/edit", params, "post"),
   getConfirmOrder: (params) => request("/member.MemberOrder/getConfirmOrder", params, "post"),
-  confirmOrder: (params) => request("/member.MemberOrder/confirmOrder", params, "post"),
+  confirmOrder: (params) => {
+    if (!params.request_id) {
+      params.request_id = `order-create:${Date.now()}:${Math.random().toString(16).slice(2)}`;
+    }
+    return request("/member.MemberOrder/confirmOrder", params, "post");
+  },
   getOrderParams: (params) => request("/member.MemberOrder/getParams", params, "get"),
   getOrderList: (params) => request("/member.MemberOrder/list", params, "post"),
   cancelOrder: (params) => request("/member.MemberOrder/cancelOrder", params, "post"),

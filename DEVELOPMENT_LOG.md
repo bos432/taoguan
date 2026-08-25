@@ -380,3 +380,12 @@
 - 运行或测试结果：`php tests/refactor/sql-snapshot-audit.php` 通过 6 项断言；`php think refactor:snapshot --snapshot 413_zlck666_com_2026-06-19_11-32-59_mysql_data_FhRY1.sql --output refactor-baselines/20260619-snapshot.json` 成功。基准显示有效订单 1724 笔、已支付 1720 笔、已支付实付 3,784,243.05 元；采购流水 1477 条、总额 4,376,552.64 元，订单及明细引用缺失均为 0。
 - 遗留问题：订单主表缺少订单号、商家/支付时间、会员/创建时间索引，明细和日志缺少订单关联索引；索引必须在测试库通过查询计划和写入影响验证后再新增。快照聚合尚未直接运行 `MerchantPurchaseLedgerReportService` 的完整页面算法，阶段二需在隔离数据库导入脱敏快照后做新旧输出对照。
 - 下一阶段应继续处理的事项：重新读取计划和日志后，进入阶段一角色权限矩阵与现状特征测试小阶段，覆盖平台、商家、商家超管、巡检和会员的授权判定；完成后再进入阶段二订单服务拆分前的状态机与写入口收敛。
+
+## 2026-08-25 渐进式重构阶段一：权限矩阵特征化
+
+- 阶段名称：渐进式重构阶段一：权限矩阵特征化
+- 本阶段完成内容：梳理平台用户、商家用户、商家超管、会员和巡检员五套当前授权来源及拒绝路径；固化移动端商家审核、支付审核、订单核销的查询/写接口权限映射；新增无数据库权限特征测试，并让 `refactor:baseline` 输出移动管理 URL 与商家身份权限码。保持商家审核状态和超管授权相互独立，不改变线上授权语义。
+- 修改/新增的主要文件：`REFACTOR_PERMISSION_MATRIX.md`、`app/command/RefactorBaselineAudit.php`、`tests/refactor/permission-characterization.php`、`REFACTOR_BASELINE.md`、`DEVELOPMENT_LOG.md`
+- 运行或测试结果：`php tests/refactor/permission-characterization.php` 通过 19 项断言；`php tests/refactor/core-state-characterization.php` 通过 34 项断言；`php tests/refactor/sql-snapshot-audit.php` 通过 6 项断言；`php think refactor:baseline` 输出权限基线，5 项硬检查全部通过、0 项失败；相关 PHP 语法检查通过。
+- 遗留问题：平台、商家、会员和巡检目前仍使用不同权限码/菜单 URL；API 中间件的超级会员旁路、商家超管在审核失败/过期后的实际行权规则，需要阶段三统一权限上下文时显式决策并增加授权日志。
+- 下一阶段应继续处理的事项：完成本阶段测试并提交；重新读取计划和日志后，进入阶段二第一小阶段，先建立订单状态转换特征表和单一写入口清单，再开始拆分查询服务。

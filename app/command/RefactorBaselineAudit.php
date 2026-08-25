@@ -8,6 +8,8 @@ use app\common\model\goods\GoodsModel;
 use app\common\model\member\MemberOrderModel;
 use app\common\model\merchant\MerchantModel;
 use app\common\service\merchant\MerchantService;
+use app\common\service\merchant\MerchantIdentityService;
+use app\common\service\system\MobileAdminAccessService;
 use think\console\Command;
 use think\console\Input;
 use think\console\input\Option;
@@ -58,6 +60,7 @@ class RefactorBaselineAudit extends Command
             'core_files' => $this->coreFileReport($root),
             'write_actions' => $this->writeActionReport($root),
             'legacy_candidates' => $this->legacyCandidateReport($root),
+            'permission_baseline' => $this->permissionBaseline(),
             'checks' => $this->invariantChecks(),
         ];
 
@@ -172,6 +175,29 @@ class RefactorBaselineAudit extends Command
                 'expected' => false,
                 'actual' => in_array('member_is_super', $merchantEditFields, true),
             ],
+            [
+                'code' => 'unapproved_merchant_has_no_standard_permissions',
+                'passed' => MerchantIdentityService::buildPermissionCodes(['auth_state' => 0, 'member_is_super' => 0]) === [],
+                'expected' => [],
+                'actual' => MerchantIdentityService::buildPermissionCodes(['auth_state' => 0, 'member_is_super' => 0]),
+            ],
+            [
+                'code' => 'ordinary_merchant_has_no_cross_merchant_writeoff',
+                'passed' => !in_array('verify_cross_merchant_order', MerchantIdentityService::buildPermissionCodes(['auth_state' => 1, 'member_is_super' => 0]), true),
+                'expected' => false,
+                'actual' => in_array('verify_cross_merchant_order', MerchantIdentityService::buildPermissionCodes(['auth_state' => 1, 'member_is_super' => 0]), true),
+            ],
+        ];
+    }
+
+    private function permissionBaseline(): array
+    {
+        return [
+            'mobile_admin_menu_urls' => MobileAdminAccessService::MENU_URLS,
+            'mobile_admin_api_urls' => MobileAdminAccessService::API_URLS,
+            'merchant_unapproved' => MerchantIdentityService::buildPermissionCodes(['auth_state' => 0, 'member_is_super' => 0]),
+            'merchant_approved' => MerchantIdentityService::buildPermissionCodes(['auth_state' => 1, 'member_is_super' => 0]),
+            'merchant_super' => MerchantIdentityService::buildPermissionCodes(['auth_state' => 1, 'member_is_super' => 1]),
         ];
     }
 

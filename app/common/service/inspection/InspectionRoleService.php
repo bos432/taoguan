@@ -202,6 +202,7 @@ class InspectionRoleService
         $param['ids'] = $ids;
 
         InspectionRoleCache::del($ids);
+        self::clearUserCacheByRoles($ids);
 
         return $param;
     }
@@ -251,6 +252,7 @@ class InspectionRoleService
         $update['ids'] = $ids;
 
         InspectionRoleCache::del($ids);
+        self::clearUserCacheByRoles($ids);
 
         return $update;
     }
@@ -283,9 +285,9 @@ class InspectionRoleService
     {
         $where[] = ['role_id', 'in', $role_id];
         if (empty($user_ids)) {
-            $user_ids = InspectionUserAttributesModel::where($where)->column('user_id');
+            $user_ids = InspectionUserAttributesModel::where($where)->column('ins_user_id');
         }
-        $where[] = ['user_id', 'in', $user_ids];
+        $where[] = ['ins_user_id', 'in', $user_ids];
 
         $res = InspectionUserAttributesModel::where($where)->delete();
 
@@ -332,5 +334,13 @@ class InspectionRoleService
         $role_menu_ids = array_unique(array_filter($role_menu_ids));
 
         return $role_menu_ids;
+    }
+
+    public static function clearUserCacheByRoles(array $roleIds): void
+    {
+        $userIds = InspectionUserAttributesModel::whereIn('role_id', $roleIds)->column('ins_user_id');
+        if ($userIds !== []) {
+            InspectionUserCache::del(array_values(array_unique(array_map('intval', $userIds))));
+        }
     }
 }

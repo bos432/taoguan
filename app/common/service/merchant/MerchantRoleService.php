@@ -202,6 +202,7 @@ class MerchantRoleService
         $param['ids'] = $ids;
 
         MerchantRoleCache::del($ids);
+        self::clearUserCacheByRoles($ids);
 
         return $param;
     }
@@ -251,6 +252,7 @@ class MerchantRoleService
         $update['ids'] = $ids;
 
         MerchantRoleCache::del($ids);
+        self::clearUserCacheByRoles($ids);
 
         return $update;
     }
@@ -283,9 +285,9 @@ class MerchantRoleService
     {
         $where[] = ['role_id', 'in', $role_id];
         if (empty($user_ids)) {
-            $user_ids = MerchantUserAttributesModel::where($where)->column('user_id');
+            $user_ids = MerchantUserAttributesModel::where($where)->column('mer_user_id');
         }
-        $where[] = ['user_id', 'in', $user_ids];
+        $where[] = ['mer_user_id', 'in', $user_ids];
 
         $res = MerchantUserAttributesModel::where($where)->delete();
 
@@ -332,5 +334,13 @@ class MerchantRoleService
         $role_menu_ids = array_unique(array_filter($role_menu_ids));
 
         return $role_menu_ids;
+    }
+
+    public static function clearUserCacheByRoles(array $roleIds): void
+    {
+        $userIds = MerchantUserAttributesModel::whereIn('role_id', $roleIds)->column('mer_user_id');
+        if ($userIds !== []) {
+            MerchantUserCache::del(array_values(array_unique(array_map('intval', $userIds))));
+        }
     }
 }

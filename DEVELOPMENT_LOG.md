@@ -506,3 +506,12 @@
 - 运行或测试结果：微信预下单 Saga 集成测试扩展为 31 项断言，覆盖成功、幂等重放、确定失败补偿、结果未知保留和重复调用冻结；完整 `tests/refactor` 21 个脚本共 310 项断言通过。相关 PHP 语法和目标差异检查通过；测试全部回滚，结束后订单 1732、订单明细 1733、采购流水 1477、操作请求/事件/网关记录均为 0。全部网关测试使用假实现，未调用真实微信。
 - 遗留问题：后台尚无“预下单结果未知”人工核对列表和补偿入口；结果未知订单会保持待付款并占用库存，这是避免微信可能已成功时错误释放库存的保守策略。真实微信预下单响应仍需灰度契约验证。
 - 下一阶段应继续处理的事项：重新读取计划和日志后，新增支付网关异常查询/人工核对后台接口和 `admin-next` 页面，至少支持查看业务类型、订单、请求响应、错误、调用次数和状态；人工补偿写操作需单独设计权限与幂等，不在只读页面阶段直接开放。
+
+## 2026-08-25 渐进式重构阶段二：支付网关异常只读监控
+
+- 阶段名称：渐进式重构阶段二：支付网关异常只读监控
+- 本阶段完成内容：新增支付网关尝试只读查询服务及管理员接口，支持按状态、业务类型、支付提供方、关键字和时间范围筛选，提供总量、待关注数量及状态/业务类型汇总，并在详情中解码请求与响应证据。`admin-next` 新增隐藏静态路由 `#/finance/gateway-attempts`，实现汇总、筛选、分页、异常列表和详情抽屉，可从网关记录返回订单搜索。页面只提供核对能力，不开放补偿、重试或状态修改，避免在权限、幂等和审计设计完成前引入高风险写入口。
+- 修改/新增的主要文件：`app/common/service/payment/PaymentGatewayAttemptQueryService.php`、`app/admin/controller/report/PaymentGatewayAttempt.php`、`tests/refactor/payment-gateway-query-database-integration.php`、`zflAdminWeb/src/api/report/payment-gateway-attempt.js`、`zflAdminWeb/src/views/report/PaymentGatewayAttempt.vue`、`zflAdminWeb/src/router/index.js`、`zflAdminWeb/tests/payment-gateway-attempt-audit.spec.js`、`DEVELOPMENT_LOG.md`
+- 运行或测试结果：支付网关查询数据库集成测试通过 7 项断言；完整 `tests/refactor` 22 个脚本共 317 项断言通过；目标 PHP 语法、前端 ESLint、Prettier、`git diff --check` 和 `npm run build:admin-next-local` 通过；Playwright 异常核对页面交互 1/1 通过；真实本地管理员接口 `/admin/report.PaymentGatewayAttempt/summary` 返回 200。测试结束后订单 1732、订单明细 1733、采购流水 1477，操作请求、事件和网关记录均为 0。
+- 遗留问题：当前异常页是隐藏静态路由，尚未接入菜单权限；真实微信预下单/退款响应契约仍需灰度验证。人工补偿写操作尚未实现，必须先明确权限码、二次确认、幂等请求、补偿前状态复核和完整操作日志。
+- 下一阶段应继续处理的事项：重新读取计划和日志后，进入每日自动对账小阶段，先建立只读对账服务和命令，输出订单金额、订单数量、核销数量、事件覆盖及未解释异常；对账不得修改历史订单或财务数据。

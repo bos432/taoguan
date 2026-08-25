@@ -178,6 +178,12 @@ export const constantRoutes = [
         }
       },
       {
+        path: 'finance/gateway-attempts',
+        name: 'payment-gateway-attempts',
+        component: () => import('@/views/report/PaymentGatewayAttempt.vue'),
+        meta: { title: '支付网关异常', hidden: true }
+      },
+      {
         path: 'setting',
         component: () => import('@/views/system/components/SystemSetting.vue'),
         name: 'Setting',

@@ -18,6 +18,7 @@ class MemberOrderModel extends Model
         ['value' => 4, 'label' => '完成','code' => 'success'],
         ['value' => 5, 'label' => '售后','code' => 'service'],
         ['value' => 6, 'label' => '已退款','code' => 'refund'],
+        ['value' => 7, 'label' => '取消','code' => 'cancel'],
     ];
     //日志角色
     const ROLE_TYPE = [

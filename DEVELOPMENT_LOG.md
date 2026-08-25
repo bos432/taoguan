@@ -353,3 +353,30 @@
 - 运行或测试结果：`php -l app/common/service/merchant/MerchantService.php` 通过；通过 Composer 自动加载读取 `MerchantService::$edit_field`，确认 `member_id`、`member_is_super` 已不在普通编辑字段中；保留专用 `setMemberSuper()` 方法不变。
 - 遗留问题：本地不能直接写正式数据库；正式服务器需先查询商家 ID `4` 和会员 ID `13` 当前状态，确认无冲突后恢复 `ya_merchant.member_id=13`，再清缓存并在后台验证商家超管开关。若目标商家实际需要绑定其他小程序会员，不应直接使用历史 ID，应以正式库查询和运营确认结果为准。
 - 下一阶段应继续处理的事项：提交并推送本次后端修复；服务器同步本次目标文件 `app/common/service/merchant/MerchantService.php`，执行正式库只读核对、恢复绑定、清缓存，然后验证商家列表显示“已绑定会员”并实际开启商家超管。
+
+## 2026-08-25 渐进式重构阶段一：事实基线冻结
+
+- 阶段名称：渐进式重构阶段一：事实基线冻结
+- 本阶段完成内容：把 22 至 24 周渐进式重构路线纳入现有开发计划；完成平台后台、商家端、uni-app、巡检端及 ThinkPHP 后端的第一轮静态盘点；固化核心状态兼容原则、目标角色矩阵、写操作上下文规范、高风险模块和历史副本隔离清单。确认订单、商家和采购台账 Service 均为高耦合大文件，拆分前必须先建立特征测试和结果基准。
+- 修改/新增的主要文件：`REFACTOR_BASELINE.md`、`PLAN.md`、`DEVELOPMENT_LOG.md`
+- 运行或测试结果：完成 PHP、Vue 页面和测试资产数量盘点；完成核心状态、写控制器、权限判断及 legacy 路由静态检索；本阶段只建立事实基线，未修改业务逻辑、数据库或运行态配置。
+- 遗留问题：完整写接口机器清单、数据库字段字典、只读诊断命令、脱敏快照基准和 PHP 特征测试尚未完成；当前仓库存在大量既有未提交修改，后续阶段必须继续保持提交范围隔离。
+- 下一阶段应继续处理的事项：阶段一第二小阶段新增只读基线审计命令，输出写接口、关键表字段/索引、历史副本引用和核心文件规模报告；随后以脱敏数据库快照建立订单统计与采购台账黄金基准。
+
+## 2026-08-25 渐进式重构阶段一：机器基线与订单取消状态修复
+
+- 阶段名称：渐进式重构阶段一：机器基线与订单取消状态修复
+- 本阶段完成内容：新增 `refactor:baseline` 只读命令，机器可读输出核心状态、核心文件规模、写动作候选、历史副本候选和硬性兼容检查；支持可选 `--database` 只读输出关键表字段与索引。审计首次运行发现订单模型缺少数据库和业务注释中已有的 `7=取消` 状态，导致凭证支付驳回调用 `getStatus('cancel')` 时得到 `NULL`；已补齐兼容状态并增加无数据库特征测试。
+- 修改/新增的主要文件：`app/command/RefactorBaselineAudit.php`、`config/console.php`、`app/common/model/member/MemberOrderModel.php`、`tests/refactor/core-state-characterization.php`、`REFACTOR_BASELINE.md`、`DEVELOPMENT_LOG.md`
+- 运行或测试结果：全部 PHP 文件语法检查通过；`php tests/refactor/core-state-characterization.php` 通过 34 项断言；`php think refactor:baseline` 识别 6 个核心文件、358 个写动作候选和 14 个历史副本候选，3 项硬检查全部通过、退出码为 0；`git diff --check` 通过，仅有既有行尾转换提示。
+- 遗留问题：本机数据库当前未启动，`--database` 模式尚未连接真实测试库验证；写动作清单目前是按命名规则生成的候选集，阶段一后续需要结合路由和调用方收敛；权限特征测试只覆盖商家绑定保护，完整角色矩阵仍待补齐。
+- 下一阶段应继续处理的事项：重新读取计划和日志后，进入关键表结构与索引报告、订单/采购台账只读黄金基准小阶段；优先使用现有数据库快照，不连接或修改正式库。
+
+## 2026-08-25 渐进式重构阶段一：SQL 快照黄金基准
+
+- 阶段名称：渐进式重构阶段一：SQL 快照黄金基准
+- 本阶段完成内容：新增 `refactor:snapshot` 离线只读命令，可解析 mysqldump 而不执行 SQL、不连接数据库；输出商品、会员、订单、订单明细、订单日志、商家和采购流水七张核心表的字段字典、索引、脱敏业务统计与引用完整性。以 2026-06-19 的 67MB 快照生成首份稳定 JSON 黄金基准。识别出订单关联索引缺口，并确认历史数据存在 3 笔有效订单状态为空；仅记录事实，没有修改历史订单。
+- 修改/新增的主要文件：`app/common/support/refactor/SqlSnapshotAudit.php`、`app/command/RefactorSnapshotAudit.php`、`config/console.php`、`tests/refactor/sql-snapshot-audit.php`、`refactor-baselines/20260619-snapshot.json`、`REFACTOR_BASELINE.md`、`DEVELOPMENT_LOG.md`
+- 运行或测试结果：`php tests/refactor/sql-snapshot-audit.php` 通过 6 项断言；`php think refactor:snapshot --snapshot 413_zlck666_com_2026-06-19_11-32-59_mysql_data_FhRY1.sql --output refactor-baselines/20260619-snapshot.json` 成功。基准显示有效订单 1724 笔、已支付 1720 笔、已支付实付 3,784,243.05 元；采购流水 1477 条、总额 4,376,552.64 元，订单及明细引用缺失均为 0。
+- 遗留问题：订单主表缺少订单号、商家/支付时间、会员/创建时间索引，明细和日志缺少订单关联索引；索引必须在测试库通过查询计划和写入影响验证后再新增。快照聚合尚未直接运行 `MerchantPurchaseLedgerReportService` 的完整页面算法，阶段二需在隔离数据库导入脱敏快照后做新旧输出对照。
+- 下一阶段应继续处理的事项：重新读取计划和日志后，进入阶段一角色权限矩阵与现状特征测试小阶段，覆盖平台、商家、商家超管、巡检和会员的授权判定；完成后再进入阶段二订单服务拆分前的状态机与写入口收敛。

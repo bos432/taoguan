@@ -1,0 +1,1834 @@
+{
+    "format_version": 1,
+    "snapshot": {
+        "file": "413_zlck666_com_2026-06-19_11-32-59_mysql_data_FhRY1.sql",
+        "bytes": 67022650,
+        "sha256": "d200583b8b84cad91fd8645435b6bf90e028b85cd277d74eaa52e12d1fd5f9b4",
+        "modified_at": "2026-06-19T11:32:59+08:00"
+    },
+    "schema": {
+        "ya_goods": {
+            "columns": [
+                {
+                    "name": "id",
+                    "type": "int(11)",
+                    "nullable": false,
+                    "default": null,
+                    "comment": "主键ID"
+                },
+                {
+                    "name": "title",
+                    "type": "varchar(255)",
+                    "nullable": false,
+                    "default": null,
+                    "comment": "商品名称"
+                },
+                {
+                    "name": "code",
+                    "type": "varchar(255)",
+                    "nullable": false,
+                    "default": null,
+                    "comment": "商品编码"
+                },
+                {
+                    "name": "is_disable",
+                    "type": "tinyint(1)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "是否禁用，1是0否"
+                },
+                {
+                    "name": "is_delete",
+                    "type": "tinyint(1)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "是否删除，1是0否"
+                },
+                {
+                    "name": "create_uid",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "添加用户id"
+                },
+                {
+                    "name": "update_uid",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "修改用户id"
+                },
+                {
+                    "name": "delete_uid",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "删除用户id"
+                },
+                {
+                    "name": "create_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "创建时间"
+                },
+                {
+                    "name": "update_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "修改时间"
+                },
+                {
+                    "name": "delete_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "删除时间"
+                },
+                {
+                    "name": "merchant_id",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "商家id"
+                },
+                {
+                    "name": "goods_type_id",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "商品分类id"
+                },
+                {
+                    "name": "goods_label_id",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "商品标签id"
+                },
+                {
+                    "name": "image_id",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "商品图片"
+                },
+                {
+                    "name": "original_price",
+                    "type": "decimal(10",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "原价（只做显示用）"
+                },
+                {
+                    "name": "price",
+                    "type": "decimal(10",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "售价"
+                },
+                {
+                    "name": "status",
+                    "type": "tinyint(1)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "商品状态:0、待审核 1、审核通过 2、审核失败"
+                },
+                {
+                    "name": "remark",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "商品备注"
+                },
+                {
+                    "name": "content",
+                    "type": "text",
+                    "nullable": true,
+                    "default": null,
+                    "comment": "商品详情"
+                },
+                {
+                    "name": "sort",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "'250'",
+                    "comment": "排序"
+                },
+                {
+                    "name": "sales_sum",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "销量"
+                },
+                {
+                    "name": "click_count",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "商品点击量"
+                },
+                {
+                    "name": "spec",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "商品规格"
+                },
+                {
+                    "name": "unit",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "单位"
+                },
+                {
+                    "name": "stock",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "总库存"
+                },
+                {
+                    "name": "video_id",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "商品视频"
+                },
+                {
+                    "name": "auth_uid",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "审核人"
+                },
+                {
+                    "name": "auth_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "审核时间"
+                },
+                {
+                    "name": "auth_msg",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "审核备注"
+                },
+                {
+                    "name": "setting_hall_id",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "大厅id"
+                },
+                {
+                    "name": "setting_call_id",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "称重设备id"
+                },
+                {
+                    "name": "source",
+                    "type": "tinyint(1)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "来源：0、线上商品 1、线下商品"
+                },
+                {
+                    "name": "member_id",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "会员id"
+                },
+                {
+                    "name": "is_weighing",
+                    "type": "tinyint(1)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "是否已称重：0、待称重 1、已称重"
+                },
+                {
+                    "name": "weighing_uid",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "称重用户id"
+                },
+                {
+                    "name": "weighing_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "称重时间"
+                },
+                {
+                    "name": "is_transaction",
+                    "type": "tinyint(1)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "是否线下交易：0、待交易 1、已交易"
+                },
+                {
+                    "name": "transaction_member_id",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "交易用户"
+                },
+                {
+                    "name": "transaction_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "交易时间"
+                },
+                {
+                    "name": "traceability_code",
+                    "type": "varchar(500)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "溯源编码"
+                }
+            ],
+            "indexes": [
+                {
+                    "name": "PRIMARY",
+                    "unique": true,
+                    "columns": [
+                        "id"
+                    ]
+                }
+            ]
+        },
+        "ya_member": {
+            "columns": [
+                {
+                    "name": "member_id",
+                    "type": "int(11)",
+                    "nullable": false,
+                    "default": null,
+                    "comment": "会员id"
+                },
+                {
+                    "name": "avatar_id",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "头像id，mock(@natural(1, 10))"
+                },
+                {
+                    "name": "headimgurl",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "''",
+                    "comment": "第三方账号头像"
+                },
+                {
+                    "name": "nickname",
+                    "type": "varchar(127)",
+                    "nullable": false,
+                    "default": "''",
+                    "comment": "昵称，mock(@ctitle(2, 10))"
+                },
+                {
+                    "name": "username",
+                    "type": "varchar(127)",
+                    "nullable": false,
+                    "default": "''",
+                    "comment": "用户名，mock(@word(2, 10))"
+                },
+                {
+                    "name": "phone",
+                    "type": "varchar(12)",
+                    "nullable": true,
+                    "default": "''",
+                    "comment": "手机，mock(@phone)"
+                },
+                {
+                    "name": "email",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "''",
+                    "comment": "邮箱，mock(@email)"
+                },
+                {
+                    "name": "password",
+                    "type": "varchar(255)",
+                    "nullable": false,
+                    "default": "''",
+                    "comment": "密码，mock(@word(6, 18))"
+                },
+                {
+                    "name": "name",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "''",
+                    "comment": "姓名"
+                },
+                {
+                    "name": "gender",
+                    "type": "tinyint(1)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "性别，0未知，1男，2女"
+                },
+                {
+                    "name": "region_id",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "所在地id"
+                },
+                {
+                    "name": "remark",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "''",
+                    "comment": "备注"
+                },
+                {
+                    "name": "sort",
+                    "type": "int(10)",
+                    "nullable": true,
+                    "default": "'250'",
+                    "comment": "排序"
+                },
+                {
+                    "name": "platform",
+                    "type": "tinyint(3)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "注册平台"
+                },
+                {
+                    "name": "application",
+                    "type": "tinyint(3)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "注册应用"
+                },
+                {
+                    "name": "login_num",
+                    "type": "int(10)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "登录次数"
+                },
+                {
+                    "name": "login_ip",
+                    "type": "varchar(20)",
+                    "nullable": true,
+                    "default": "''",
+                    "comment": "登录IP"
+                },
+                {
+                    "name": "login_region",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "''",
+                    "comment": "登录地区"
+                },
+                {
+                    "name": "login_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "登录时间"
+                },
+                {
+                    "name": "logout_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "退出时间"
+                },
+                {
+                    "name": "pwd_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "密码修改时间"
+                },
+                {
+                    "name": "is_super",
+                    "type": "tinyint(1)",
+                    "nullable": false,
+                    "default": "'0'",
+                    "comment": "是否超会，1是0否"
+                },
+                {
+                    "name": "is_disable",
+                    "type": "tinyint(1)",
+                    "nullable": false,
+                    "default": "'0'",
+                    "comment": "是否禁用，1是0否"
+                },
+                {
+                    "name": "is_delete",
+                    "type": "tinyint(1)",
+                    "nullable": false,
+                    "default": "'0'",
+                    "comment": "是否删除，1是0否"
+                },
+                {
+                    "name": "is_balance",
+                    "type": "tinyint(1)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "是否为司称员，1是0否"
+                },
+                {
+                    "name": "setting_call_ids",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "秤id"
+                },
+                {
+                    "name": "is_warehouse",
+                    "type": "tinyint(1)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "是否为库管员，1是0否"
+                },
+                {
+                    "name": "setting_warehouse_ids",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "仓库id"
+                },
+                {
+                    "name": "create_uid",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "添加用户id"
+                },
+                {
+                    "name": "update_uid",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "修改用户id"
+                },
+                {
+                    "name": "delete_uid",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "删除用户id"
+                },
+                {
+                    "name": "create_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "注册时间"
+                },
+                {
+                    "name": "update_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "修改时间"
+                },
+                {
+                    "name": "delete_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "删除时间"
+                }
+            ],
+            "indexes": [
+                {
+                    "name": "PRIMARY",
+                    "unique": true,
+                    "columns": [
+                        "member_id"
+                    ]
+                }
+            ]
+        },
+        "ya_member_order": {
+            "columns": [
+                {
+                    "name": "id",
+                    "type": "int(11)",
+                    "nullable": false,
+                    "default": null,
+                    "comment": "主键ID"
+                },
+                {
+                    "name": "is_disable",
+                    "type": "tinyint(1)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "是否禁用，1是0否"
+                },
+                {
+                    "name": "is_delete",
+                    "type": "tinyint(1)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "是否删除，1是0否"
+                },
+                {
+                    "name": "create_uid",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "添加用户id"
+                },
+                {
+                    "name": "update_uid",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "修改用户id"
+                },
+                {
+                    "name": "delete_uid",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "删除用户id"
+                },
+                {
+                    "name": "create_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "创建时间"
+                },
+                {
+                    "name": "update_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "修改时间"
+                },
+                {
+                    "name": "delete_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "删除时间"
+                },
+                {
+                    "name": "order_no",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "订单号"
+                },
+                {
+                    "name": "member_id",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "会员id"
+                },
+                {
+                    "name": "cart_id",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "购物车商品id"
+                },
+                {
+                    "name": "freight_price",
+                    "type": "decimal(10",
+                    "nullable": true,
+                    "default": "'0.00'",
+                    "comment": "运费金额"
+                },
+                {
+                    "name": "total_num",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "订单商品总数"
+                },
+                {
+                    "name": "total_price",
+                    "type": "decimal(10",
+                    "nullable": true,
+                    "default": "'0.00'",
+                    "comment": "订单总价"
+                },
+                {
+                    "name": "pay_price",
+                    "type": "decimal(10",
+                    "nullable": true,
+                    "default": "'0.00'",
+                    "comment": "实际支付金额"
+                },
+                {
+                    "name": "pay_status",
+                    "type": "tinyint(1)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "支付状态：1、已支付 0、未支付"
+                },
+                {
+                    "name": "pay_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "支付时间"
+                },
+                {
+                    "name": "pay_type",
+                    "type": "tinyint(1)",
+                    "nullable": true,
+                    "default": "'1'",
+                    "comment": "支付方式：1、微信支付 2、支付凭证"
+                },
+                {
+                    "name": "pay_common_on",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "提交支付订单号"
+                },
+                {
+                    "name": "pay_voucher_imgs",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "支付凭证图片ids"
+                },
+                {
+                    "name": "pay_auth_msg",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "支付审核备注"
+                },
+                {
+                    "name": "status",
+                    "type": "tinyint(1)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "订单状态：0、待付款 1、待发货 2、待收货 3、待评价 4、完成 5、售后 6、已退款 7、取消"
+                },
+                {
+                    "name": "refund_status",
+                    "type": "tinyint(1)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "售后状态：0、未退款  1、申请售后 2、同意售后 3、拒绝售后 4、同意退款"
+                },
+                {
+                    "name": "refund_type",
+                    "type": "tinyint(1)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "售后类型：1、退款 2、退款退货"
+                },
+                {
+                    "name": "refund_delivery_id",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "退货快递公司"
+                },
+                {
+                    "name": "refund_express",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "退货快递单号"
+                },
+                {
+                    "name": "refund_express_name",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "退货快递名称"
+                },
+                {
+                    "name": "refund_express_code",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "退货快递公司编号"
+                },
+                {
+                    "name": "refund_reason_wap_img_ids",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "退款图片"
+                },
+                {
+                    "name": "refund_reason_wap_explain",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "退款用户说明"
+                },
+                {
+                    "name": "refund_reason_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "退款时间"
+                },
+                {
+                    "name": "refund_reason_wap",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "前台退款原因"
+                },
+                {
+                    "name": "refund_reason",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "不退款的理由"
+                },
+                {
+                    "name": "refund_price",
+                    "type": "decimal(10",
+                    "nullable": true,
+                    "default": "'0.00'",
+                    "comment": "退款金额"
+                },
+                {
+                    "name": "refund_consignee",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "收货人"
+                },
+                {
+                    "name": "refund_address",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "收货地址"
+                },
+                {
+                    "name": "refund_phone",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "收货人联系电话"
+                },
+                {
+                    "name": "out_refund_no",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "退款单号"
+                },
+                {
+                    "name": "setting_delivery_id",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "快递公司ID"
+                },
+                {
+                    "name": "delivery_name",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "快递名称/送货人姓名"
+                },
+                {
+                    "name": "delivery_code",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "快递公司编码"
+                },
+                {
+                    "name": "delivery_type",
+                    "type": "tinyint(1)",
+                    "nullable": true,
+                    "default": "'1'",
+                    "comment": "发货类型：1、快递 2、自提"
+                },
+                {
+                    "name": "delivery_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "发货时间"
+                },
+                {
+                    "name": "kuaidi_order_no",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "快递单号"
+                },
+                {
+                    "name": "mark",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "会员备注"
+                },
+                {
+                    "name": "remark",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "管理员备注"
+                },
+                {
+                    "name": "merchant_id",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "商家id"
+                },
+                {
+                    "name": "take_name",
+                    "type": "varchar(50)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "收货人"
+                },
+                {
+                    "name": "take_phone",
+                    "type": "varchar(50)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "收货联系电话"
+                },
+                {
+                    "name": "take_region",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "收货地区"
+                },
+                {
+                    "name": "take_address",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "收货详细地址"
+                },
+                {
+                    "name": "self_name",
+                    "type": "varchar(50)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "自提联系人"
+                },
+                {
+                    "name": "self_phone",
+                    "type": "varchar(50)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "自提预留手机号"
+                },
+                {
+                    "name": "pick_up_code",
+                    "type": "varchar(50)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "自提取件码"
+                },
+                {
+                    "name": "receipt_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "收货时间"
+                },
+                {
+                    "name": "success_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "完成时间"
+                },
+                {
+                    "name": "refund_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "退款时间"
+                }
+            ],
+            "indexes": [
+                {
+                    "name": "PRIMARY",
+                    "unique": true,
+                    "columns": [
+                        "id"
+                    ]
+                }
+            ]
+        },
+        "ya_member_order_detailed": {
+            "columns": [
+                {
+                    "name": "id",
+                    "type": "int(11)",
+                    "nullable": false,
+                    "default": null,
+                    "comment": ""
+                },
+                {
+                    "name": "member_order_id",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "订单表id"
+                },
+                {
+                    "name": "member_shop_cart_id",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "购物车表id"
+                },
+                {
+                    "name": "goods_id",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "商品表id"
+                },
+                {
+                    "name": "quantity",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "购买数量"
+                },
+                {
+                    "name": "price",
+                    "type": "decimal(10",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "购买单价"
+                },
+                {
+                    "name": "total",
+                    "type": "decimal(10",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "购买总价"
+                },
+                {
+                    "name": "remarks",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "备注"
+                },
+                {
+                    "name": "evaluate_content",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "评论"
+                },
+                {
+                    "name": "evaluate_num",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "评分"
+                }
+            ],
+            "indexes": [
+                {
+                    "name": "PRIMARY",
+                    "unique": true,
+                    "columns": [
+                        "id"
+                    ]
+                }
+            ]
+        },
+        "ya_member_order_log": {
+            "columns": [
+                {
+                    "name": "id",
+                    "type": "int(11)",
+                    "nullable": false,
+                    "default": null,
+                    "comment": "主键ID"
+                },
+                {
+                    "name": "title",
+                    "type": "varchar(255)",
+                    "nullable": false,
+                    "default": null,
+                    "comment": "标题"
+                },
+                {
+                    "name": "content",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "内容"
+                },
+                {
+                    "name": "is_disable",
+                    "type": "tinyint(1)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "是否禁用，1是0否"
+                },
+                {
+                    "name": "is_delete",
+                    "type": "tinyint(1)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "是否删除，1是0否"
+                },
+                {
+                    "name": "create_uid",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "添加用户id"
+                },
+                {
+                    "name": "update_uid",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "修改用户id"
+                },
+                {
+                    "name": "delete_uid",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "删除用户id"
+                },
+                {
+                    "name": "create_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "创建时间"
+                },
+                {
+                    "name": "update_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "修改时间"
+                },
+                {
+                    "name": "delete_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "删除时间"
+                },
+                {
+                    "name": "member_order_id",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "订单ID"
+                },
+                {
+                    "name": "role_type",
+                    "type": "tinyint(1)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "角色：1、总后端 2、商家端 3、移动端 4、系统"
+                }
+            ],
+            "indexes": [
+                {
+                    "name": "PRIMARY",
+                    "unique": true,
+                    "columns": [
+                        "id"
+                    ]
+                }
+            ]
+        },
+        "ya_merchant": {
+            "columns": [
+                {
+                    "name": "id",
+                    "type": "int(11)",
+                    "nullable": false,
+                    "default": null,
+                    "comment": "主键ID"
+                },
+                {
+                    "name": "title",
+                    "type": "varchar(255)",
+                    "nullable": false,
+                    "default": null,
+                    "comment": "商户名称"
+                },
+                {
+                    "name": "content",
+                    "type": "text",
+                    "nullable": true,
+                    "default": null,
+                    "comment": "内容"
+                },
+                {
+                    "name": "is_disable",
+                    "type": "tinyint(1)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "是否禁用，1是0否"
+                },
+                {
+                    "name": "is_delete",
+                    "type": "tinyint(1)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "是否删除，1是0否"
+                },
+                {
+                    "name": "create_uid",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "添加用户id"
+                },
+                {
+                    "name": "update_uid",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "修改用户id"
+                },
+                {
+                    "name": "delete_uid",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "删除用户id"
+                },
+                {
+                    "name": "auth_uid",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "审核用户id"
+                },
+                {
+                    "name": "create_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "创建时间"
+                },
+                {
+                    "name": "update_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "修改时间"
+                },
+                {
+                    "name": "delete_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "删除时间"
+                },
+                {
+                    "name": "auth_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "审核时间"
+                },
+                {
+                    "name": "username",
+                    "type": "varchar(64)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "商户账号"
+                },
+                {
+                    "name": "password",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "登陆密码"
+                },
+                {
+                    "name": "region_id",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "商户地区"
+                },
+                {
+                    "name": "address",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "详细地址"
+                },
+                {
+                    "name": "phone",
+                    "type": "varchar(12)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "联系电话"
+                },
+                {
+                    "name": "auth_state",
+                    "type": "tinyint(1)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "审核状态：0、待审核 1、审核通过 2、审核失败"
+                },
+                {
+                    "name": "auth_msg",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "审核原因"
+                },
+                {
+                    "name": "sort",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "'250'",
+                    "comment": "排序"
+                },
+                {
+                    "name": "remark",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "备注"
+                },
+                {
+                    "name": "mer_money",
+                    "type": "decimal(10",
+                    "nullable": true,
+                    "default": "'0.00'",
+                    "comment": "余额"
+                },
+                {
+                    "name": "name",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "姓名"
+                },
+                {
+                    "name": "image_id",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "收款信息"
+                },
+                {
+                    "name": "member_id",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "会员id"
+                },
+                {
+                    "name": "member_is_super",
+                    "type": "tinyint(1)",
+                    "nullable": false,
+                    "default": "'0'",
+                    "comment": "Bound member is merchant super admin"
+                },
+                {
+                    "name": "expire_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "商家到期时间"
+                },
+                {
+                    "name": "renew_remind_days",
+                    "type": "int(11)",
+                    "nullable": false,
+                    "default": "'7'",
+                    "comment": "提前续费提醒天数"
+                },
+                {
+                    "name": "merchant_purchase_daily_quantity_limit",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "Merchant daily purchase quantity limit"
+                },
+                {
+                    "name": "merchant_purchase_daily_amount_limit",
+                    "type": "decimal(10",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "Merchant daily purchase amount limit"
+                }
+            ],
+            "indexes": [
+                {
+                    "name": "PRIMARY",
+                    "unique": true,
+                    "columns": [
+                        "id"
+                    ]
+                },
+                {
+                    "name": "idx_merchant_admin_list",
+                    "unique": false,
+                    "columns": [
+                        "is_delete",
+                        "is_disable",
+                        "sort",
+                        "id"
+                    ]
+                },
+                {
+                    "name": "idx_merchant_admin_auth",
+                    "unique": false,
+                    "columns": [
+                        "is_delete",
+                        "is_disable",
+                        "auth_state"
+                    ]
+                },
+                {
+                    "name": "idx_merchant_member_id",
+                    "unique": false,
+                    "columns": [
+                        "member_id"
+                    ]
+                }
+            ]
+        },
+        "ya_merchant_purchase_ledger": {
+            "columns": [
+                {
+                    "name": "id",
+                    "type": "int(11)",
+                    "nullable": false,
+                    "default": null,
+                    "comment": "主键ID"
+                },
+                {
+                    "name": "is_disable",
+                    "type": "tinyint(1)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "是否禁用，1是0否"
+                },
+                {
+                    "name": "is_delete",
+                    "type": "tinyint(1)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "是否删除，1是0否"
+                },
+                {
+                    "name": "create_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "创建时间"
+                },
+                {
+                    "name": "update_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "修改时间"
+                },
+                {
+                    "name": "member_order_id",
+                    "type": "int(11)",
+                    "nullable": false,
+                    "default": null,
+                    "comment": "订单ID"
+                },
+                {
+                    "name": "member_order_detailed_id",
+                    "type": "int(11)",
+                    "nullable": false,
+                    "default": null,
+                    "comment": "订单明细ID"
+                },
+                {
+                    "name": "order_no",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "订单号"
+                },
+                {
+                    "name": "buyer_member_id",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "买家会员ID"
+                },
+                {
+                    "name": "buyer_merchant_id",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "买方商家ID"
+                },
+                {
+                    "name": "buyer_merchant_title",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "买方商家名称快照"
+                },
+                {
+                    "name": "source_type",
+                    "type": "varchar(20)",
+                    "nullable": true,
+                    "default": "'platform'",
+                    "comment": "来源类型：platform平台 merchant商家"
+                },
+                {
+                    "name": "source_merchant_id",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "来源商家ID，0为平台"
+                },
+                {
+                    "name": "source_merchant_title",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "来源名称快照"
+                },
+                {
+                    "name": "goods_id",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "原商品ID"
+                },
+                {
+                    "name": "goods_title",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "商品名称快照"
+                },
+                {
+                    "name": "goods_code",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "商品编码快照"
+                },
+                {
+                    "name": "goods_spec",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "规格快照"
+                },
+                {
+                    "name": "goods_unit",
+                    "type": "varchar(255)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "单位快照"
+                },
+                {
+                    "name": "quantity",
+                    "type": "int(11)",
+                    "nullable": true,
+                    "default": "'0'",
+                    "comment": "购买数量"
+                },
+                {
+                    "name": "price",
+                    "type": "decimal(10",
+                    "nullable": true,
+                    "default": "'0.00'",
+                    "comment": "购买单价"
+                },
+                {
+                    "name": "total",
+                    "type": "decimal(10",
+                    "nullable": true,
+                    "default": "'0.00'",
+                    "comment": "明细金额"
+                },
+                {
+                    "name": "order_pay_price",
+                    "type": "decimal(10",
+                    "nullable": true,
+                    "default": "'0.00'",
+                    "comment": "订单实付金额"
+                },
+                {
+                    "name": "pay_type",
+                    "type": "tinyint(1)",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "支付方式"
+                },
+                {
+                    "name": "pay_time",
+                    "type": "datetime",
+                    "nullable": true,
+                    "default": "NULL",
+                    "comment": "确认支付时间"
+                }
+            ],
+            "indexes": [
+                {
+                    "name": "PRIMARY",
+                    "unique": true,
+                    "columns": [
+                        "id"
+                    ]
+                },
+                {
+                    "name": "uniq_order_detail",
+                    "unique": true,
+                    "columns": [
+                        "member_order_detailed_id"
+                    ]
+                },
+                {
+                    "name": "idx_buyer_pay_time",
+                    "unique": false,
+                    "columns": [
+                        "buyer_merchant_id",
+                        "pay_time"
+                    ]
+                },
+                {
+                    "name": "idx_source_pay_time",
+                    "unique": false,
+                    "columns": [
+                        "source_merchant_id",
+                        "pay_time"
+                    ]
+                },
+                {
+                    "name": "idx_order",
+                    "unique": false,
+                    "columns": [
+                        "member_order_id"
+                    ]
+                }
+            ]
+        }
+    },
+    "diagnostics": {
+        "table_counts": {
+            "ya_goods": 1784,
+            "ya_member": 35,
+            "ya_member_order": 1732,
+            "ya_member_order_detailed": 1733,
+            "ya_member_order_log": 3463,
+            "ya_merchant": 26,
+            "ya_merchant_purchase_ledger": 1477
+        },
+        "orders": {
+            "active_count": 1724,
+            "paid_count": 1720,
+            "status_distribution": [
+                {
+                    "value": "0",
+                    "count": 1
+                },
+                {
+                    "value": "4",
+                    "count": 1720
+                },
+                {
+                    "value": "NULL",
+                    "count": 3
+                }
+            ],
+            "pay_status_distribution": [
+                {
+                    "value": "0",
+                    "count": 1
+                },
+                {
+                    "value": "1",
+                    "count": 1720
+                },
+                {
+                    "value": "2",
+                    "count": 3
+                }
+            ],
+            "refund_status_distribution": [
+                {
+                    "value": "0",
+                    "count": 1724
+                }
+            ],
+            "active_pay_price": "3784243.05",
+            "paid_pay_price": "3784243.05",
+            "duplicate_order_numbers": 0
+        },
+        "order_details": {
+            "quantity": 1733,
+            "total": "4726963.66",
+            "missing_order_count": 0
+        },
+        "order_logs": {
+            "role_distribution": [
+                {
+                    "value": "3",
+                    "count": 3463
+                }
+            ],
+            "missing_order_count": 0
+        },
+        "merchants": {
+            "active_count": 25,
+            "auth_distribution": [
+                {
+                    "value": "0",
+                    "count": 4
+                },
+                {
+                    "value": "1",
+                    "count": 21
+                }
+            ],
+            "bound_member_count": 25,
+            "super_count": 2,
+            "super_without_member_count": 0,
+            "missing_member_binding_count": 0
+        },
+        "goods": {
+            "active_count": 1763,
+            "status_distribution": [
+                {
+                    "value": "1",
+                    "count": 1762
+                },
+                {
+                    "value": "2",
+                    "count": 1
+                }
+            ],
+            "stock": 742,
+            "missing_merchant_count": 0
+        },
+        "members": {
+            "active_count": 35,
+            "disabled_count": 0,
+            "super_count": 0
+        },
+        "purchase_ledger": {
+            "active_count": 1477,
+            "quantity": 1477,
+            "total": "4376552.64",
+            "source_type_distribution": [
+                {
+                    "value": "merchant",
+                    "count": 1061
+                },
+                {
+                    "value": "platform",
+                    "count": 416
+                }
+            ],
+            "buyer_merchant_count": 14,
+            "duplicate_order_detail_count": 0,
+            "missing_order_count": 0,
+            "missing_detail_count": 0
+        },
+        "index_findings": [
+            {
+                "table": "ya_member_order",
+                "columns": [
+                    "order_no"
+                ],
+                "covered": false
+            },
+            {
+                "table": "ya_member_order",
+                "columns": [
+                    "merchant_id",
+                    "pay_time"
+                ],
+                "covered": false
+            },
+            {
+                "table": "ya_member_order",
+                "columns": [
+                    "member_id",
+                    "create_time"
+                ],
+                "covered": false
+            },
+            {
+                "table": "ya_member_order_detailed",
+                "columns": [
+                    "member_order_id"
+                ],
+                "covered": false
+            },
+            {
+                "table": "ya_member_order_detailed",
+                "columns": [
+                    "goods_id"
+                ],
+                "covered": false
+            },
+            {
+                "table": "ya_member_order_log",
+                "columns": [
+                    "member_order_id",
+                    "create_time"
+                ],
+                "covered": false
+            },
+            {
+                "table": "ya_merchant_purchase_ledger",
+                "columns": [
+                    "member_order_detailed_id"
+                ],
+                "covered": true
+            },
+            {
+                "table": "ya_merchant_purchase_ledger",
+                "columns": [
+                    "buyer_merchant_id",
+                    "pay_time"
+                ],
+                "covered": true
+            },
+            {
+                "table": "ya_merchant_purchase_ledger",
+                "columns": [
+                    "source_merchant_id",
+                    "pay_time"
+                ],
+                "covered": true
+            }
+        ]
+    }
+}

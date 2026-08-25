@@ -43,9 +43,9 @@ $assert(in_array('verify_cross_merchant_order', $super, true), 'merchant super r
 
 $controller = file_get_contents(dirname(__DIR__, 2) . '/app/api/controller/admin/MobileAdmin.php');
 $middleware = file_get_contents(dirname(__DIR__, 2) . '/app/inspection/middleware/ApiVerifyMiddleware.php');
-$assert(is_string($controller) && str_contains($controller, "assertPermission('merchant_auth')"), 'merchant audit endpoint enforces backend permission');
-$assert(is_string($controller) && str_contains($controller, "assertPermission('order_pay_auth')"), 'pay audit endpoint enforces backend permission');
-$assert(is_string($controller) && str_contains($controller, "assertPermission('order_writeoff')"), 'writeoff endpoint enforces backend permission');
+$assert(is_string($controller) && str_contains($controller, "assertPermission('platform.merchant.review')"), 'merchant audit endpoint enforces unified backend permission');
+$assert(is_string($controller) && str_contains($controller, "assertPermission('platform.order.payment_review')"), 'pay audit endpoint enforces unified backend permission');
+$assert(is_string($controller) && str_contains($controller, "assertPermission('platform.order.writeoff')"), 'writeoff endpoint enforces unified backend permission');
 $assert(is_string($middleware) && str_contains($middleware, 'RetCodeUtils::NO_PERMISSION'), 'inspection middleware has explicit permission denial');
 
 echo "Permission characterization passed: {$assertions} assertions\n";

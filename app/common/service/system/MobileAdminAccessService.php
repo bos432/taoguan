@@ -29,14 +29,14 @@ class MobileAdminAccessService
     public static function virtualApis(): array
     {
         return [
-            ['api_url' => self::API_URLS['merchant_params'], 'api_name' => '移动端商家审核参数', 'is_disable' => 0],
-            ['api_url' => self::API_URLS['merchant_list'], 'api_name' => '移动端商家审核列表', 'is_disable' => 0],
-            ['api_url' => self::API_URLS['merchant_info'], 'api_name' => '移动端商家审核详情', 'is_disable' => 0],
-            ['api_url' => self::API_URLS['merchant_auth'], 'api_name' => '移动端商家审核操作', 'is_disable' => 0],
-            ['api_url' => self::API_URLS['order_params'], 'api_name' => '移动端订单审核参数', 'is_disable' => 0],
-            ['api_url' => self::API_URLS['order_list'], 'api_name' => '移动端订单审核列表', 'is_disable' => 0],
-            ['api_url' => self::API_URLS['order_pay_auth'], 'api_name' => '移动端订单支付审核', 'is_disable' => 0],
-            ['api_url' => self::API_URLS['order_writeoff'], 'api_name' => '移动端订单核销', 'is_disable' => 0],
+            ['api_url' => self::API_URLS['merchant_params'], 'api_name' => '移动端商家审核参数', 'is_unauth' => 1, 'is_disable' => 0],
+            ['api_url' => self::API_URLS['merchant_list'], 'api_name' => '移动端商家审核列表', 'is_unauth' => 1, 'is_disable' => 0],
+            ['api_url' => self::API_URLS['merchant_info'], 'api_name' => '移动端商家审核详情', 'is_unauth' => 1, 'is_disable' => 0],
+            ['api_url' => self::API_URLS['merchant_auth'], 'api_name' => '移动端商家审核操作', 'is_unauth' => 1, 'is_disable' => 0],
+            ['api_url' => self::API_URLS['order_params'], 'api_name' => '移动端订单审核参数', 'is_unauth' => 1, 'is_disable' => 0],
+            ['api_url' => self::API_URLS['order_list'], 'api_name' => '移动端订单审核列表', 'is_unauth' => 1, 'is_disable' => 0],
+            ['api_url' => self::API_URLS['order_pay_auth'], 'api_name' => '移动端订单支付审核', 'is_unauth' => 1, 'is_disable' => 0],
+            ['api_url' => self::API_URLS['order_writeoff'], 'api_name' => '移动端订单核销', 'is_unauth' => 1, 'is_disable' => 0],
         ];
     }
 

@@ -357,6 +357,9 @@ class ApiService
                 $list = array_merge($list, array_column(array_filter(MerchantIdentityService::virtualApis(), function ($item) {
                     return intval($item['is_unauth'] ?? 0) === 1;
                 }), 'api_url'));
+                $list = array_merge($list, array_column(array_filter(MobileAdminAccessService::virtualApis(), function ($item) {
+                    return intval($item['is_unauth'] ?? 0) === 1;
+                }), 'api_url'));
                 $list = array_merge($list, array_column(array_filter(NoticePopupService::virtualApis(), function ($item) {
                     return intval($item['is_unauth'] ?? 0) === 1;
                 }), 'api_url'));

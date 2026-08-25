@@ -5,52 +5,46 @@ namespace app\api\controller\admin;
 use app\common\controller\BaseController;
 use app\common\model\member\MemberOrderModel;
 use app\common\service\member\MemberOrderService;
-use app\common\service\member\MemberService;
 use app\common\service\merchant\MerchantService;
-use app\common\service\system\MobileAdminAccessService;
+use app\common\service\permission\UnifiedPermissionContextService;
 use app\common\validate\member\MemberOrderValidate;
 use app\common\validate\merchant\MerchantValidate;
 
 class MobileAdmin extends BaseController
 {
-    private function getAccess(): array
+    private function getPermissionContext(): array
     {
-        $memberId = member_id(true);
-        $member = MemberService::getMemberInfo($memberId, true, 'member_id,username,phone,nickname');
-        return MobileAdminAccessService::getAccessByMember($member);
+        return UnifiedPermissionContextService::forMember(member_id(true));
     }
 
     private function assertPermission(string $permission): array
     {
-        $access = $this->getAccess();
-        if (!MobileAdminAccessService::hasPermission($access, $permission)) {
-            exception('暂无权限');
-        }
-
-        return $access;
+        $context = $this->getPermissionContext();
+        UnifiedPermissionContextService::assertAllowed($context, $permission);
+        return $context;
     }
 
     private function assertAnyPermission(array $permissions = []): array
     {
-        $access = $this->getAccess();
+        $context = $this->getPermissionContext();
         foreach ($permissions as $permission) {
-            if (MobileAdminAccessService::hasPermission($access, $permission)) {
-                return $access;
+            if (in_array($permission, $context['permission_codes'] ?? [], true)) {
+                return $context;
             }
         }
-
-        exception('暂无权限');
+        UnifiedPermissionContextService::assertAllowed($context, strval($permissions[0] ?? ''));
+        return $context;
     }
 
     public function merchantParams()
     {
-        $this->assertAnyPermission(['merchant_view', 'merchant_auth']);
+        $this->assertAnyPermission(['platform.merchant.view', 'platform.merchant.review']);
         return success(MerchantService::getParams(1));
     }
 
     public function merchantList()
     {
-        $this->assertAnyPermission(['merchant_view', 'merchant_auth']);
+        $this->assertAnyPermission(['platform.merchant.view', 'platform.merchant.review']);
 
         $where = $this->buildWhere([
             'auth_state',
@@ -70,7 +64,7 @@ class MobileAdmin extends BaseController
 
     public function merchantInfo()
     {
-        $this->assertAnyPermission(['merchant_view', 'merchant_auth']);
+        $this->assertAnyPermission(['platform.merchant.view', 'platform.merchant.review']);
 
         $param = $this->params(['id/d' => 0]);
         validate(MerchantValidate::class)->scene('info')->check($param);
@@ -80,7 +74,7 @@ class MobileAdmin extends BaseController
 
     public function merchantAuth()
     {
-        $this->assertPermission('merchant_auth');
+        $this->assertPermission('platform.merchant.review');
 
         $param = $this->params([
             'ids/a' => [],
@@ -94,7 +88,7 @@ class MobileAdmin extends BaseController
 
     public function orderParams()
     {
-        $this->assertAnyPermission(['order_view', 'order_pay_auth', 'order_writeoff']);
+        $this->assertAnyPermission(['platform.order.view', 'platform.order.payment_review', 'platform.order.writeoff']);
 
         $reviewScenes = [
             ['value' => 'all', 'label' => '全部订单'],
@@ -110,7 +104,7 @@ class MobileAdmin extends BaseController
 
     public function orderList()
     {
-        $this->assertAnyPermission(['order_view', 'order_pay_auth', 'order_writeoff']);
+        $this->assertAnyPermission(['platform.order.view', 'platform.order.payment_review', 'platform.order.writeoff']);
 
         $reviewScene = $this->param('review_scene/s', 'all');
 
@@ -140,7 +134,7 @@ class MobileAdmin extends BaseController
 
     public function orderPayAuth()
     {
-        $this->assertPermission('order_pay_auth');
+        $this->assertPermission('platform.order.payment_review');
 
         $param = $this->params([
             'ids/a' => [],
@@ -159,7 +153,7 @@ class MobileAdmin extends BaseController
 
     public function orderWriteoff()
     {
-        $this->assertPermission('order_writeoff');
+        $this->assertPermission('platform.order.writeoff');
 
         $param = $this->params([
             'id/d' => 0,

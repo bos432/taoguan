@@ -542,3 +542,12 @@
 - 运行或测试结果：统一权限数据库集成测试通过 20 项断言，覆盖平台超管、商家数据隔离、商家桌面超管不得跨商家、会员本人权限、稳定权限版本、允许/拒绝断言及异常处理器最终 JSON；完整 `tests/refactor` 25 个脚本共 361 项断言通过。真实本地管理员登录后调用 `/admin/system.UserCenter/permissionContext` 返回 200，包含 `platform_super`、8 个平台权限码、`all` 数据范围和 20 位权限版本；全部目标 PHP 语法和 `git diff --check` 通过。
 - 遗留问题：统一上下文目前覆盖平台后台、商家桌面端和 uni-app 会员/移动商家，巡检端仍需接入；平台普通角色的权限码由现有菜单 URL 映射，尚未逐个角色账号做浏览器验收。高风险写接口仍使用旧 `MobileAdminAccessService` 校验，尚未迁移到统一 `assertAllowed`，因此新 403 契约只对接入新断言的接口生效。
 - 下一阶段应继续处理的事项：重新读取计划和日志后，先迁移移动端商家审核、支付审核和订单核销三个高风险写接口；必须保留旧授权事实作为上下文来源，改为统一权限码断言，并用未授权真实 HTTP 请求验证 403 契约。
+
+## 2026-08-25 渐进式重构阶段三：移动高风险接口统一授权
+
+- 阶段名称：渐进式重构阶段三：移动高风险接口统一授权
+- 本阶段完成内容：将小程序移动管理的商家审核、支付审核、订单核销及其关联查询从控制器直接读取旧权限布尔值迁移为统一权限上下文和稳定权限码断言；旧 `MobileAdminAccessService` 继续作为统一上下文内部事实来源，避免改变现有授权结果。8 个 MobileAdmin 虚拟 API 标记为“登录后免会员组 URL 授权”，并加入 API 免组授权列表，使请求必须进入控制器执行统一后端复核；`is_unauth` 不等于免登录。未授权请求现在在参数校验和业务写服务前抛出统一 403，原业务 URL、参数、成功返回和操作服务不变。
+- 修改/新增的主要文件：`app/api/controller/admin/MobileAdmin.php`、`app/common/service/system/MobileAdminAccessService.php`、`app/common/service/member/ApiService.php`、`tests/refactor/permission-characterization.php`、`tests/refactor/mobile-admin-unified-authorization.php`、`DEVELOPMENT_LOG.md`
+- 运行或测试结果：移动统一授权特征测试通过 15 项，原权限特征 19 项、统一上下文 20 项继续通过；完整 `tests/refactor` 26 个脚本共 376 项断言通过。清理本地 API 缓存后，为无 `platform.merchant.review` 权限的普通会员生成测试 token，直接 POST `/api/admin.MobileAdmin/merchantAuth`，真实响应为 HTTP 403、业务码 `40301`、错误码 `AUTH_FORBIDDEN`、权限码 `platform.merchant.review`，请求在参数校验及写服务前终止。测试结束后订单 1732、明细 1733、采购流水 1477，操作请求/事件/网关记录均为 0；目标 PHP 语法和 `git diff --check` 通过。
+- 遗留问题：本阶段只迁移 MobileAdmin 控制器；admin-next、商家桌面端和巡检端仍有旧菜单中间件/控制器校验。真实授权用户的商家审核、支付审核和核销成功路径由既有数据库集成测试覆盖，但尚未使用小程序页面做全流程浏览器验收。
+- 下一阶段应继续处理的事项：重新读取计划和日志后，将商家资料编辑、会员绑定、商家审核和超管授权拆成独立命令服务；普通资料编辑必须继续禁止修改 `member_id` 与超管状态，授权和取消必须记录授权人、时间、原因及业务事件/操作日志。

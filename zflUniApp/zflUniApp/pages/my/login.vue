@@ -594,13 +594,14 @@ export default {
         },
       )
         .then(() => {
-          store.commit("login");
-          uni.showToast({
-            icon: "none",
-            position: "bottom",
-            title: this.text.loginSuccess,
+          return store.dispatch("hydrateLogin").then(() => {
+            uni.showToast({
+              icon: "none",
+              position: "bottom",
+              title: this.text.loginSuccess,
+            });
+            this.redirectAfterLogin();
           });
-          this.redirectAfterLogin();
         })
         .catch((error) => {
           this.clearLoginRuntimeCache();

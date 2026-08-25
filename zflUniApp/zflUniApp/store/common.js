@@ -8,6 +8,7 @@ Vue.use(Vuex);
 const PENDING_ACCORD_KEY = "pending_accord_accept_map";
 const MERCHANT_IDENTITY_KEY = "current_merchant_identity_mer_user_id";
 const MERCHANT_IDENTITY_LIST_KEY = "merchant_identity_list";
+const PERMISSION_CONTEXT_KEY = "unified_permission_context";
 
 function clearLoginCache(state) {
   cache.remove("userInfo");
@@ -15,8 +16,10 @@ function clearLoginCache(state) {
   cache.remove(PENDING_ACCORD_KEY);
   cache.remove(MERCHANT_IDENTITY_KEY);
   cache.remove(MERCHANT_IDENTITY_LIST_KEY);
+  cache.remove(PERMISSION_CONTEXT_KEY);
   state.hasLogin = false;
   state.userInfo = {};
+  state.permissionContext = {};
   state.openid = null;
 }
 
@@ -26,6 +29,7 @@ const store = new Vuex.Store({
     userInfo: {},
     hasLogin: false,
     openid: "",
+    permissionContext: cache.get(PERMISSION_CONTEXT_KEY, {}) || {},
     setting: {},
     device: {
       mserviceuuid: "0000FFE0-0000-1000-8000-00805F9B34FB",
@@ -99,6 +103,15 @@ const store = new Vuex.Store({
         state.userInfo = cache.get("userInfo");
       }
     },
+    setPermissionContext(state, context = {}) {
+      const next = context && typeof context === "object" ? context : {};
+      state.permissionContext = next;
+      if (Object.keys(next).length) {
+        cache.set(PERMISSION_CONTEXT_KEY, next, 1296000);
+      } else {
+        cache.remove(PERMISSION_CONTEXT_KEY);
+      }
+    },
     logout(state) {
       api
         .logout({})
@@ -119,7 +132,33 @@ const store = new Vuex.Store({
       state.openid = openid;
     },
   },
-  actions: {},
+  actions: {
+    refreshPermissionContext({ commit }) {
+      if (!cache.get("token", "")) {
+        commit("setPermissionContext", {});
+        return Promise.resolve({});
+      }
+      return api
+        .merchantIdentityCurrent({})
+        .then((res) => {
+          const context = (res.data && res.data.permission_context) || {};
+          commit("setPermissionContext", context);
+          return context;
+        })
+        .catch((error) => {
+          commit("setPermissionContext", {});
+          return Promise.reject(error);
+        });
+    },
+    hydrateLogin({ commit, dispatch, state }) {
+      commit("login");
+      if (!state.hasLogin) {
+        commit("setPermissionContext", {});
+        return Promise.resolve({});
+      }
+      return dispatch("refreshPermissionContext").catch(() => ({}));
+    },
+  },
 });
 
 export default store;

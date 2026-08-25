@@ -632,3 +632,12 @@
 - 运行或测试结果：迁移连续执行两次后有效菜单仍唯一；商家前端权限契约测试通过 15 项断言，完整 `tests/refactor` 35 个脚本共 483 项断言通过。真实本地 HTTP GET `/merchant/system.UserCenter/permissionContext` 返回 200、`merchant_user` 身份、商家数据范围和 20 位权限版本。目标文件 Prettier 检查通过，`npm run build:prod` 通过（2394 个模块）；业务基线保持订单 1732、明细 1733、采购台账 1477，事件、幂等、网关及授权日志测试表均为 0，`git diff --check` 通过。
 - 遗留问题：商家前端仓库的 ESLint 配置引用 `vue-eslint-parser`，但该依赖未写入 `package.json/package-lock.json`，因此 ESLint 8 无法启动；本阶段未扩展到依赖治理。生产主包约 1.36 MB，属于既有体积问题。商家页面现有按钮仍按旧 URL 权限判断，统一权限码将在后续逐模块迁移时替换。
 - 下一阶段应继续处理的事项：重新读取计划和日志后，进入 uni-app 登录与商家身份切换权限刷新小阶段；盘点 `merchant/Identity` 调用和全局状态，确保登录、恢复会话及切换身份后统一替换权限上下文，退出时清空旧权限。
+
+## 2026-08-25 渐进式重构阶段三：uni-app 权限上下文刷新
+
+- 阶段名称：渐进式重构阶段三：uni-app 权限上下文刷新
+- 本阶段完成内容：uni-app Vuex 新增统一权限上下文状态和缓存，登录后、应用启动恢复会话时都主动请求当前商家身份并替换权限上下文；身份列表/current 回显与 switch 成功后直接消费后端返回的 `permission_context`。退出、401、禁用登录清理路径统一删除权限上下文，避免另一会员或另一商家继续使用旧权限。现有页面 `merchantPermissionCodes` 保留兼容，未改变既有入口判断。
+- 修改/新增的主要文件：`zflUniApp/zflUniApp/store/common.js`、`zflUniApp/zflUniApp/pages/my/login.vue`、`zflUniApp/zflUniApp/pages/app/my.vue`、`zflUniApp/zflUniApp/App.vue`、`tests/refactor/mobile-permission-context-refresh-contract.php`、`DEVELOPMENT_LOG.md`
+- 运行或测试结果：移动端权限刷新契约测试通过 10 项断言；4 个目标 JS/Vue 脚本块通过 Babel 语法解析。真实本地会员 GET `/api/merchant.Identity/current` 返回 200，统一上下文包含 `member,merchant_owner`、8 项权限、20 位权限版本及会员/商家数据范围。完整 `tests/refactor` 36 个脚本共 493 项断言通过；业务基线保持订单 1732、明细 1733、采购台账 1477，事件、幂等、网关及授权日志测试表均为 0，`git diff --check` 通过。
+- 遗留问题：工作区已有未提交的 `public/app`、`dist-h5-gray` 和 `dist-mp-weixin-gray` 产物，本阶段为避免覆盖用户构建结果，未运行会重写这些目录的 HBuilder 发布命令；后续独立发布阶段需在干净发布目录完成 H5 与小程序双端构建。页面按钮仍使用旧权限码兼容层，后续逐模块迁移到统一权限码。
+- 下一阶段应继续处理的事项：重新读取计划和日志后，完成巡检前端统一权限上下文接入；保持巡检独立入口和现有动态菜单，登录/恢复会话获取统一权限，退出清空，并用真实巡检账号验证权限版本和机构数据范围。

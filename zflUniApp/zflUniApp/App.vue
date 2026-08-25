@@ -75,6 +75,7 @@ function bindH5ThemeRefresh() {
 
 export default {
   onLaunch() {
+    store.dispatch("hydrateLogin");
     registerAuditModeRouteGuard();
     hydrateCachedSetting();
     applyUiThemeFromCache();

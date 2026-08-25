@@ -2147,13 +2147,14 @@ export default {
               message: "协议记录稍后自动补记，已为您完成登录",
             },
           ).then(() => {
-            store.commit("login");
-            this.login = false;
-            this.getMemberInfo();
-            uni.showToast({
-              icon: "none",
-              position: "bottom",
-              title: "登录成功",
+            return store.dispatch("hydrateLogin").then(() => {
+              this.login = false;
+              this.getMemberInfo();
+              uni.showToast({
+                icon: "none",
+                position: "bottom",
+                title: "登录成功",
+              });
             });
           });
         })
@@ -2177,12 +2178,12 @@ export default {
         this.login = false;
         this.userInfo = cache.get("userInfo");
         if (!this.$store.state.hasLogin) {
-          store.commit("login");
+          store.dispatch("hydrateLogin");
         }
       } else if (this.hasCachedAuth()) {
         this.login = false;
         if (!this.$store.state.hasLogin) {
-          store.commit("login");
+          store.dispatch("hydrateLogin");
         }
       } else {
         this.login = true;
@@ -2449,6 +2450,10 @@ export default {
             currentRes.data && currentRes.data.permissions
               ? currentRes.data.permissions
               : {};
+          this.$store.commit(
+            "setPermissionContext",
+            (currentRes.data && currentRes.data.permission_context) || {},
+          );
           const selectedIdentity = this.resolveCurrentMerchantIdentity(
             list,
             Number(
@@ -2509,6 +2514,10 @@ export default {
                 res.data && res.data.identity ? res.data.identity : {};
               const permissions =
                 res.data && res.data.permissions ? res.data.permissions : {};
+              this.$store.commit(
+                "setPermissionContext",
+                (res.data && res.data.permission_context) || {},
+              );
               this.currentMerchantIdentityId = Number(
                 identity.mer_user_id || nextItem.mer_user_id || 0,
               );
